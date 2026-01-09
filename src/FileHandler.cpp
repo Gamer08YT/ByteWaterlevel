@@ -6,6 +6,7 @@
 
 #include <FS.h>
 #include <HardwareSerial.h>
+#include <ArduinoJson.h>
 
 /**
  * @brief Initializes the file system using LittleFS.
@@ -59,7 +60,40 @@ String FileHandler::readFile(const char* path)
  * that the application retrieves and utilizes the necessary settings
  * for its operation based on the configuration data.
  */
-void FileHandler::loadConfig()
-{
+bool FileHandler::loadConfig() {
+    File file = LittleFS.open("/config.json", "r");
+    if (!file) {
+        Serial.println("❌ Failed to open config file");
+        return false;
+    }
+
+    StaticJsonDocument<512> doc;
+    DeserializationError err = deserializeJson(doc, file);
+    file.close();
+
+    if (err) {
+        Serial.print("❌ JSON parse error: ");
+        Serial.println(err.c_str());
+        return false;
+    }
+
+    // Root
+    config.name = doc["name"].as<String>();
+
+    // WiFi client
+    config.wifi.client.ssid =
+        doc["wifi"]["client"]["ssid"].as<String>();
+    config.wifi.client.password =
+        doc["wifi"]["client"]["password"].as<String>();
+
+    // WiFi AP
+    config.wifi.ap.password =
+        doc["wifi"]["ap"]["password"].as<String>();
+
+    // Hardware
+    config.hardware.led =
+        doc["hardware"]["led"] | false; // default false
+
+    return true;
 }
 
