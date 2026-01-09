@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteWaterlevel - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-color: #1d1d1f;
+            --primary-accent: #0071e3;
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f5f5f7;
+            --primary-accent: #0a84ff;
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; }
+
+        /* Dark Mode Switch */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--primary-accent); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* Tabs Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 2rem;
+            background: rgba(0,0,0,0.05);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--glass-bg);
+            color: var(--primary-accent);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; opacity: 0.8; }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: var(--input-bg);
+            color: var(--text-color);
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary-accent);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        /* Display Elements */
+        .value-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--primary-accent);
+        }
+
+        .chart-container { height: 250px; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>ByteWaterlevel</h1>
+        <label class="theme-switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+        </label>
+    </header>
+
+    <nav class="tab-nav">
+        <button class="tab-btn active" onclick="openTab(event, 'config')">Konfig</button>
+        <button class="tab-btn" onclick="openTab(event, 'tl136')">TL136</button>
+    </nav>
+
+    <!-- Tab: Konfiguration -->
+    <div id="config" class="tab-content active">
+        <form id="configForm">
+            <h3>WLAN Einstellungen</h3>
+            <div class="form-group">
+                <label>SSID</label>
+                <input type="text" name="ssid" placeholder="WLAN Name">
+            </div>
+            <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" name="pwd" placeholder="********">
+            </div>
+
+            <h3>MQTT Broker</h3>
+            <div class="form-group">
+                <label>Server IP</label>
+                <input type="text" name="mqtt_ip" placeholder="192.168.1.50">
+            </div>
+
+            <h3>Sensor Kalibrierung</h3>
+            <div class="form-group">
+                <label>Offset (V)</label>
+                <input type="number" step="0.01" name="offset" value="0.00">
+            </div>
+
+            <button type="submit" class="btn-save">Speichern & Neustart</button>
+        </form>
+    </div>
+
+    <!-- Tab: Sensor Dashboard -->
+    <div id="tl136" class="tab-content">
+        <div style="text-align: center; opacity: 0.7; font-size: 0.9rem;">Aktueller Pegelstand</div>
+        <div id="adc-value" class="value-display">1.65 V</div>
+
+        <div class="chart-container">
+            <canvas id="tl136Chart"></canvas>
+        </div>
+
+        <div style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.6; text-align: center;">
+            Status: Verbunden | Signal: -65dBm
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dark Mode Logik
+    const themeToggle = document.getElementById('darkModeToggle');
+    themeToggle.addEventListener('change', () => {
+        document.documentElement.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
+    });
+
+    // Tab Navigation
+    function openTab(evt, tabId) {
+        const contents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+
+        const buttons = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+
+        document.getElementById(tabId).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Chart Initialisierung
+    const ctx = document.getElementById('tl136Chart').getContext('2d');
+    const tl136Chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['12:00', '12:10', '12:20', '12:30', '12:40', '12:50'],
+            datasets: [{
+                label: 'Spannung',
+                data: [1.1, 1.4, 1.3, 1.8, 2.1, 1.65],
+                borderColor: '#0a84ff',
+                backgroundColor: 'rgba(10, 132, 255, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { min: 0, max: 3.3, grid: { color: 'rgba(150,150,150,0.1)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Formular-Handling (Beispiel)
+    document.getElementById('configForm').onsubmit = (e) => {
+        e.preventDefault();
+        alert("Konfiguration gespeichert!");
+    };
+</script>
+</body>
+</html>
