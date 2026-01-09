@@ -3,6 +3,8 @@
 //
 
 #include "FileHandler.h"
+
+#include <FS.h>
 #include <HardwareSerial.h>
 
 /**
@@ -48,3 +50,16 @@ String FileHandler::readFile(const char* path)
     file.close();
     return content;
 }
+
+/**
+ * @brief Loads the configuration settings from a file.
+ *
+ * This method is responsible for handling the process of reading and
+ * parsing the configuration file stored in the file system. It ensures
+ * that the application retrieves and utilizes the necessary settings
+ * for its operation based on the configuration data.
+ */
+void FileHandler::loadConfig()
+{
+}
+
