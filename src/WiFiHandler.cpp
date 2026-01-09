@@ -1,0 +1,13 @@
+//
+// Created by JanHe on 09.01.2026.
+//
+
+#include "WiFiHandler.h"
+
+void WiFiHandler::setup()
+{
+}
+
+void WiFiHandler::checkConnection()
+{
+}
