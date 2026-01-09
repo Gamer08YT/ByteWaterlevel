@@ -3,3 +3,11 @@
 //
 
 #include "WebHandler.h"
+
+void WebHandler::setup()
+{
+}
+
+void WebHandler::loop()
+{
+}

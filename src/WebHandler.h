@@ -6,11 +6,12 @@
 #define WEBHANDLER_H
 
 
-
-class WebHandler {
-
+class WebHandler
+{
+public:
+    static void setup();
+    static void loop();
 };
-
 
 
 #endif //WEBHANDLER_H
