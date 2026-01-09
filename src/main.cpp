@@ -11,6 +11,13 @@
 const char* ssid = "DEIN_WLAN_NAME";
 const char* password = "DEIN_WLAN_PASSWORT";
 
+// AP Zugangsdaten (Fallback)
+const char* ap_ssid = "ByteWaterlevel-AP";
+
+// Zeit-Management für Reconnect
+unsigned long lastReconnectAttempt = 0;
+const unsigned long reconnectInterval = 30000; // 30 Sekunden
+
 // Server auf Port 80 und WebSocket auf /ws
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -38,23 +45,39 @@ void setup() {
     Serial.begin(115200);
 
     // 1. Dateisystem (LittleFS) starten
-    // 'true' formatiert das Dateisystem, falls es noch nicht existiert
     if(!LittleFS.begin(true)){
         Serial.println("Fehler beim Mounten von LittleFS");
         return;
     }
 
-    // 2. WLAN Verbindung herstellen
+    // 2. WLAN Verbindung herstellen (mit Timeout Logik)
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     Serial.print("Verbinde mit WLAN");
-    while (WiFi.status() != WL_CONNECTED) {
+
+    unsigned long startAttemptTime = millis();
+    bool connected = false;
+
+    // Versuche 15 Sekunden lang zu verbinden
+    while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 15000) {
         Serial.print(".");
-        delay(1000);
+        delay(500);
     }
-    Serial.println("\nVerbunden!");
-    Serial.print("IP-Adresse: ");
-    Serial.println(WiFi.localIP());
+
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\nVerbunden!");
+        Serial.print("IP-Adresse: ");
+        Serial.println(WiFi.localIP());
+        connected = true;
+    } else {
+        Serial.println("\nKeine Verbindung nach 15s. Starte AP Modus...");
+        // Wechsel zu AP + STA, damit wir später im Hintergrund weiter versuchen können zu verbinden
+        WiFi.mode(WIFI_AP_STA);
+        // AP starten (offen oder mit Passwort, hier offen für einfacheres Debugging)
+        WiFi.softAP(ap_ssid);
+        Serial.print("AP IP-Adresse: ");
+        Serial.println(WiFi.softAPIP());
+    }
 
     // 3. WebSocket Route initialisieren
     ws.onEvent(onWsEvent);
@@ -62,7 +85,6 @@ void setup() {
 
     // 4. WebServer Route: index.html aus dem Dateisystem laden
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-        // Prüfen, ob die Datei existiert
         if (LittleFS.exists("/index.html")) {
             request->send(LittleFS, "/index.html", "text/html");
         } else {
@@ -77,4 +99,13 @@ void setup() {
 void loop() {
     // Wichtig für AsyncWebSocket Garbage Collection
     ws.cleanupClients();
+
+    // Reconnect Logik: Alle 30 Sekunden prüfen, wenn nicht verbunden
+    unsigned long currentMillis = millis();
+    if ((WiFi.status() != WL_CONNECTED) && (currentMillis - lastReconnectAttempt >= reconnectInterval)) {
+        Serial.println("WLAN Verbindung verloren oder nicht vorhanden. Versuche Reconnect...");
+        // Wichtig: WiFi.disconnect() nicht aufrufen, da sonst der AP Modus gestört werden könnte
+        WiFi.begin(ssid, password);
+        lastReconnectAttempt = currentMillis;
+    }
 }
