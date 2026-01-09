@@ -7,7 +7,7 @@ void setup()
     // Begin Serial.
     Serial.begin(115200);
 
-    // Setup WiFi Connection.
+    // Setup Wi-Fi Connection from LittleFS.
     WiFiHandler::setup();
 
     // Setup Web.
