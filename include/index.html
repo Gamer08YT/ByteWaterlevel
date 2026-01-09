@@ -4,29 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ByteWaterlevel - Dashboard</title>
+    <!-- Chart.js Einbindung -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
+            /* Apple-like Gradients & Glass Variables */
             --bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.5);
+            --card-bg: rgba(255, 255, 255, 0.4);
             --text-color: #1d1d1f;
+            --text-secondary: #86868b;
             --primary-accent: #0071e3;
+            --success-color: #34c759;
             --input-bg: rgba(255, 255, 255, 0.5);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --radius: 20px;
         }
 
         [data-theme="dark"] {
             --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-bg: rgba(30, 30, 30, 0.6);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.05);
             --text-color: #f5f5f7;
+            --text-secondary: #a1a1a6;
             --primary-accent: #0a84ff;
-            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
             background: var(--bg-gradient);
             background-attachment: fixed;
             color: var(--text-color);
@@ -36,8 +44,10 @@
             align-items: center;
             min-height: 100vh;
             transition: background 0.5s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* Main Container */
         .container {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -47,9 +57,10 @@
             box-shadow: var(--shadow);
             padding: 2rem;
             width: 90%;
-            max-width: 500px;
-            margin-top: 20px;
+            max-width: 600px;
+            margin-top: 40px;
             margin-bottom: 40px;
+            transition: all 0.3s ease;
         }
 
         header {
@@ -59,275 +70,330 @@
             margin-bottom: 1.5rem;
         }
 
-        h1 { margin: 0; font-size: 1.5rem; }
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
 
-        /* Dark Mode Switch */
+        /* Theme Switch (iOS Toggle Style) */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
         .theme-switch {
             position: relative;
             display: inline-block;
-            width: 64px;
-            height: 34px;
-            cursor: pointer;
+            width: 50px;
+            height: 28px;
         }
-
-        .theme-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute;
+            cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: var(--input-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background-color: var(--card-bg);
             border: 1px solid var(--glass-border);
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: .4s;
             border-radius: 34px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 8px;
-            box-sizing: border-box;
         }
-
         .slider:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 3px;
-            background-color: #ffffff;
-            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bounce-Effekt */
+            height: 20px; width: 20px;
+            left: 4px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
             border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        input:checked + .slider { background-color: var(--primary-accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
-        .slider .icon {
-            font-size: 14px;
-            user-select: none;
-            z-index: 1;
-            transition: opacity 0.3s;
-        }
-
-        /* Verhalten beim Umschalten */
-        input:checked + .slider {
-            background-color: var(--primary-accent);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(30px);
-        }
-
-        /* Icon Sichtbarkeit je nach Modus */
-        [data-theme="light"] .sun { opacity: 1; }
-        [data-theme="light"] .moon { opacity: 0.3; }
-        [data-theme="dark"] .sun { opacity: 0.3; }
-        [data-theme="dark"] .moon { opacity: 1; }
-
-        /* Kleiner Hover-Effekt */
-        .theme-switch:hover .slider:before {
-            box-shadow: 0 0 12px var(--primary-accent);
-        }
-
-        /* Tabs Navigation */
-        .tab-nav {
+        /* Segmented Control (Tabs) */
+        .segmented-control {
             display: flex;
-            gap: 8px;
-            margin-bottom: 2rem;
-            background: rgba(0,0,0,0.05);
+            background: var(--input-bg);
             padding: 4px;
             border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px 12px;
             border: none;
             background: transparent;
             color: var(--text-color);
-            cursor: pointer;
-            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 500;
-            transition: 0.3s;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 2;
         }
 
         .tab-btn.active {
-            background: var(--glass-bg);
-            color: var(--primary-accent);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background: var(--card-bg); /* Fallback */
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
         }
 
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
+        [data-theme="dark"] .tab-btn.active {
+            background: rgba(60, 60, 60, 0.8);
+            color: #fff;
+        }
+
+        /* Content Sections */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; opacity: 0.8; }
+        /* Cards inside Tabs */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
-        input[type="text"], input[type="password"], input[type="number"] {
+        h2 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Relays */
+        .relay-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .relay-control:last-child { border-bottom: none; }
+
+        /* Form Elements */
+        .form-group { margin-bottom: 1rem; }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
             width: 100%;
             padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
             background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
             color: var(--text-color);
+            font-size: 1rem;
             box-sizing: border-box;
-            outline: none;
+            transition: all 0.2s;
         }
 
-        .btn-save {
+        input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            background: var(--card-bg);
+        }
+
+        .btn-primary {
             width: 100%;
             padding: 14px;
-            border: none;
-            border-radius: 12px;
             background: var(--primary-accent);
             color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 1rem;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+
+        /* Canvas Container */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
         }
 
-        /* Display Elements */
         .value-display {
             font-size: 2.5rem;
             font-weight: 700;
             text-align: center;
-            margin: 1rem 0;
-            color: var(--primary-accent);
+            margin: 10px 0;
+            background: -webkit-linear-gradient(45deg, var(--primary-accent), #34c759);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+        .unit { font-size: 1rem; color: var(--text-secondary); -webkit-text-fill-color: var(--text-secondary); }
 
-        .chart-container { height: 250px; width: 100%; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1><b>BYTE</b>LEVEL</h1>
-        <label class="theme-switch" for="theme-toggle">
-            <input type="checkbox" id="theme-toggle">
-            <span class="slider">
-                <span class="icon sun">☀️</span>
-                <span class="icon moon">🌙</span>
-            </span>
-        </label>
+        <h1>ByteWaterlevel</h1>
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox-theme">
+                <input type="checkbox" id="checkbox-theme">
+                <span class="slider"></span>
+            </label>
+        </div>
     </header>
 
-    <nav class="tab-nav">
-        <button class="tab-btn active" onclick="openTab(event, 'config')">Konfig</button>
-        <button class="tab-btn" onclick="openTab(event, 'tl136')">TL136</button>
+    <!-- Navigation (3 Tabs) -->
+    <nav class="segmented-control">
+        <button class="tab-btn active" onclick="openTab('status')">Status</button>
+        <button class="tab-btn" onclick="openTab('config')">Konfiguration</button>
+        <button class="tab-btn" onclick="openTab('info')">Info</button>
     </nav>
 
-    <!-- Tab: Konfiguration -->
-    <div id="config" class="tab-content active">
-        <form id="configForm">
-            <h3>WLAN Einstellungen</h3>
+    <!-- Tab 1: Status -->
+    <div id="status" class="tab-content active">
+
+        <!-- Sensor Chart -->
+        <div class="glass-card">
+            <h2>TL136 Wasserstand</h2>
+            <div class="value-display" id="adcValueDisplay">0.00 <span class="unit">V</span></div>
+            <div class="chart-container">
+                <canvas id="sensorChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Relays Control -->
+        <div class="glass-card">
+            <h2>Steuerung</h2>
+            <div class="relay-control">
+                <span>Relais 1 (Pumpe)</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="relay1">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="relay-control">
+                <span>Relais 2 (Ventil)</span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="relay2">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Konfiguration -->
+    <div id="config" class="tab-content">
+
+        <!-- WiFi Settings -->
+        <div class="glass-card">
+            <h3>WiFi Einstellungen</h3>
             <div class="form-group">
                 <label>SSID</label>
-                <input type="text" name="ssid" placeholder="WLAN Name">
+                <input type="text" placeholder="Netzwerkname">
             </div>
             <div class="form-group">
                 <label>Passwort</label>
-                <input type="password" name="pwd" placeholder="********">
+                <input type="password" placeholder="WLAN Passwort">
             </div>
+        </div>
 
+        <!-- MQTT Settings -->
+        <div class="glass-card">
             <h3>MQTT Broker</h3>
             <div class="form-group">
-                <label>Server IP</label>
-                <input type="text" name="mqtt_ip" placeholder="192.168.1.50">
+                <label>Server Adresse</label>
+                <input type="text" placeholder="192.168.x.x">
             </div>
-
-            <h3>Sensor Kalibrierung</h3>
             <div class="form-group">
-                <label>Offset (V)</label>
-                <input type="number" step="0.01" name="offset" value="0.00">
+                <label>Port</label>
+                <input type="number" value="1883">
             </div>
-
-            <button type="submit" class="btn-save">Speichern & Neustart</button>
-        </form>
-    </div>
-
-    <!-- Tab: Sensor Dashboard -->
-    <div id="tl136" class="tab-content">
-        <div style="text-align: center; opacity: 0.7; font-size: 0.9rem;">Aktueller Pegelstand</div>
-        <div id="adc-value" class="value-display">1.65 V</div>
-
-        <div class="chart-container">
-            <canvas id="tl136Chart"></canvas>
         </div>
 
-        <div style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.6; text-align: center;">
-            Status: Verbunden | Signal: -65dBm
+        <!-- System Settings -->
+        <div class="glass-card">
+            <h3>System & Sicherheit</h3>
+            <div class="relay-control">
+                <span>System LED Status</span>
+                <label class="theme-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>WebGUI Benutzername</label>
+                <input type="text" value="admin">
+            </div>
+            <div class="form-group">
+                <label>WebGUI Passwort</label>
+                <input type="password" placeholder="Neues Passwort">
+            </div>
+        </div>
+
+        <button class="btn-primary">Speichern</button>
+    </div>
+
+    <!-- Tab 3: Info (Platzhalter wie angefordert) -->
+    <div id="info" class="tab-content">
+        <div class="glass-card">
+            <h2>System Informationen</h2>
+            <div class="relay-control">
+                <span>Firmware Version</span>
+                <span style="color: var(--text-secondary)">v1.2.0</span>
+            </div>
+            <div class="relay-control">
+                <span>Laufzeit</span>
+                <span style="color: var(--text-secondary)">3 Tage, 4 Std</span>
+            </div>
+            <div class="relay-control">
+                <span>IP Adresse</span>
+                <span style="color: var(--text-secondary)">192.168.1.45</span>
+            </div>
+            <div class="relay-control">
+                <span>Signalstärke</span>
+                <span style="color: var(--primary-accent)">-65 dBm</span>
+            </div>
         </div>
     </div>
+
 </div>
 
 <script>
-    // Dark Mode Logik
-    const themeToggle = document.getElementById('darkModeToggle');
-    themeToggle.addEventListener('change', () => {
-        document.documentElement.setAttribute('data-theme', themeToggle.checked ? 'dark' : 'light');
-    });
-
-    // Tab Navigation
-    function openTab(evt, tabId) {
-        const contents = document.getElementsByClassName("tab-content");
-        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-
-        const buttons = document.getElementsByClassName("tab-btn");
-        for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-
-        document.getElementById(tabId).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    // Chart Initialisierung
-    const ctx = document.getElementById('tl136Chart').getContext('2d');
-    const tl136Chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['12:00', '12:10', '12:20', '12:30', '12:40', '12:50'],
-            datasets: [{
-                label: 'Spannung',
-                data: [1.1, 1.4, 1.3, 1.8, 2.1, 1.65],
-                borderColor: '#0a84ff',
-                backgroundColor: 'rgba(10, 132, 255, 0.1)',
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { min: 0, max: 3.3, grid: { color: 'rgba(150,150,150,0.1)' } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // Formular-Handling (Beispiel)
-    document.getElementById('configForm').onsubmit = (e) => {
-        e.preventDefault();
-        alert("Konfiguration gespeichert!");
-    };
-</script>
-<script>
-    // Theme Switcher Logic
-    const toggleSwitch = document.querySelector('#theme-toggle');
+    // --- Theme Switcher Logic ---
+    const toggleSwitch = document.querySelector('#checkbox-theme');
     const currentTheme = localStorage.getItem('theme');
 
-    // Prüfen, ob bereits ein Theme gespeichert ist
     if (currentTheme) {
         document.documentElement.setAttribute('data-theme', currentTheme);
         if (currentTheme === 'dark') {
@@ -335,7 +401,7 @@
         }
     }
 
-    function switchTheme(e) {
+    toggleSwitch.addEventListener('change', function(e) {
         if (e.target.checked) {
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
@@ -343,9 +409,107 @@
             document.documentElement.setAttribute('data-theme', 'light');
             localStorage.setItem('theme', 'light');
         }
+        updateChartColors();
+    });
+
+    // --- Tab Logic ---
+    function openTab(tabName) {
+        // Hide all contents
+        var contents = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].classList.remove("active");
+        }
+
+        // Remove active class from buttons
+        var buttons = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove("active");
+        }
+
+        // Show specific tab and activate button
+        document.getElementById(tabName).classList.add("active");
+        // Find the button that called this function (rough logic)
+        event.currentTarget.classList.add("active");
     }
 
-    toggleSwitch.addEventListener('change', switchTheme, false);
+    // --- Chart.js Setup for TL136 Sensor ---
+    const ctx = document.getElementById('sensorChart').getContext('2d');
+
+    // Gradient for "Liquid" look
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(0, 113, 227, 0.5)'); // Apple Blue
+    gradient.addColorStop(1, 'rgba(0, 113, 227, 0.0)');
+
+    const sensorChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array(20).fill(''), // Placeholder time labels
+            datasets: [{
+                label: 'Spannung (V)',
+                data: Array(20).fill(0),
+                borderColor: '#0071e3',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                fill: true,
+                tension: 0.4 // Smooth curves
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 3.5, // TL136 0-3.3V + headroom
+                    grid: { color: 'rgba(150, 150, 150, 0.1)' },
+                    ticks: { color: '#86868b' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff'
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+
+    function updateChartColors() {
+        // Optional: Adjust chart grid colors based on theme if needed
+        sensorChart.update();
+    }
+
+    // --- Mock Data Simulation (For Demo) ---
+    // In production, replace this with Fetch/WebSocket calls to ESP32
+    setInterval(() => {
+        // Simulate random voltage between 0 and 3.3V
+        const voltage = (Math.random() * 0.5 + 1.5).toFixed(2);
+
+        // Update Display
+        document.getElementById('adcValueDisplay').innerHTML = voltage + ' <span class="unit">V</span>';
+
+        // Update Chart
+        const data = sensorChart.data.datasets[0].data;
+        data.shift();
+        data.push(voltage);
+        sensorChart.update();
+    }, 1000);
+
 </script>
 </body>
 </html>
