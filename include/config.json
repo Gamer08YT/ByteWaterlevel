@@ -8,5 +8,8 @@
     "ap": {
       "password": "BYTESTORE"
     }
+  },
+  "hardware": {
+    "led": true
   }
 }
