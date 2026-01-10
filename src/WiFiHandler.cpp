@@ -9,8 +9,8 @@
 #include "InternalConfig.h"
 
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
-IPAddress apIP(10, 0, 0, 1);
-IPAddress gateway(10, 0, 0, 1);
+IPAddress apIP(10, 10, 10, 1);
+IPAddress gateway(10, 10, 10, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 void WiFiHandler::setup()
@@ -28,6 +28,9 @@ void WiFiHandler::setup()
     // Print Debug Message.
     Serial.println("WiFi started");
 #endif
+
+    Serial.print("Ready on");
+    Serial.println(WiFi.softAPIP());
 }
 
 void WiFiHandler::loop()

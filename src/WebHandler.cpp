@@ -19,7 +19,7 @@ void WebHandler::setup()
     {
         if (!LittleFS.exists("/index.html"))
         {
-            request->send(500, "text/plain", "Invalid LittleFS.");
+            request->send(500, "text/plain", "Invalid LittleFS");
             return;
         }
 
