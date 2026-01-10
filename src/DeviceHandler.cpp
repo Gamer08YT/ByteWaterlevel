@@ -49,12 +49,12 @@ void DeviceHandler::handleRelais()
     unsigned long currentMillis = millis();
 
     // Check if the interval has passed
-    if (ch1 > -1 && currentMillis >= ch1)
+    if (ch1 != -1 && (currentMillis >= ch1))
     {
         setRelais(1, false);
     }
 
-    if (ch2 > -1 && currentMillis >= ch2)
+    if (ch2 != -1 && (currentMillis >= ch2))
     {
         setRelais(2, false);
     }
@@ -171,7 +171,6 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
  */
 void DeviceHandler::setup()
 {
-
     // Input Pins.
     pinMode(SENSE, INPUT);
 
@@ -288,5 +287,3 @@ uint16_t DeviceHandler::getCPUTemperature()
 {
     return temperatureRead();
 }
-
-
