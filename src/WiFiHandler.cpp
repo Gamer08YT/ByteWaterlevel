@@ -37,7 +37,7 @@ void WiFiHandler::setup()
         WiFi.softAPConfig(apIP, gateway, subnet);
 
         // Begin Soft AP.
-        WiFi.softAP(NAME, PASSWORD);
+        WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(), config["wifi"]["ap"]["password"].as<String>());
     }
 
 #if DEBUG == true
