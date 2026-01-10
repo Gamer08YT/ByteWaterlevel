@@ -25,7 +25,7 @@ void setup()
     FileHandler::begin();
 
     // Load Config File.
-    FileHandler::loadConfig();
+    //FileHandler::loadConfig();
 
     // Setup Wi-Fi Connection from LittleFS.
     WiFiHandler::setup();
