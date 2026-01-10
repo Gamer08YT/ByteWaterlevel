@@ -72,6 +72,12 @@ String FileHandler::readFile(const char* path)
  */
 JsonDocument FileHandler::loadConfig()
 {
+    // Copy file if not exists.
+    if (LittleFS.exists("/config.json") == false)
+    {
+        copyFile("/config.json.bak", "/config.json");
+    }
+
     // Deserialize Json Config.
     deserializeJson(config, readFile("/config.json"));
 
@@ -118,4 +124,47 @@ JsonDocument FileHandler::getConfig()
 void FileHandler::saveConfig(ArduinoJson::JsonObject object)
 {
     config.set(object);
+}
+
+#include <LittleFS.h>
+
+bool FileHandler::copyFile(const char* source, const char* destination)
+{
+    File sourceFile = LittleFS.open(source, "r");
+    if (!sourceFile)
+    {
+#if DEBUG == true
+        Serial.println("Can't open Source File.");
+#endif
+
+        return false;
+    }
+
+    File destFile = LittleFS.open(destination, "w");
+    if (!destFile)
+    {
+        sourceFile.close();
+
+#if DEBUG == true
+        Serial.println("Can't create Dest File.");
+#endif
+        return false;
+    }
+
+    // Datei byteweise kopieren
+    byte buffer[256];
+    size_t bytesRead;
+    while ((bytesRead = sourceFile.read(buffer, sizeof(buffer))) > 0)
+    {
+        destFile.write(buffer, bytesRead);
+    }
+
+    sourceFile.close();
+    destFile.close();
+
+#if DEBUG == true
+    Serial.println("File successfully created.");
+#endif
+
+    return true;
 }
