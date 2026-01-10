@@ -73,6 +73,6 @@ bool WiFiHandler::isWiFiClientUsable()
 {
     JsonDocument config = FileHandler::getConfig();
 
-    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"]["client"][
+    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].as<String>().isEmpty() && !config["wifi"]["client"][
         "password"].isNull());
 }
