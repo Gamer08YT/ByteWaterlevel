@@ -279,7 +279,12 @@ uint16_t DeviceHandler::getADCValue()
  * Behavior:
  * - The method performs a loop to read the ADC value `samples` times.
  * - A short delay of 10 milliseconds is applied between successive readings to reduce fluctuations.
- * - The average ADC value is computed and converted to a voltage based*/
+ * - The average ADC value is computed and converted to a voltage based on the ADC characteristics.
+ *
+ * @param pin The analog pin to read from.
+ * @param samples The number of readings to average. Default value is 10.
+ * @return The calculated voltage based on the averaged ADC readings.
+ */
 float DeviceHandler::readVoltage(int pin, int samples = 10)
 {
     int sum = 0;
