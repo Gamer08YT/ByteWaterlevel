@@ -90,7 +90,8 @@ void WebHandler::sendOK(AsyncWebServerRequest* request)
  * sends responses based on the API logic.
  *
  * @param request Pointer to the asynchronous web server request.
- * @param json The*/
+ * @param json The JSON payload of the incoming API request, containing the "type" field and any associated parameters.
+ */
 void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 {
     switch (json["type"].as<String>())
