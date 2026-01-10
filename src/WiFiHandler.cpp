@@ -3,9 +3,7 @@
 //
 
 #include "WiFiHandler.h"
-
 #include <WiFi.h>
-
 #include "FileHandler.h"
 #include "InternalConfig.h"
 
@@ -19,7 +17,7 @@ void WiFiHandler::setup()
     // Enable Auto Reconnect.
     WiFi.setAutoConnect(true);
 
-    ArduinoJson::JsonDocument config = FileHandler::getConfig();
+    JsonDocument config = FileHandler::getConfig();
 
     // Check if Wi-Fi Credentials are set.
     if (isWiFiClientUsable())
@@ -70,7 +68,7 @@ void WiFiHandler::checkConnection()
  */
 bool WiFiHandler::isWiFiClientUsable()
 {
-    ArduinoJson::JsonDocument config = FileHandler::getConfig();
+    JsonDocument config = FileHandler::getConfig();
 
-    return (!config["wifi"].isNull() && !config["wifi"]["ssid"].isNull() && !config["wifi"]["password"].isNull());
+    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"]["client"]["password"].isNull());
 }
