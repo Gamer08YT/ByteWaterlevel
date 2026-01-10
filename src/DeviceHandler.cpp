@@ -204,11 +204,11 @@ void DeviceHandler::setRelaisDuration(int channel, int duration)
 {
     if (channel == 1)
     {
-        ch1 = millis() + duration;
+        ch1 = millis() + (duration * 1000);
     }
     else if (channel == 2)
     {
-        ch2 = millis() + duration;
+        ch2 = millis() + (duration * 1000);
     }
 }
 

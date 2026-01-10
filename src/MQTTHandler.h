@@ -10,6 +10,7 @@ class MQTTHandler
 {
 public:
     static void setup();
+    static void publish(const char* topic, const char* payload);
     static void loop();
 };
 
