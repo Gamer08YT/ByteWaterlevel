@@ -648,11 +648,37 @@
             setValue("mport", response.mqtt.port);
             setValue("mpw", response.mqtt.password);
             setChecked("men", response.mqtt.state);
-
-
         }
 
     }
+
+    function val(id) {
+        return document.getElementById(id).value;
+    }
+
+    function save() {
+        window.configESP.admin.user = val("user");
+        window.configESP.admin.password = val("pw");
+
+        window.configESP.ap.ssid = val("assid");
+        window.configESP.ap.password = val("apw");
+
+        window.configESP.client.ssid = val("cssid");
+        window.configESP.client.password = val("cpw");
+
+        window.configESP.mqtt.host = val("mhost");
+        window.configESP.mqtt.port = val("mport");
+        window.configESP.mqtt.user = val("muser");
+        window.configESP.mqtt.password = val("mpw");
+    }
+
+    document.getElementById("save1").addEventListener("click", async () => {
+        save();
+    })
+
+    document.getElementById("save2").addEventListener("click", async () => {
+        save();
+    })
 
     // relay1 -> channel 1, relay2 -> channel 2
     document.addEventListener("DOMContentLoaded", () => {
