@@ -156,7 +156,7 @@ bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
 {
     if (!json["type"].is<String>())
     {
-        sendResponse(request, 400, R"({"type":"error","message":"No JSON payload provided."})");
+        sendResponse(request, 400, R"({"type":"error","message":"No JSON payload provided"})");
 
         return false;
     }
