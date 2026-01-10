@@ -14,6 +14,10 @@ unsigned long previousMillis = 0;
 unsigned long ch1 = -1;
 unsigned long ch2 = -1;
 
+// Store Relais States.
+bool relay1 = LOW;
+bool relay2 = LOW;
+
 
 // Current LED state
 bool ledState = LOW;
@@ -125,11 +129,13 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
     {
         pin = RELAIS_CH1;
         ch1 = -1;
+        relay1 = state;
     }
     else if (relais == 2)
     {
         pin = RELAIS_CH2;
         ch2 = -1;
+        relay2 = state;
     }
 
     // Set Relais State.
@@ -165,6 +171,11 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
  */
 void DeviceHandler::setup()
 {
+
+    // Input Pins.
+    pinMode(SENSE, INPUT);
+
+    // Output Pins.
     pinMode(LED_PIN, OUTPUT);
     pinMode(RELAIS_CH1, OUTPUT);
     pinMode(RELAIS_CH2, OUTPUT);
@@ -199,4 +210,58 @@ void DeviceHandler::setRelaisDuration(int channel, int duration)
     {
         ch2 = millis() + duration;
     }
+}
+
+/**
+ * Retrieves the state of a specified relay.
+ *
+ * This method returns the current state of the relay identified by the given index.
+ * The state indicates whether the relay is active (`true`) or inactive (`false`).
+ *
+ * Preconditions:
+ * - The input index should correspond to a valid relay channel.
+ * - Relay `1` corresponds to `relay1`.
+ * - Relay `2` corresponds to `relay2`.
+ *
+ * Behavior:
+ * - If `i` is `1`, the method returns the state of `relay1`.
+ * - If `i` is `2`, the method returns the state of `relay2`.
+ * - Undefined behavior occurs if the input index does not match a valid relay channel.
+ *
+ * @param i The index of the relay to retrieve the state for. Accepts `1` for `relay1`
+ *          and `2` for `relay2`.
+ * @return The state of the specified relay:
+ *         - `true` if the relay is active.
+ *         - `false` if the relay is inactive.
+ */
+bool DeviceHandler::getState(int i)
+{
+    if (i == 1)
+        return relay1;
+    else if (i == 2)
+        return relay2;
+    return false;
+}
+
+/**
+ * Reads the analog value from the defined sensor pin.
+ *
+ * This method fetches the current analog-to-digital converted value
+ * from the microcontroller's `SENSE` pin, which is mapped to a specific
+ * hardware input channel. The result is a 10-bit value (0 to 1023) by default,
+ * depending on the resolution and configuration of the analog-to-digital converter (ADC).
+ *
+ * Preconditions:
+ * - The `SENSE` pin must be properly configured and connected to an analog input source.
+ * - The ADC feature must be enabled and configured in the microcontroller.
+ *
+ * Postconditions:
+ * - Returns a 16-bit unsigned value representing the current analog reading
+ *   from the configured pin.
+ *
+ * @return The analog-to-digital converted value from the `SENSE` pin.
+ */
+uint16_t DeviceHandler::getADCValue()
+{
+    return analogRead(SENSE);
 }

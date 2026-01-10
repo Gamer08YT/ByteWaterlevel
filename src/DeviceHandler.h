@@ -21,6 +21,8 @@ public:
     static void setRelais(int8_t relais, bool state);
     static void setup();
     static void setRelaisDuration(int as, int as1);
+    static bool getState(int i);
+    static uint16_t getADCValue();
 };
 
 

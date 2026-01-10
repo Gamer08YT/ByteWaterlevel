@@ -119,22 +119,27 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     else if (type == "status")
     {
         StaticJsonDocument<200> doc;
-        JsonArray channels = doc.createNestedArray("channels");
-        for (int i = 0; i < 4; i++)
-        {
-            channels.add(DeviceHandler::getRelaisState(i));
-        }
+
+        // Add Channels Array to Document.
+        JsonArray channels = doc["channels"].to<JsonArray>();
+
+        // Add Channel States to Array.
+        channels.add(DeviceHandler::getState(1));
+        channels.add(DeviceHandler::getState(2));
+
+
         doc.set("adc", DeviceHandler::getADCValue());
         doc.set("cpu", ESP.getCpuFreqMHz());
 
         String response;
         serializeJson(doc, response);
         sendResponse(request, 200, response.c_str());
-        else
-        {
-            // Send API Call Invalid.
-            sendInvalid(request);
-        }
+    else
+    {
+        // Send API Call Invalid.
+        sendInvalid(request);
+    }
+
     }
     else
     {
