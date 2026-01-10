@@ -31,6 +31,10 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 * Power consumption: low
 * Sensor: TL136 (Optional with Overvoltage protection)
 
+**As this is a prototype, we accept no liability for damage to persons or buildings.**
+**Any warranty is excluded.**
+**The device should be installed by a qualified electrician in accordance with VDE regulations.**
+
 ## API Docs
 
 For API Docs please have a Look into <a href="./API.md">API.md</a>.
