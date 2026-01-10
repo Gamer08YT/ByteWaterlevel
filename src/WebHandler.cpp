@@ -66,7 +66,7 @@ void WebHandler::loop()
  */
 void WebHandler::sendInvalid(AsyncWebServerRequest* request)
 {
-    sendResponse(request, 400, '{"type": "error", "message": "Invalid request"}');
+    sendResponse(request, 400, R"({"type":"error","message":"Invalid request"})");
 }
 
 /**
@@ -79,7 +79,7 @@ void WebHandler::sendInvalid(AsyncWebServerRequest* request)
  */
 void WebHandler::sendOK(AsyncWebServerRequest* request)
 {
-    sendResponse(request, 200, '{"type": "success", "message": "OK"}');
+    sendResponse(request, 200, R"({"type":"success","message":"OK"})");
 }
 
 /**
@@ -112,7 +112,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else
     {
-        sendResponse(request, 400, '{"type": "error", "message": "Not implemented"}');
+        sendResponse(request, 400, R"({"type":"error","message":"Not implemented"})");
     }
 }
 
@@ -146,7 +146,7 @@ bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
 {
     if (!json["type"].is<String>())
     {
-        sendResponse(request, 400, '{"type": "error", "message": "No JSON payload provided."}');
+        sendResponse(request, 400, R"({"type":"error","message":"No JSON payload provided."})");
 
         return false;
     }
