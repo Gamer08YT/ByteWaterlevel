@@ -6,7 +6,7 @@ When powering up the Device for the first Time, it opens an WiFI AP, you need th
 
 #### Default Credentials:
 
-Password: **BYTESTORE**
+Password: **BYTESTORE2026**
 
 ![img.png](assets/img/wifi-pc.png)
 

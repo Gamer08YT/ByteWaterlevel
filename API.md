@@ -117,7 +117,7 @@ This will return the current Status:
     },
     "ap": {
       "ssid": "BYTELEVEL",
-      "password": "BYTESTORE"
+      "password": "BYTESTORE2026"
     }
   },
   "mqtt": {
