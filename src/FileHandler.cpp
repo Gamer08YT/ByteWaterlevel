@@ -4,6 +4,7 @@
 
 #include "FileHandler.h"
 
+#include <InternalConfig.h>
 #include <FS.h>
 #include <HardwareSerial.h>
 #include <ArduinoJson.h>

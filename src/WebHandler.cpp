@@ -4,7 +4,7 @@
 
 #include <Arduino.h>
 #include "WebHandler.h"
-
+#include <InternalConfig.h>
 #include <LittleFS.h>
 
 #include "ESPAsyncWebServer.h"
