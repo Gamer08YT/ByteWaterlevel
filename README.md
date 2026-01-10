@@ -24,11 +24,12 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 
 ## Specifications:
 
-* Input: 12-24V
-* USB: Micro USB
+* Input: 12-24V (with Reverse protection)
+* USB: Micro USB (with Overvoltage protection)
 * MCU: ESP32 C3
 * Relais current (peak): **max 10A** 
 * Power consumption: low
+* Sensor: TL136 (Optional with Overvoltage protection)
 
 ## API Docs
 
