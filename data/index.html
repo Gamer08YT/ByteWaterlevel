@@ -36,12 +36,49 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        html {
+            height: 100%;
+        }
+
+        .tab-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tab-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Light Mode */
+        [data-theme="light"] .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+
+        .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .tab-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.45);
+        }
+
+
         body {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
             overflow: hidden;
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
-            min-height: 100vh;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -104,9 +141,8 @@
         /* Glass Container */
         .app-container {
             width: 100%;
-            max-width: 800px;
-            min-height: 600px;
-            margin: 20px;
+            max-width: 45rem;
+            height: 100%;
             background: var(--glass-bg);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -186,8 +222,15 @@
 
         /* Content Sections */
         .tab-content {
+            overflow: hidden;
+            height: 100%;
             display: none;
             animation: fadeIn 0.4s ease;
+        }
+
+        .tab-container {
+            height: 100%;
+            overflow-y: scroll;
         }
 
         .tab-content.active {
@@ -387,117 +430,119 @@
 
     <!-- TAB 2: KONFIGURATION -->
     <div id="config" class="tab-content">
-        <div class="group-title">WiFi Settings</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>SSID</label>
-                <input id="cssid" type="text">
+        <div class="tab-container">
+            <div class="group-title">WiFi Settings</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>SSID</label>
+                    <input id="cssid" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Password</label>
+                    <input id="cpw" type="password">
+                </div>
             </div>
-            <div class="control-row">
-                <label>Password</label>
-                <input id="cpw" type="password">
-            </div>
-        </div>
 
-        <div class="group-title">Access Point (Fallback)</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>AP SSID</label>
-                <input id="assid" type="text">
+            <div class="group-title">Access Point (Fallback)</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>AP SSID</label>
+                    <input id="assid" type="text">
+                </div>
+                <div class="control-row">
+                    <label>AP Password</label>
+                    <input id="apw" type="password">
+                </div>
             </div>
-            <div class="control-row">
-                <label>AP Password</label>
-                <input id="apw" type="password">
-            </div>
-        </div>
 
-        <div class="group-title">MQTT Broker</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>Enable MQTT</label>
-                <label class="switch">
-                    <input id="men" type="checkbox">
-                    <span class="slider"></span>
-                </label>
+            <div class="group-title">MQTT Broker</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Enable MQTT</label>
+                    <label class="switch">
+                        <input id="men" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Server</label>
+                    <input id="mhost" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Port</label>
+                    <input id="mport" type="number" value="1883">
+                </div>
+                <div class="control-row">
+                    <label>User</label>
+                    <input id="muser" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Password</label>
+                    <input id="mpw" type="password">
+                </div>
             </div>
-            <div class="control-row">
-                <label>Server</label>
-                <input id="mhost" type="text">
-            </div>
-            <div class="control-row">
-                <label>Port</label>
-                <input id="mport" type="number" value="1883">
-            </div>
-            <div class="control-row">
-                <label>User</label>
-                <input id="muser" type="text">
-            </div>
-            <div class="control-row">
-                <label>Password</label>
-                <input id="mpw" type="password">
-            </div>
+            <button onclick="save(1)" class="btn-save">Save</button>
         </div>
-
-        <button onclick="save(1)" class="btn-save">Save</button>
     </div>
 
     <!-- TAB 3: SYSTEM -->
     <div id="system" class="tab-content">
-        <div class="group-title">Device Settings</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>System LED</label>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
+        <div class="tab-container">
+            <div class="group-title">Device Settings</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>System LED</label>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Debug Log Level</label>
+                    <input type="text" value="INFO" readonly style="opacity: 0.5;">
+                </div>
             </div>
-            <div class="control-row">
-                <label>Debug Log Level</label>
-                <input type="text" value="INFO" readonly style="opacity: 0.5;">
-            </div>
-        </div>
 
-        <div class="group-title">WebGUI Security</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>Enable Auth</label>
-                <label class="switch">
-                    <input id="auth" type="checkbox">
-                    <span class="slider"></span>
-                </label>
+            <div class="group-title">WebGUI Security</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Enable Auth</label>
+                    <label class="switch">
+                        <input id="auth" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Admin User</label>
+                    <input id="user" type="text">
+                </div>
+                <div class="control-row">
+                    <label>New Password</label>
+                    <input id="pw" type="password">
+                </div>
             </div>
-            <div class="control-row">
-                <label>Admin User</label>
-                <input id="user" type="text">
-            </div>
-            <div class="control-row">
-                <label>New Password</label>
-                <input id="pw" type="password">
-            </div>
-        </div>
 
-        <div class="group-title">Info</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label>Firmware</label>
-                <span id="firmware"></span>
+            <div class="group-title">Info</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Firmware</label>
+                    <span id="firmware"></span>
+                </div>
+                <div class="control-row">
+                    <label>Uptime</label>
+                    <span id="up"></span>
+                </div>
+                <div class="control-row">
+                    <label>CPU Temp.</label>
+                    <span id="temperature"></span>
+                </div>
+                <div class="control-row">
+                    <label>CPU Freq.</label>
+                    <span id="frequency"></span>
+                </div>
             </div>
-            <div class="control-row">
-                <label>Uptime</label>
-                <span id="up"></span>
-            </div>
-            <div class="control-row">
-                <label>CPU Temp.</label>
-                <span id="temperature"></span>
-            </div>
-            <div class="control-row">
-                <label>CPU Freq.</label>
-                <span id="frequency"></span>
-            </div>
+            <button onclick="save(2)" class="btn-save">Save</button>
         </div>
-
-        <button onclick="save(2)" class="btn-save">Save</button>
     </div>
 
 </div>
@@ -655,7 +700,7 @@
 
         const data = await res.json();
 
-        if (response.type == "success") {
+        if (data.type == "success") {
             const response = data.config;
             window.configESP = response;
 
