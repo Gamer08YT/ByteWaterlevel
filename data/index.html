@@ -86,6 +86,21 @@
             }
         }
 
+        #connection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.5;
+            z-index: 999;
+            background-color: red;
+            padding: 1rem;
+            border-radius: 1.5rem;
+            display: none;
+        }
+
         /* Glass Container */
         .app-container {
             width: 100%;
@@ -101,6 +116,10 @@
             padding: 30px;
             display: flex;
             flex-direction: column;
+        }
+
+        .app-container[disabled="disabled"] {
+            filter: blur(5px);
         }
 
         /* Header */
@@ -313,6 +332,10 @@
 <!-- Hintergrundelemente für Glass-Effekt -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
+
+<div id="connection">
+    Network error, please wait or try again later.
+</div>
 
 <div class="app-container">
     <header>
@@ -654,20 +677,25 @@
         return document.getElementById(id).value;
     }
 
-    async function save() {
-        window.configESP.admin.user = val("user");
-        window.configESP.admin.password = val("pw");
+    async function save(type) {
+        if (type == 1) {
+            window.configESP.ap.ssid = val("assid");
+            window.configESP.ap.password = val("apw");
 
-        window.configESP.ap.ssid = val("assid");
-        window.configESP.ap.password = val("apw");
+            window.configESP.client.ssid = val("cssid");
+            window.configESP.client.password = val("cpw");
 
-        window.configESP.client.ssid = val("cssid");
-        window.configESP.client.password = val("cpw");
+            window.configESP.mqtt.host = val("mhost");
+            window.configESP.mqtt.port = val("mport");
+            window.configESP.mqtt.user = val("muser");
+            window.configESP.mqtt.password = val("mpw");
+        }
 
-        window.configESP.mqtt.host = val("mhost");
-        window.configESP.mqtt.port = val("mport");
-        window.configESP.mqtt.user = val("muser");
-        window.configESP.mqtt.password = val("mpw");
+        if (type == 2) {
+            window.configESP.admin.user = val("user");
+            window.configESP.admin.password = val("pw");
+        }
+
 
         const res = await fetch("/api", {
             method: "POST",
@@ -678,11 +706,11 @@
     }
 
     document.getElementById("save1").addEventListener("click", async () => {
-        await save();
+        await save(1);
     })
 
     document.getElementById("save2").addEventListener("click", async () => {
-        await save();
+        await save(2);
     })
 
     // relay1 -> channel 1, relay2 -> channel 2
