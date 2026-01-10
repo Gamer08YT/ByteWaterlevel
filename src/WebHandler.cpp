@@ -101,12 +101,15 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Check if Relais Query Contains a channel (int) and state (bool).
         if (json["channel"].is<int>() && json["state"].is<bool>())
         {
+            // Set Relais State.
             DeviceHandler::setRelais(json["channel"].as<int>(), json["state"].as<bool>());
 
+            // Send 200 Response.
             sendOK(request);
         }
         else
         {
+            // Send API Call Invalid.
             sendInvalid(request);
         }
     }
