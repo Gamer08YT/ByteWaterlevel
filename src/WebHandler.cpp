@@ -17,8 +17,15 @@ void WebHandler::setup()
     // Route for root / web page
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request)
     {
-        request->send(LittleFS, "/index.html", String(), false);
+        if (!LittleFS.exists("/index.html"))
+        {
+            request->send(500, "text/plain", "Invalid LittleFS.");
+            return;
+        }
+
+        request->send(LittleFS, "/index.html", "text/html; charset=utf-8", false);
     });
+
 
     // Add 404 Handler.
     server.onNotFound([](AsyncWebServerRequest* request)
