@@ -14,7 +14,10 @@ public:
     static void loop();
 
 private:
+    static void sendInvalid(AsyncWebServerRequest* request);
+    static void sendOK(AsyncWebServerRequest* request);
     static void handleAPICall(AsyncWebServerRequest* request, JsonVariant json);
+    static void sendResponse(AsyncWebServerRequest* request, int i, const char* str, const char* text);
     static bool checkRequest(AsyncWebServerRequest* request, JsonVariant json);
 };
 

@@ -7,6 +7,7 @@
 #include <InternalConfig.h>
 #include <LittleFS.h>
 
+#include "DeviceHandler.h"
 #include "ESPAsyncWebServer.h"
 
 // Create AsyncWebServer object on port 80
@@ -55,8 +56,80 @@ void WebHandler::loop()
 {
 }
 
+/**
+ * Sends an HTTP 400 Bad Request response to the client with a predefined error message.
+ *
+ * This method is called to notify the client that the request was invalid. The response is sent
+ * in JSON format with an error message indicating the issue.
+ *
+ * @param request Pointer to the asynchronous web server request.
+ */
+void WebHandler::sendInvalid(AsyncWebServerRequest* request)
+{
+    sendResponse(request, 400, "application/json", "{type: 'error', message: 'Invalid request'}");
+}
+
+/**
+ * Sends an HTTP 200 OK response to the client with a predefined success message.
+ *
+ * This method is used to indicate successful processing of a request. The response
+ * includes a JSON-formatted message confirming the success.
+ *
+ * @param request Pointer to the asynchronous web server request.
+ */
+void WebHandler::sendOK(AsyncWebServerRequest* request)
+{
+    sendResponse(request, 200, "application/json", "{type: 'success', message: 'OK'}");
+}
+
+/**
+ * Handles incoming API requests and processes JSON data based on the specified request type.
+ *
+ * This method is responsible for processing API calls and delegating the request to the appropriate
+ * handler based on the "type" field in the provided JSON. It validates the request parameters and
+ * sends responses based on the API logic.
+ *
+ * @param request Pointer to the asynchronous web server request.
+ * @param json The*/
 void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 {
+    switch (json["type"].as<String>())
+    {
+    case "relais":
+        // Check if Relais Query Contains channel (int) and state (bool).
+        if (json["channel"].is<int>() && json["state"].is<bool>())
+        {
+            DeviceHandler::setRelais(json["channel"].as<int>(), json["state"].as<bool>());
+
+            sendOK(request);
+        }
+        else
+        {
+            sendInvalid(request);
+        }
+
+        break;
+    default:
+        sendResponse(request, 400, "application/json", "{type: 'error', message: 'Not implemented'}");
+        break;
+    }
+}
+
+/**
+ * Sends an HTTP response to the client with the specified status code and content.
+ *
+ * This method sends a response to the client using the provided status code and content type.
+ * The content type is referenced by the text parameter, and the string parameter is not used
+ * in the function.
+ *
+ * @param request Pointer to the asynchronous web server request.
+ * @param i The HTTP status code to be sent in the response.
+ * @param str Placeholder parameter, currently not used within the implementation.
+ * @param text The MIME type of the response content.
+ */
+void WebHandler::sendResponse(AsyncWebServerRequest* request, int i, const char* str, const char* text)
+{
+    request->send(i, text);
 }
 
 /**
@@ -72,8 +145,9 @@ bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
 {
     if (json.isNull())
     {
-        request->send(400, "application/json",
-                      "{type: 'error', message: 'No JSON payload provided.'}");
+        sendResponse(request, 400, "application/json",
+                     "{type: 'error', message: 'No JSON payload provided.'}");
+
         return false;
     }
     return true;
