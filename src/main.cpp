@@ -22,8 +22,11 @@ void setup()
     // Begin Serial.
     Serial.begin(115200);
 
+    // Setup Device Pins.
+    DeviceHandler::setup();
+
     // Setup File System.
-    FileHandler::begin();
+    //FileHandler::begin();
 
     // Load Config File.
     //FileHandler::loadConfig();
@@ -37,12 +40,12 @@ void setup()
 
 void loop()
 {
+    // Handle Device Loop.
+    DeviceHandler::loop();
+
     // Check for WiFi Connection.
-    WiFiHandler::checkConnection();
+    WiFiHandler::loop();
 
     // Handle Web.
     WebHandler::loop();
-
-    // Handle Device Loop.
-    DeviceHandler::loop();
 }

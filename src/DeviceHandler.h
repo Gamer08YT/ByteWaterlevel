@@ -4,6 +4,7 @@
 
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
+#include <cstdint>
 
 
 class DeviceHandler
@@ -13,6 +14,8 @@ private:
 
 public:
     static void loop();
+    static void setRelais(int8_t relais, bool state);
+    static void setup();
 };
 
 

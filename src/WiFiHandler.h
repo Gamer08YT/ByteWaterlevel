@@ -8,9 +8,12 @@
 
 class WiFiHandler
 {
+private:
+    static void checkConnection();
+
 public:
     static void setup();
-    static void checkConnection();
+    static void loop();
 };
 
 

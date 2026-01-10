@@ -16,10 +16,15 @@ void WiFiHandler::setup()
     // Enable Soft AP.
     WiFi.enableAP(true);
 
-    #if DEBUG == true
-        // Print Debug Message.
-        Serial.println("WiFi started");
-    #endif
+#if DEBUG == true
+    // Print Debug Message.
+    Serial.println("WiFi started");
+#endif
+}
+
+void WiFiHandler::loop()
+{
+    checkConnection();
 }
 
 void WiFiHandler::checkConnection()
