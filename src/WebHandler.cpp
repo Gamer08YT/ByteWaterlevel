@@ -139,7 +139,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         doc["frequency"] = ESP.getCpuFreqMHz();
 
         // Set Runtime.
-        doc["runtime"] = millis() / 1000;
+        doc["up"] = millis() / 1000;
 
         String response;
         serializeJson(doc, response);

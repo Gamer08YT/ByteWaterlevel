@@ -101,7 +101,6 @@ This will return the current Status:
 ```json
 {
   "type": "success",
-  "name": "BYTELEVEL",
   "wifi": {
     "client": {
       "ssid": "",

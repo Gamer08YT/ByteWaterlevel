@@ -1,5 +1,4 @@
 {
-  "name": "BYTELEVEL",
   "wifi": {
     "client": {
       "ssid": "",
@@ -7,6 +6,7 @@
     },
     "ap": {
       "state": false,
+      "ssid": "BYTELEVEL",
       "password": "BYTESTORE"
     }
   },

@@ -368,11 +368,11 @@
         <div class="control-group">
             <div class="control-row">
                 <label>SSID</label>
-                <input type="text" placeholder="MeinWLAN">
+                <input id="cssid" type="text" placeholder="MeinWLAN">
             </div>
             <div class="control-row">
                 <label>Password</label>
-                <input type="password" placeholder="••••••••">
+                <input id="cpw" type="password">
             </div>
         </div>
 
@@ -380,11 +380,11 @@
         <div class="control-group">
             <div class="control-row">
                 <label>AP SSID</label>
-                <input type="text" value="ByteWaterlevel-AP">
+                <input id="assid" type="text">
             </div>
             <div class="control-row">
                 <label>AP Password</label>
-                <input type="password" value="12345678">
+                <input id="apassword" type="password">
             </div>
         </div>
 
@@ -392,15 +392,15 @@
         <div class="control-group">
             <div class="control-row">
                 <label>Server</label>
-                <input type="text" placeholder="192.168.1.10">
+                <input id="mhost" type="text">
             </div>
             <div class="control-row">
                 <label>Port</label>
-                <input type="number" value="1883">
+                <input id="mport" type="number" value="1883">
             </div>
             <div class="control-row">
                 <label>User</label>
-                <input type="text" placeholder="mqtt_user">
+                <input id="muser" type="text">
             </div>
         </div>
 
@@ -439,7 +439,7 @@
             </div>
             <div class="control-row">
                 <label>New Password</label>
-                <input id="password" type="password" placeholder="Leave empty = no change.">
+                <input id="pw" type="password">
             </div>
         </div>
 
@@ -450,8 +450,8 @@
                 <span id="firmware"></span>
             </div>
             <div class="control-row">
-                <label>Runtime</label>
-                <span id="runtime"></span>
+                <label>Uptime</label>
+                <span id="up"></span>
             </div>
             <div class="control-row">
                 <label>CPU Temp.</label>
@@ -531,7 +531,7 @@
 
                 document.getElementById("temperature").textContent = (response.cpu + "°C");
                 document.getElementById("frequency").textContent = (response.frequency + " MHz");
-                document.getElementById("runtime").textContent = formatUptime(response.runtime);
+                document.getElementById("up").textContent = formatUptime(response.up);
 
                 const data = window.myChart.data.datasets[0].data;
                 const labels = window.myChart.data.labels;
@@ -601,10 +601,42 @@
         });
     }
 
+    function setValue(id, text) {
+        document.getElementById(id).value = text;
+    }
+
+    async function getInfo() {
+        const res = await fetch("/api", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({type: "info"}),
+            keepalive: true
+        });
+
+        const response = await res.json();
+
+        if (response.type === "success") {
+            setValue("user", response.admin.user);
+            setValue("pw", response.admin.password);
+
+            setValue("assid", response.wifi.ap.user);
+            setValue("apw", response.wifi.ap.password);
+
+            setValue("cssid", response.wifi.client.ssid);
+            setValue("cpw", response.wifi.client.password);
+
+            setValue("mhost", response.mqtt.host);
+            setValue("muser", response.mqtt.user);
+            setValue("mport", response.mqtt.port);
+        }
+
+    }
+
     // relay1 -> channel 1, relay2 -> channel 2
     document.addEventListener("DOMContentLoaded", () => {
         wireRelayToggle("relay1", 1);
         wireRelayToggle("relay2", 2);
+        getInfo();
     });
 </script>
 <script>
