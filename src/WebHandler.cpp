@@ -104,6 +104,13 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
             // Set Relais State.
             DeviceHandler::setRelais(json["channel"].as<int>(), json["state"].as<bool>());
 
+            // Auto Disable Relais if set.
+            if (json["duration"].is<int>())
+            {
+                // Switch off Relais after given Duration.
+                DeviceHandler::setRelaisDuration(json["channel"].as<int>(), json["duration"].as<int>());
+            }
+
             // Send 200 Response.
             sendOK(request);
         }

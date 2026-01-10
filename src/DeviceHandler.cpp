@@ -10,8 +10,51 @@
 // Store last Blink Timestamp.
 unsigned long previousMillis = 0;
 
+// Store last Relais Duration Timestamp.
+unsigned long ch1 = -1;
+unsigned long ch2 = -1;
+
+
 // Current LED state
 bool ledState = LOW;
+
+/**
+ * Monitors and manages the state of relays based on their configured timers.
+ *
+ * This method checks the elapsed time for two relay channels (`ch1` and `ch2`)
+ * and switches the corresponding relay off if the configured timer (in milliseconds)
+ * for that relay has expired. The relays are controlled through the `setRelais()`
+ * method, which alters their state.
+ *
+ * Preconditions:
+ * - `ch1` and `ch2` must be assigned appropriate millisecond timer values. A value of `-1`
+ *   indicates that the respective channel is inactive and will not be processed.
+ * - The relays must be properly initialized and capable of being toggled through the `setRelais()` method.
+ *
+ * Postconditions:
+ * - If the current time exceeds the timer value for a given channel, the corresponding
+ *   relay is switched off (set to `false`).
+ *
+ * Behavior:
+ * - If `ch1` is active and its timer has expired, relay channel 1 is switched off.
+ * - If `ch2` is active and its timer has expired, relay channel 2 is switched off.
+ * - Relays with inactive or unconfigured timers (`-1`) remain unaffected.
+ */
+void DeviceHandler::handleRelais()
+{
+    unsigned long currentMillis = millis();
+
+    // Check if the interval has passed
+    if (ch1 > -1 && currentMillis >= ch1)
+    {
+        setRelais(1, false);
+    }
+
+    if (ch2 > -1 && currentMillis >= ch2)
+    {
+        setRelais(2, false);
+    }
+}
 
 /**
  * Toggles the state of an LED at a fixed interval defined by BLINK_INTERVAL.
@@ -50,6 +93,7 @@ void DeviceHandler::handleBlink()
 void DeviceHandler::loop()
 {
     handleBlink();
+    handleRelais();
 }
 
 /**
@@ -80,10 +124,12 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
     if (relais == 1)
     {
         pin = RELAIS_CH1;
+        ch1 = -1;
     }
     else if (relais == 2)
     {
         pin = RELAIS_CH2;
+        ch2 = -1;
     }
 
     // Set Relais State.
@@ -122,4 +168,35 @@ void DeviceHandler::setup()
     pinMode(LED_PIN, OUTPUT);
     pinMode(RELAIS_CH1, OUTPUT);
     pinMode(RELAIS_CH2, OUTPUT);
+}
+
+/**
+ * Sets the duration for which a specific relay channel should remain active.
+ *
+ * This method schedules the deactivation of the specified relay channel by
+ * setting an expiration time relative to the current time. The relay channel
+ * will be turned off once the specified duration has elapsed.
+ *
+ * Preconditions:
+ * - The `channel` parameter must be either 1 or 2 to correspond to valid relay channels.
+ * - The `duration` parameter must specify the desired duration in milliseconds.
+ *
+ * Behavior:
+ * - If the `channel` is 1, the expiration time for channel 1 is updated.
+ * - If the `channel` is 2, the expiration time for channel 2 is updated.
+ * - No action is taken if the `channel` value is invalid.
+ *
+ * @param channel The relay channel to set the duration for. Valid values are 1 or 2.
+ * @param duration The duration in milliseconds for which the relay should remain active.
+ */
+void DeviceHandler::setRelaisDuration(int channel, int duration)
+{
+    if (channel == 1)
+    {
+        ch1 = millis() + duration;
+    }
+    else if (channel == 2)
+    {
+        ch2 = millis() + duration;
+    }
 }
