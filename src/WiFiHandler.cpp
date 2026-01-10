@@ -22,6 +22,9 @@ void WiFiHandler::setup()
     // Check if Wi-Fi Credentials are set.
     if (isWiFiClientUsable())
     {
+        // Set Device Hostname (steal from AP Settings).
+        WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
+
         // Set AP mode explicitly
         WiFi.mode(WIFI_MODE_STA);
 
@@ -70,5 +73,6 @@ bool WiFiHandler::isWiFiClientUsable()
 {
     JsonDocument config = FileHandler::getConfig();
 
-    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"]["client"]["password"].isNull());
+    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"]["client"][
+        "password"].isNull());
 }

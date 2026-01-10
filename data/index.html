@@ -642,6 +642,10 @@
         document.getElementById(id).value = text;
     }
 
+    function setText(id, text) {
+        document.getElementById(id).textContent = text;
+    }
+
     async function getInfo() {
         const res = await fetch("/api", {
             method: "POST",
@@ -649,10 +653,10 @@
             body: JSON.stringify({type: "info"}),
         });
 
-        const response = await res.json();
-        console.log(response);
+        const data = await res.json();
 
         if (response.type == "success") {
+            const response = data.config;
             window.configESP = response;
 
             setValue("user", response.admin.user);
@@ -670,6 +674,8 @@
             setValue("mport", response.mqtt.port);
             setValue("mpw", response.mqtt.password);
             setChecked("men", response.mqtt.state);
+
+            setText("firmware", data.firmware);
         }
 
     }

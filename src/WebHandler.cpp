@@ -147,7 +147,10 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else if (type == "info")
     {
-        JsonDocument doc = FileHandler::getConfig();
+        JsonDocument doc;
+
+        // Set Config.
+        doc["config"] = FileHandler::getConfig();
 
         // Add Firmware Info
         doc["firmware"] = VERSION;
