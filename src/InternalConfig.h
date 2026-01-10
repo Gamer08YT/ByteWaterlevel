@@ -17,5 +17,7 @@
  * Define Pinouts.
  */
 #define LED_PIN 2
+#define RELAIS_CH1 0
+#define RELAIS_CH2 1
 
 #endif //INTERNALCONFIG_H
