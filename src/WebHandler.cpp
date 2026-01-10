@@ -41,9 +41,6 @@ void WebHandler::setup()
         {
             // Parse API Type and Execute Listener.
             handleAPICall(request, json);
-        } else
-        {
-            sendInvalid(request);
         }
     }));
 
@@ -69,7 +66,7 @@ void WebHandler::loop()
  */
 void WebHandler::sendInvalid(AsyncWebServerRequest* request)
 {
-    sendResponse(request, 400, "application/json", "{type: 'error', message: 'Invalid request'}");
+    sendResponse(request, 400, '{"type": "error", "message": "Invalid request"}');
 }
 
 /**
@@ -82,7 +79,7 @@ void WebHandler::sendInvalid(AsyncWebServerRequest* request)
  */
 void WebHandler::sendOK(AsyncWebServerRequest* request)
 {
-    sendResponse(request, 200, "application/json", "{type: 'success', message: 'OK'}");
+    sendResponse(request, 200, '{"type": "success", "message": "OK"}');
 }
 
 /**
@@ -115,7 +112,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else
     {
-        sendResponse(request, 400, "application/json", "{type: 'error', message: 'Not implemented'}");
+        sendResponse(request, 400, '{"type": "error", "message": "Not implemented"}');
     }
 }
 
@@ -131,9 +128,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
  * @param str Placeholder parameter, currently not used within the implementation.
  * @param text The MIME type of the response content.
  */
-void WebHandler::sendResponse(AsyncWebServerRequest* request, int i, const char* str, const char* text)
+void WebHandler::sendResponse(AsyncWebServerRequest* request, int i, const char* text)
 {
-    request->send(i, text);
+    request->send(i, "application/json", text);
 }
 
 /**
@@ -149,8 +146,7 @@ bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
 {
     if (!json["type"].is<String>())
     {
-        sendResponse(request, 400, "application/json",
-                     "{type: 'error', message: 'No JSON payload provided.'}");
+        sendResponse(request, 400, '{"type": "error", "message": "No JSON payload provided."}');
 
         return false;
     }
