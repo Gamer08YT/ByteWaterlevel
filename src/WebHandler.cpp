@@ -20,12 +20,18 @@ void WebHandler::setup()
         request->send(LittleFS, "/index.html", String(), false);
     });
 
+    // Add 404 Handler.
+    server.onNotFound([](AsyncWebServerRequest* request)
+    {
+        request->send(404, "text/plain", "Page not found");
+    });
+
     // Start Webserver.
     server.begin();
 
-    #if DEBUG == true
-        Serial.println("Webserver started");
-    #endif
+#if DEBUG == true
+    Serial.println("Webserver started");
+#endif
 }
 
 void WebHandler::loop()
