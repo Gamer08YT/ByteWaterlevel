@@ -41,7 +41,10 @@ void WebHandler::setup()
         {
             // Parse API Type and Execute Listener.
             handleAPICall(request, json);
-        };
+        } else
+        {
+            sendInvalid(request);
+        }
     }));
 
     // Start Webserver.
@@ -144,12 +147,13 @@ void WebHandler::sendResponse(AsyncWebServerRequest* request, int i, const char*
  */
 bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
 {
-    if (json.isNull())
+    if (!json["type"].is<String>())
     {
         sendResponse(request, 400, "application/json",
                      "{type: 'error', message: 'No JSON payload provided.'}");
 
         return false;
     }
+
     return true;
 }
