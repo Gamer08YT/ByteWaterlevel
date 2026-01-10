@@ -265,3 +265,26 @@ uint16_t DeviceHandler::getADCValue()
 {
     return analogRead(SENSE);
 }
+
+/**
+ * Retrieves the current CPU temperature.
+ *
+ * This method fetches the current temperature of the CPU from the hardware
+ * and returns it as an unsigned 16-bit integer. The value is obtained using
+ * the `temperatureRead()` function, which interacts directly with the hardware
+ * to measure the CPU temperature.
+ *
+ * Preconditions:
+ * - The underlying hardware must be capable of providing temperature readings.
+ * - The `temperatureRead()` function must be implemented and operational.
+ *
+ * Postconditions:
+ * - The returned value represents the CPU temperature in the unit as defined
+ *   by the `temperatureRead()` implementation.
+ *
+ * @return The current CPU temperature as an unsigned 16-bit integer.
+ */
+uint16_t DeviceHandler::getCPUTemperature()
+{
+    return temperatureRead();
+}

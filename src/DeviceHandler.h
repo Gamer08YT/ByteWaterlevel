@@ -6,6 +6,7 @@
 #define DEVICEHANDLER_H
 #include <cstdint>
 
+#include "ArduinoJson/Document/JsonDocument.hpp"
 #include "ArduinoJson/Object/MemberProxy.hpp"
 #include "ArduinoJson/Variant/JsonVariant.hpp"
 
@@ -23,6 +24,7 @@ public:
     static void setRelaisDuration(int as, int as1);
     static bool getState(int i);
     static uint16_t getADCValue();
+    static uint16_t getCPUTemperature();
 };
 
 

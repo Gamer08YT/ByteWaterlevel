@@ -120,6 +120,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     {
         StaticJsonDocument<200> doc;
 
+        // Set Response Type.
+        doc["type"] = "success";
+
         // Add Channels Array to Document.
         JsonArray channels = doc["channels"].to<JsonArray>();
 
@@ -128,18 +131,15 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         channels.add(DeviceHandler::getState(2));
 
 
-        doc.set("adc", DeviceHandler::getADCValue());
-        doc.set("cpu", ESP.getCpuFreqMHz());
+        // Set ADC Voltage.
+        doc["adc"] = DeviceHandler::getADCValue();
+
+        // Set CPU Temperature.
+        doc["cpu"] = DeviceHandler::getCPUTemperature();
 
         String response;
         serializeJson(doc, response);
         sendResponse(request, 200, response.c_str());
-    else
-    {
-        // Send API Call Invalid.
-        sendInvalid(request);
-    }
-
     }
     else
     {
