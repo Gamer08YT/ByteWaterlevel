@@ -35,6 +35,10 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 * Power consumption: low
 * Sensor: TL136 (Optional with Overvoltage protection)
 
+## Setup
+
+For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
+
 ## API Docs
 
 For API Docs please have a Look into <a href="./API.md">API.md</a>.
