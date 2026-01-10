@@ -407,7 +407,7 @@
             </div>
             <div class="control-row">
                 <label>AP Password</label>
-                <input id="apassword" type="password">
+                <input id="apw" type="password">
             </div>
         </div>
 
@@ -650,8 +650,9 @@
         });
 
         const response = await res.json();
+        console.log(response);
 
-        if (response.type === "success") {
+        if (response.type == "success") {
             window.configESP = response;
 
             setValue("user", response.admin.user);
@@ -674,11 +675,11 @@
     }
 
     function val(id) {
-        document.getElementById(id).value;
+        return document.getElementById(id).value;
     }
 
     async function save(type) {
-        console.log("Save", type);
+        console.log(window.configESP);
 
         if (type === 1) {
             window.configESP.ap.ssid = val("assid");
@@ -698,13 +699,13 @@
             window.configESP.admin.password = val("pw");
         }
 
+        console.log("Save", window.configESP);
 
         await fetch("/api", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({type: "save", config: window.configESP}),
         }).then((res) => alert("Saved!")).catch((err) => alert("Error saving: " + err));
-
     }
 
 

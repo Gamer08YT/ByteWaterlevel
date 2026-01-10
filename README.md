@@ -43,6 +43,12 @@ For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
 
 For API Docs please have a Look into <a href="./API.md">API.md</a>.
 
+## Used Software
+
+- esp32async/ESPAsyncWebServer
+- esp32async/AsyncTCP
+- anchon/ArduinoJson
+
 ## Disclaimer
 **As this is a prototype, we accept no liability for damage to persons or buildings.**
 
