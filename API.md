@@ -81,7 +81,8 @@ This will return the current Status:
     0
   ],
   "adc": "1.10",
-  "cpu": "10.5"
+  "cpu": "10.5",
+  "frequency": 160
 }
 ```
 

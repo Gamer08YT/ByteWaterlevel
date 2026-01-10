@@ -485,15 +485,28 @@
                     keepalive: true
                 });
 
-                const data = await res.json();
+                const response = await res.json();
 
-                if (data.channels !== undefined) {
-                    setRelayChecked(1, data.channels[0]);
-                    setRelayChecked(2, data.channels[1]);
+                if (response.channels !== undefined) {
+                    setRelayChecked(1, response.channels[0]);
+                    setRelayChecked(2, response.channels[1]);
                 }
 
-                document.getElementById("temperature").textContent = (data.cpu + "°C");
-                document.getElementById("frequency").textContent = (data.frequency + "MHz");
+                document.getElementById("temperature").textContent = (response.cpu + "°C");
+                document.getElementById("frequency").textContent = (response.frequency + "MHz");
+
+                const data = window.myChart.data.datasets[0].data;
+                const labels = window.myChart.data.labels;
+
+                // Remove oldest
+                data.shift();
+                // // Add newest (random fluctuation based on last value)
+                // let lastVal = data[data.length - 1];
+                // let change = (Math.random() - 0.5) * 0.2;
+                // let newVal = Math.max(0, Math.min(3.3, lastVal + change));
+
+                data.push(response.adc);
+                window.myChart.update('none'); // Update without full re-render
 
             } catch (err) {
                 // optional: Fehlerbehandlung
@@ -674,21 +687,5 @@
             animation: {duration: 0} // Disable init animation for updates
         }
     });
-
-    // Simuliere Live Daten Update
-    setInterval(() => {
-        const data = window.myChart.data.datasets[0].data;
-        const labels = window.myChart.data.labels;
-
-        // Remove oldest
-        data.shift();
-        // Add newest (random fluctuation based on last value)
-        let lastVal = data[data.length - 1];
-        let change = (Math.random() - 0.5) * 0.2;
-        let newVal = Math.max(0, Math.min(3.3, lastVal + change));
-
-        data.push(newVal);
-        window.myChart.update('none'); // Update without full re-render
-    }, 1000);
 
 </script>
