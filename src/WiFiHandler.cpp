@@ -15,15 +15,14 @@ IPAddress subnet(255, 255, 255, 0);
 
 void WiFiHandler::setup()
 {
+    // Set AP mode explicitly
+    WiFi.mode(WIFI_AP);
+
     // Define Subnet before beginning Soft AP.
     WiFi.softAPConfig(apIP, gateway, subnet);
 
     // Begin Soft AP.
     WiFi.softAP(NAME, PASSWORD);
-
-    // Enable Soft AP.
-    WiFi.enableAP(true);
-
 #if DEBUG == true
     // Print Debug Message.
     Serial.println("WiFi started");
