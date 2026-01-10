@@ -3,6 +3,7 @@
 //
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "WebHandler.h"
 #include <InternalConfig.h>
 #include <LittleFS.h>
@@ -114,6 +115,21 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
             // Send 200 Response.
             sendOK(request);
         }
+    }
+    else if (type == "status")
+    {
+        StaticJsonDocument<200> doc;
+        JsonArray channels = doc.createNestedArray("channels");
+        for (int i = 0; i < 4; i++)
+        {
+            channels.add(DeviceHandler::getRelaisState(i));
+        }
+        doc.set("adc", DeviceHandler::getADCValue());
+        doc.set("cpu", ESP.getCpuFreqMHz());
+
+        String response;
+        serializeJson(doc, response);
+        sendResponse(request, 200, response.c_str());
         else
         {
             // Send API Call Invalid.

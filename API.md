@@ -58,3 +58,48 @@ In this Example the Relais on Channel 1 is turned on for 1 Minute.
   "state": true
 }
 ```
+
+### Status
+
+You can retrieve the Device Status by using the Status Type.
+
+#### Sensors
+
+```json
+{
+  "type": "status"
+}
+```
+
+This will return the current Status:
+
+```json
+{
+  "type": "success",
+  "channels": [
+    1,
+    0
+  ],
+  "adc": "1.10",
+  "cpu": "10.5"
+}
+```
+
+### Info
+
+You can retrieve the Device Info by using the Info Type.
+
+```json
+{
+  "type": "info"
+}
+```
+
+This will return the current Status:
+
+```json
+{
+  "type": "success",
+  "firmware": "1.0.1"
+}
+```
