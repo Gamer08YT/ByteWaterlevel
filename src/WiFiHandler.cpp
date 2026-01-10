@@ -8,8 +8,16 @@
 
 #include "InternalConfig.h"
 
+// I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
+IPAddress apIP(10, 0, 0, 1);
+IPAddress gateway(10, 0, 0, 1);
+IPAddress subnet(255, 255, 255, 0);
+
 void WiFiHandler::setup()
 {
+    // Define Subnet before beginning Soft AP.
+    WiFi.softAPConfig(apIP, gateway, subnet);
+
     // Begin Soft AP.
     WiFi.softAP(NAME, PASSWORD);
 
