@@ -86,6 +86,15 @@ This will return the current Status:
 }
 ```
 
+### Restart Device
+
+You can restart the Device via the Restart Type.
+```json
+{
+  "type": "restart"
+}
+```
+
 ### Info
 
 You can retrieve the Device Info by using the Info Type.

@@ -144,7 +144,8 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         String response;
         serializeJson(doc, response);
         sendResponse(request, 200, response.c_str());
-    } else if (type == "info")
+    }
+    else if (type == "info")
     {
         JsonDocument doc;
 
@@ -160,6 +161,12 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         String response;
         serializeJson(doc, response);
         sendResponse(request, 200, response.c_str());
+    }
+    else if (type == "save")
+    {
+    } else if (type == "restart")
+    {
+        ESP.restart();
     }
     else
     {
