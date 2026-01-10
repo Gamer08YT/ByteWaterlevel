@@ -402,6 +402,10 @@
                 <label>User</label>
                 <input id="muser" type="text">
             </div>
+            <div class="control-row">
+                <label>Password</label>
+                <input id="mpw" type="password">
+            </div>
         </div>
 
         <button id="save1" class="btn-save">Save</button>
@@ -630,6 +634,7 @@
             setValue("mhost", response.mqtt.host);
             setValue("muser", response.mqtt.user);
             setValue("mport", response.mqtt.port);
+            setValue("mpw", response.mqtt.password);
         }
 
     }
