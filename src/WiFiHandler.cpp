@@ -12,6 +12,9 @@ IPAddress apIP(10, 10, 10, 1);
 IPAddress gateway(10, 10, 10, 1);
 IPAddress subnet(255, 255, 255, 0);
 
+// Store WiFi Client.
+WiFiClient client;
+
 void WiFiHandler::setup()
 {
     // Enable Auto Reconnect.
@@ -57,6 +60,18 @@ void WiFiHandler::loop()
     checkConnection();
 }
 
+/**
+ * Retrieves the Wi-Fi client instance used for network communication.
+ * This method provides access to the underlying Wi-Fi client object
+ * for sending and receiving network data.
+ *
+ * @return the Wi-Fi client instance.
+ */
+WiFiClient* WiFiHandler::getClient()
+{
+    return &client;
+}
+
 void WiFiHandler::checkConnection()
 {
 }
@@ -73,6 +88,7 @@ bool WiFiHandler::isWiFiClientUsable()
 {
     JsonDocument config = FileHandler::getConfig();
 
-    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].as<String>().isEmpty() && !config["wifi"]["client"][
-        "password"].isNull());
+    return (!config["wifi"].isNull() && !config["wifi"]["client"]["ssid"].isNull() && !config["wifi"].isNull() && !
+        config["wifi"]["client"]["ssid"].as<String>().isEmpty() && !config["wifi"]["client"][
+            "password"].isNull());
 }

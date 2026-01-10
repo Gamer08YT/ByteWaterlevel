@@ -4,6 +4,7 @@
 
 #ifndef WIFIHANDLER_H
 #define WIFIHANDLER_H
+#include <WiFiClient.h>
 
 
 class WiFiHandler
@@ -15,6 +16,7 @@ public:
     static bool isWiFiClientUsable();
     static void setup();
     static void loop();
+    static WiFiClient* getClient();
 };
 
 

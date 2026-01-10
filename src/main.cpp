@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "DeviceHandler.h"
 #include "FileHandler.h"
+#include "MQTTHandler.h"
 #include "WebHandler.h"
 #include "WiFiHandler.h"
 
@@ -36,6 +37,9 @@ void setup()
 
     // Setup Web.
     WebHandler::setup();
+
+    // Setup MQTT.
+    MQTTHandler::setup();
 }
 
 void loop()
@@ -48,4 +52,7 @@ void loop()
 
     // Handle Web.
     WebHandler::loop();
+
+    // Loop Client.
+    MQTTHandler::loop();
 }
