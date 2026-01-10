@@ -26,7 +26,7 @@ void setup()
     DeviceHandler::setup();
 
     // Setup File System.
-    //FileHandler::begin();
+    FileHandler::begin();
 
     // Load Config File.
     //FileHandler::loadConfig();
