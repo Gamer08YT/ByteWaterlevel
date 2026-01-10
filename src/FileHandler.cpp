@@ -103,3 +103,19 @@ bool FileHandler::loadConfig()
 
     return true;
 }
+
+/**
+ * @brief Saves a string to a file in the LittleFS file system.
+ *
+ * This method opens or creates a file with the specified name and writes
+ * the provided string into it. After writing, the file is closed.
+ *
+ * @param str The name or path of the file to which the string will be saved.
+ * @param string The string content to be written into the file.
+ */
+void FileHandler::saveFile(const char* str, const String& string)
+{
+    File file = LittleFS.open(str, "w");
+    file.println(string);
+    file.close();
+}

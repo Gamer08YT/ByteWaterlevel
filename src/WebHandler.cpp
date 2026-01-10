@@ -164,8 +164,20 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else if (type == "save")
     {
-    } else if (type == "restart")
+        if (json["config"].is<JsonObject>())
+        {
+            String response;
+            serializeJson(json["config"], response);
+
+            // Save File to Flash.
+            FileHandler::saveFile("/config.json", response);
+        }
+        else
+            sendInvalid(request);
+    }
+    else if (type == "restart")
     {
+        // Restart ESP.
         ESP.restart();
     }
     else
