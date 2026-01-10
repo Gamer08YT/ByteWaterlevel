@@ -250,18 +250,18 @@
     <!-- Navigation Tabs -->
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('status')">Status</button>
-        <button class="tab-btn" onclick="openTab('config')">Konfiguration</button>
+        <button class="tab-btn" onclick="openTab('config')">Configuration</button>
         <button class="tab-btn" onclick="openTab('system')">System</button>
     </div>
 
     <!-- TAB 1: STATUS -->
     <div id="status" class="tab-content active">
-        <div class="group-title">TL136 Sensor Daten</div>
+        <div class="group-title">TL136 Sensor</div>
         <div class="chart-container">
             <canvas id="adcChart"></canvas>
         </div>
 
-        <div class="group-title">Steuerung</div>
+        <div class="group-title">Control</div>
         <div class="control-group">
             <div class="control-row">
                 <label for="relay1">Channel 1</label>
@@ -282,14 +282,14 @@
 
     <!-- TAB 2: KONFIGURATION -->
     <div id="config" class="tab-content">
-        <div class="group-title">WiFi Einstellungen</div>
+        <div class="group-title">WiFi Settings</div>
         <div class="control-group">
             <div class="control-row">
                 <label>SSID</label>
                 <input type="text" placeholder="MeinWLAN">
             </div>
             <div class="control-row">
-                <label>Passwort</label>
+                <label>Password</label>
                 <input type="password" placeholder="••••••••">
             </div>
         </div>
@@ -301,7 +301,7 @@
                 <input type="text" value="ByteWaterlevel-AP">
             </div>
             <div class="control-row">
-                <label>AP Passwort</label>
+                <label>AP Password</label>
                 <input type="password" value="12345678">
             </div>
         </div>
@@ -322,12 +322,12 @@
             </div>
         </div>
 
-        <button class="btn-save">Netzwerk Speichern</button>
+        <button class="btn-save">Speichern</button>
     </div>
 
     <!-- TAB 3: SYSTEM -->
     <div id="system" class="tab-content">
-        <div class="group-title">Geräteeinstellungen</div>
+        <div class="group-title">Device Settings</div>
         <div class="control-group">
             <div class="control-row">
                 <label>System LED</label>
@@ -342,15 +342,15 @@
             </div>
         </div>
 
-        <div class="group-title">WebGUI Sicherheit</div>
+        <div class="group-title">WebGUI Security</div>
         <div class="control-group">
             <div class="control-row">
-                <label>Admin Benutzer</label>
+                <label>Admin User</label>
                 <input type="text" value="admin">
             </div>
             <div class="control-row">
-                <label>Neues Passwort</label>
-                <input type="password" placeholder="Leer lassen = keine Änd.">
+                <label>New Password</label>
+                <input type="password" placeholder="Leave empty = no change.">
             </div>
         </div>
 
@@ -361,16 +361,66 @@
                 <span>v1.0.3</span>
             </div>
             <div class="control-row">
-                <label>Laufzeit</label>
+                <label>Runtime</label>
                 <span>14h 23m</span>
             </div>
         </div>
 
-        <button class="btn-save">System Speichern</button>
+        <button class="btn-save">Save</button>
     </div>
 
 </div>
 
+<script>
+  async function postRelayState(channel, state) {
+    const payload = {
+      type: "relais",
+      channel: channel,
+      state: !!state
+    };
+
+    const res = await fetch("/api", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`API Fehler: HTTP ${res.status} ${text}`);
+    }
+
+    // Optional: falls /api JSON zurückgibt
+    // return res.json();
+    return true;
+  }
+
+  function wireRelayToggle(id, channel) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener("change", async (e) => {
+      const state = e.target.checked;
+
+      try {
+        await postRelayState(channel, state);
+      } catch (err) {
+        console.error(err);
+
+        // Optional: UI zurücksetzen, wenn der Call fehlschlägt
+        e.target.checked = !state;
+      }
+    });
+  }
+
+  // relay1 -> channel 1, relay2 -> channel 2
+  document.addEventListener("DOMContentLoaded", () => {
+    wireRelayToggle("relay1", 1);
+    wireRelayToggle("relay2", 2);
+  });
+</script>
 <script>
     // --- Tab Logic ---
     function openTab(tabName) {
