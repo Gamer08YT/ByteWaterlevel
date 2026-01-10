@@ -5,6 +5,7 @@
 #include <PubSubClient.h>
 #include "MQTTHandler.h"
 
+#include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "InternalConfig.h"
 
@@ -75,6 +76,14 @@ void MQTTHandler::loop()
         // Check if the interval has passed
         if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
         {
+            // Voltage (Float)
+            publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+
+            // Channel 1 (Bool)
+            publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
+
+            // Channel 2 (Bool)
+            publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
         }
     }
 }

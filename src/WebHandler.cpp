@@ -174,6 +174,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
             // Save Config.
             FileHandler::saveConfig(json["config"]);
+
+            // Send 200 as Response.
+            sendOK(request);
         }
         else
             sendInvalid(request);
