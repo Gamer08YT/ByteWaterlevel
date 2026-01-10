@@ -26,7 +26,7 @@ void WiFiHandler::setup()
         WiFi.mode(WIFI_MODE_STA);
 
         // Begin Wi-Fi Connection.
-        WiFi.begin(config["wifi"]["ssid"].as<String>(), config["wifi"]["password"].as<String>());
+        WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(), config["wifi"]["client"]["password"].as<String>());
     }
     else
     {
