@@ -273,7 +273,7 @@ uint16_t DeviceHandler::getADCValue()
  *
  * Preconditions:
  * - The specified analog pin must be properly configured and capable of returning ADC values.
- * - The number of samples must be positive. Default value is 10 samples.
+ * - The number of samples must be positive. The default value is 10 samples.
  * - The ADC resolution is assumed to be 12-bit with a full-scale value of 4095, and the reference voltage is 3.3V.
  *
  * Behavior:
