@@ -108,6 +108,7 @@ This will return the current Status:
     },
     "ap": {
       "state": false,
+      "ssid": "BYTELEVEL",
       "password": "BYTESTORE"
     }
   },

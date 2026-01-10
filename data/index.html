@@ -368,7 +368,7 @@
         <div class="control-group">
             <div class="control-row">
                 <label>SSID</label>
-                <input id="cssid" type="text" placeholder="MeinWLAN">
+                <input id="cssid" type="text">
             </div>
             <div class="control-row">
                 <label>Password</label>
@@ -404,7 +404,7 @@
             </div>
         </div>
 
-        <button class="btn-save">Speichern</button>
+        <button id="save1" class="btn-save">Save</button>
     </div>
 
     <!-- TAB 3: SYSTEM -->
@@ -463,7 +463,7 @@
             </div>
         </div>
 
-        <button class="btn-save">Save</button>
+        <button id="save2" class="btn-save">Save</button>
     </div>
 
 </div>
@@ -616,10 +616,12 @@
         const response = await res.json();
 
         if (response.type === "success") {
+            window.configESP = response;
+
             setValue("user", response.admin.user);
             setValue("pw", response.admin.password);
 
-            setValue("assid", response.wifi.ap.user);
+            setValue("assid", response.wifi.ap.ssid);
             setValue("apw", response.wifi.ap.password);
 
             setValue("cssid", response.wifi.client.ssid);
