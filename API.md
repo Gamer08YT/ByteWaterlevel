@@ -101,6 +101,32 @@ This will return the current Status:
 ```json
 {
   "type": "success",
+  "name": "BYTELEVEL",
+  "wifi": {
+    "client": {
+      "ssid": "",
+      "password": ""
+    },
+    "ap": {
+      "state": false,
+      "password": "BYTESTORE"
+    }
+  },
+  "mqtt": {
+    "state": false,
+    "host": "",
+    "port": 1883,
+    "user": "",
+    "password": ""
+  },
+  "admin": {
+    "state": false,
+    "user": "",
+    "password": ""
+  },
+  "hardware": {
+    "led": true
+  },
   "firmware": "1.0.1"
 }
 ```

@@ -427,12 +427,19 @@
         <div class="group-title">WebGUI Security</div>
         <div class="control-group">
             <div class="control-row">
+                <label>Enable Auth</label>
+                <label class="switch">
+                    <input id="auth" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-row">
                 <label>Admin User</label>
-                <input type="text" value="admin">
+                <input id="user" type="text">
             </div>
             <div class="control-row">
                 <label>New Password</label>
-                <input type="password" placeholder="Leave empty = no change.">
+                <input id="password" type="password" placeholder="Leave empty = no change.">
             </div>
         </div>
 
@@ -440,19 +447,19 @@
         <div class="control-group">
             <div class="control-row">
                 <label>Firmware</label>
-                <span id="firmware">v1.0.3</span>
+                <span id="firmware"></span>
             </div>
             <div class="control-row">
                 <label>Runtime</label>
-                <span id="runtime">14h 23m</span>
+                <span id="runtime"></span>
             </div>
             <div class="control-row">
                 <label>CPU Temp.</label>
-                <span id="temperature">10°C</span>
+                <span id="temperature"></span>
             </div>
             <div class="control-row">
                 <label>CPU Freq.</label>
-                <span id="frequency">0 MHz</span>
+                <span id="frequency"></span>
             </div>
         </div>
 
@@ -474,9 +481,12 @@
 
     function formatUptime(s) {
 
-        const days = Math.floor(s / 86400); s %= 86400;
-        const hours = Math.floor(s / 3600); s %= 3600;
-        const mins = Math.floor(s / 60);    s %= 60;
+        const days = Math.floor(s / 86400);
+        s %= 86400;
+        const hours = Math.floor(s / 3600);
+        s %= 3600;
+        const mins = Math.floor(s / 60);
+        s %= 60;
         const secs = s;
 
         // Dynamisch: zeige immer die "größte" Einheit und alle kleineren bis Sekunden,
@@ -497,7 +507,6 @@
             .map(([label, v]) => `${v}${label}`)
             .join(" ");
     }
-
 
 
     function startStatusPing() {

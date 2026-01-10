@@ -8,6 +8,7 @@
 /**
  * Define Default Values.
  */
+#define VERSION "1.0.0"
 #define NAME "BYTELEVEL"
 #define PASSWORD "BYTESTORE"
 #define DEBUG true

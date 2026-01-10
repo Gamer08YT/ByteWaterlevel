@@ -10,6 +10,7 @@
 
 #include "DeviceHandler.h"
 #include "ESPAsyncWebServer.h"
+#include "FileHandler.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -139,6 +140,22 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Set Runtime.
         doc["runtime"] = millis() / 1000;
+
+        String response;
+        serializeJson(doc, response);
+        sendResponse(request, 200, response.c_str());
+    } else if (type == "info")
+    {
+        JsonDocument doc;
+
+        // Deserialize Json Config.
+        deserializeJson(doc, FileHandler::readFile("/config.json"));
+
+        // Add Firmware Info
+        doc["firmware"] = VERSION;
+
+        // Set Response Type.
+        doc["type"] = "success";
 
         String response;
         serializeJson(doc, response);

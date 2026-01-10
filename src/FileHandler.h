@@ -11,7 +11,7 @@ class FileHandler
 {
 public:
     static void begin();
-    String readFile(const char* path);
+    static String readFile(const char* path);
     static bool loadConfig();
 };
 
