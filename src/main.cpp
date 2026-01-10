@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "WebHandler.h"
 #include "WiFiHandler.h"
@@ -41,4 +42,7 @@ void loop()
 
     // Handle Web.
     WebHandler::loop();
+
+    // Handle Device Loop.
+    DeviceHandler::loop();
 }

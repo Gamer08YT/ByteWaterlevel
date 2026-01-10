@@ -5,8 +5,17 @@
 #ifndef INTERNALCONFIG_H
 #define INTERNALCONFIG_H
 
+/**
+ * Define Default Values.
+ */
 #define NAME "BYTELEVEL"
 #define PASSWORD "BYTESTORE"
 #define DEBUG true
+#define BLINK_INTERVAL 250
+
+/**
+ * Define Pinouts.
+ */
+#define LED_PIN 2
 
 #endif //INTERNALCONFIG_H
