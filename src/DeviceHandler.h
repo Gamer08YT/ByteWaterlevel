@@ -1,14 +1,10 @@
 //
 // Created by JanHe on 10.01.2026.
 //
+#include <Arduino.h>
 
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
-#include <cstdint>
-
-#include "ArduinoJson/Document/JsonDocument.hpp"
-#include "ArduinoJson/Object/MemberProxy.hpp"
-#include "ArduinoJson/Variant/JsonVariant.hpp"
 
 
 class DeviceHandler

@@ -450,6 +450,10 @@
                 <label>CPU Temp.</label>
                 <span id="temperature">10°C</span>
             </div>
+            <div class="control-row">
+                <label>CPU Freq.</label>
+                <span id="frequency">0 MHz</span>
+            </div>
         </div>
 
         <button class="btn-save">Save</button>
@@ -489,6 +493,7 @@
                 }
 
                 document.getElementById("temperature").textContent = (data.cpu + "°C");
+                document.getElementById("frequency").textContent = (data.frequency + "MHz");
 
             } catch (err) {
                 // optional: Fehlerbehandlung

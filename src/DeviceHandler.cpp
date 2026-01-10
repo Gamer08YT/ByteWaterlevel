@@ -288,3 +288,5 @@ uint16_t DeviceHandler::getCPUTemperature()
 {
     return temperatureRead();
 }
+
+

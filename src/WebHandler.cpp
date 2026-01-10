@@ -118,14 +118,14 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else if (type == "status")
     {
-        StaticJsonDocument<200> doc;
+        JsonDocument doc;
 
         // Set Response Type.
         doc["type"] = "success";
 
         // Add Channel States to Array.
-        doc["channels"][0]= DeviceHandler::getState(1);
-        doc["channels"][1]= DeviceHandler::getState(2);
+        doc["channels"][0] = DeviceHandler::getState(1);
+        doc["channels"][1] = DeviceHandler::getState(2);
 
 
         // Set ADC Voltage.
@@ -133,6 +133,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Set CPU Temperature.
         doc["cpu"] = DeviceHandler::getCPUTemperature();
+
+        // Set CPU Frequency.
+        doc["frequency"] = ESP.getCpuFreqMHz();
 
         String response;
         serializeJson(doc, response);
