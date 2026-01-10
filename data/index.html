@@ -31,7 +31,10 @@
             --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        * { box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
         body {
             overflow: hidden;
@@ -54,12 +57,33 @@
             z-index: -1;
             animation: float 10s infinite ease-in-out;
         }
-        .orb-1 { width: 300px; height: 300px; background: #ff0080; top: -50px; left: -50px; opacity: 0.4; }
-        .orb-2 { width: 400px; height: 400px; background: #7928ca; bottom: -100px; right: -100px; opacity: 0.4; animation-delay: -5s; }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #ff0080;
+            top: -50px;
+            left: -50px;
+            opacity: 0.4;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #7928ca;
+            bottom: -100px;
+            right: -100px;
+            opacity: 0.4;
+            animation-delay: -5s;
+        }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(30px, 50px); }
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(30px, 50px);
+            }
         }
 
         /* Glass Container */
@@ -86,7 +110,13 @@
             align-items: center;
             margin-bottom: 20px;
         }
-        h1 { margin: 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; }
+
+        h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
 
         /* Darkmode Toggle */
         .theme-toggle {
@@ -100,7 +130,13 @@
             align-items: center;
             justify-content: center;
         }
-        .theme-icon { width: 24px; height: 24px; fill: var(--text-color); transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
 
         /* Tabs */
         .tabs {
@@ -110,6 +146,7 @@
             border-radius: 12px;
             margin-bottom: 30px;
         }
+
         .tab-btn {
             flex: 1;
             padding: 10px;
@@ -121,17 +158,33 @@
             border-radius: 8px;
             transition: all 0.2s;
         }
+
         .tab-btn.active {
             background: var(--glass-bg);
             color: var(--text-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Content Sections */
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* Forms & Groups */
         .group-title {
@@ -142,12 +195,14 @@
             margin-top: 20px;
             font-weight: 600;
         }
+
         .control-group {
             background: var(--input-bg);
             border-radius: 16px;
             padding: 15px 20px;
             margin-bottom: 20px;
         }
+
         .control-row {
             display: flex;
             justify-content: space-between;
@@ -155,9 +210,14 @@
             padding: 12px 0;
             border-bottom: 1px solid var(--glass-border);
         }
-        .control-row:last-child { border-bottom: none; }
 
-        label { font-weight: 500; }
+        .control-row:last-child {
+            border-bottom: none;
+        }
+
+        label {
+            font-weight: 500;
+        }
 
         input[type="text"], input[type="password"], input[type="number"] {
             background: transparent;
@@ -168,7 +228,10 @@
             outline: none;
             width: 60%;
         }
-        input:focus { border-bottom: 1px solid var(--primary); }
+
+        input:focus {
+            border-bottom: 1px solid var(--primary);
+        }
 
         /* Apple Style Toggle Switch */
         .switch {
@@ -177,15 +240,25 @@
             width: 50px;
             height: 30px;
         }
-        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: rgba(120, 120, 128, 0.3); /* iOS gray */
             transition: .4s;
             border-radius: 34px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
@@ -196,10 +269,16 @@
             background-color: white;
             transition: .4s;
             border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(20px); }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
 
         /* Buttons */
         .btn-save {
@@ -214,7 +293,10 @@
             cursor: pointer;
             margin-top: 20px;
         }
-        .btn-save:hover { opacity: 0.9; }
+
+        .btn-save:hover {
+            opacity: 0.9;
+        }
 
         /* Chart Container */
         .chart-container {
@@ -273,7 +355,7 @@
             <div class="control-row">
                 <label for="relay2">Channel 2</label>
                 <label class="switch">
-                    <input type="checkbox" id="relay2" checked>
+                    <input type="checkbox" id="relay2">
                     <span class="slider"></span>
                 </label>
             </div>
@@ -376,54 +458,98 @@
 </div>
 
 <script>
-  async function postRelayState(channel, state) {
-    const payload = {
-      type: "relais",
-      channel: channel,
-      state: !!state
-    };
 
-    const res = await fetch("/api", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
+    let inFlight = false;
 
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`API Fehler: HTTP ${res.status} ${text}`);
+    function setRelayChecked(relayIndex, isOn) {
+        const el = document.getElementById(`relay${relayIndex}`);
+        if (!el) return;
+        el.checked = Boolean(isOn);
     }
 
-    // Optional: falls /api JSON zurückgibt
-    // return res.json();
-    return true;
-  }
 
-  function wireRelayToggle(id, channel) {
-    const el = document.getElementById(id);
-    if (!el) return;
+    function startStatusPing() {
+        setInterval(async () => {
+            if (inFlight) return;
+            inFlight = true;
 
-    el.addEventListener("change", async (e) => {
-      const state = e.target.checked;
+            try {
+                const res = await fetch("/api", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({type: "status"}),
+                    keepalive: true
+                });
 
-      try {
-        await postRelayState(channel, state);
-      } catch (err) {
-        console.error(err);
+                const data = await res.json();
 
-        // Optional: UI zurücksetzen, wenn der Call fehlschlägt
-        e.target.checked = !state;
-      }
+                if (data.channels !== undefined) {
+                    setRelayChecked(1, data.channels[0]);
+                    setRelayChecked(2, data.channels[1]);
+                }
+
+                document.getElementById("temperature").textContent = (data.cpu + "°C");
+
+            } catch (err) {
+                // optional: Fehlerbehandlung
+                // console.error("Status-Ping fehlgeschlagen:", err);
+            } finally {
+                inFlight = false;
+            }
+        }, 1000);
+    }
+
+    startStatusPing();
+
+    async function postRelayState(channel, state) {
+        const payload = {
+            type: "relais",
+            channel: channel,
+            state: !!state
+        };
+
+        const res = await fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            throw new Error(`API Fehler: HTTP ${res.status} ${text}`);
+        }
+
+
+        // Optional: falls /api JSON zurückgibt
+        // return res.json();
+        return true;
+    }
+
+    function wireRelayToggle(id, channel) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("change", async (e) => {
+            const state = e.target.checked;
+
+            try {
+                await postRelayState(channel, state);
+            } catch (err) {
+                console.error(err);
+
+                // Optional: UI zurücksetzen, wenn der Call fehlschlägt
+                e.target.checked = !state;
+            }
+        });
+    }
+
+    // relay1 -> channel 1, relay2 -> channel 2
+    document.addEventListener("DOMContentLoaded", () => {
+        wireRelayToggle("relay1", 1);
+        wireRelayToggle("relay2", 2);
     });
-  }
-
-  // relay1 -> channel 1, relay2 -> channel 2
-  document.addEventListener("DOMContentLoaded", () => {
-    wireRelayToggle("relay1", 1);
-    wireRelayToggle("relay2", 2);
-  });
 </script>
 <script>
     // --- Tab Logic ---
@@ -437,9 +563,9 @@
 
         // Highlight Button (simple logic based on order or text could be used, here just finding the button)
         const buttons = document.querySelectorAll('.tab-btn');
-        if(tabName === 'status') buttons[0].classList.add('active');
-        if(tabName === 'config') buttons[1].classList.add('active');
-        if(tabName === 'system') buttons[2].classList.add('active');
+        if (tabName === 'status') buttons[0].classList.add('active');
+        if (tabName === 'config') buttons[1].classList.add('active');
+        if (tabName === 'system') buttons[2].classList.add('active');
     }
 
     // --- Theme Switcher Logic ---
@@ -465,7 +591,7 @@
             html.setAttribute('data-theme', 'dark');
             iconSun.style.display = 'block';
             iconMoon.style.display = 'none';
-            if(window.myChart) {
+            if (window.myChart) {
                 window.myChart.options.scales.x.grid.color = 'rgba(255,255,255,0.1)';
                 window.myChart.options.scales.y.grid.color = 'rgba(255,255,255,0.1)';
                 window.myChart.update();
@@ -474,7 +600,7 @@
             html.setAttribute('data-theme', 'light');
             iconSun.style.display = 'none';
             iconMoon.style.display = 'block';
-            if(window.myChart) {
+            if (window.myChart) {
                 window.myChart.options.scales.x.grid.color = 'rgba(0,0,0,0.05)';
                 window.myChart.options.scales.y.grid.color = 'rgba(0,0,0,0.05)';
                 window.myChart.update();
@@ -514,7 +640,7 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
+                legend: {display: false},
                 tooltip: {
                     mode: 'index',
                     intersect: false,
@@ -526,19 +652,21 @@
             scales: {
                 x: {
                     display: false, // Hide x labels for clean look
-                    grid: { color: 'rgba(0,0,0,0.05)' }
+                    grid: {color: 'rgba(0,0,0,0.05)'}
                 },
                 y: {
                     min: 0,
                     max: 3.3,
-                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    grid: {color: 'rgba(0,0,0,0.05)'},
                     ticks: {
-                        callback: function(value) { return value + ' V'; },
+                        callback: function (value) {
+                            return value + ' V';
+                        },
                         color: '#86868b'
                     }
                 }
             },
-            animation: { duration: 0 } // Disable init animation for updates
+            animation: {duration: 0} // Disable init animation for updates
         }
     });
 
@@ -559,5 +687,3 @@
     }, 1000);
 
 </script>
-</body>
-</html>

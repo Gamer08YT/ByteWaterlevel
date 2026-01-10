@@ -123,12 +123,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Set Response Type.
         doc["type"] = "success";
 
-        // Add Channels Array to Document.
-        JsonArray channels = doc["channels"].to<JsonArray>();
-
         // Add Channel States to Array.
-        channels.add(DeviceHandler::getState(1));
-        channels.add(DeviceHandler::getState(2));
+        doc["channels"][0]= DeviceHandler::getState(1);
+        doc["channels"][1]= DeviceHandler::getState(2);
 
 
         // Set ADC Voltage.
