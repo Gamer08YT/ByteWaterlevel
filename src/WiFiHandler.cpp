@@ -16,7 +16,13 @@ IPAddress subnet(255, 255, 255, 0);
 void WiFiHandler::setup()
 {
     // Set AP mode explicitly
-    WiFi.mode(WIFI_AP);
+    WiFi.mode(WIFI_AP_STA);
+
+    // Enable Auto Reconnect.
+    WiFi.setAutoConnect(true);
+
+
+    WiFi.begin()
 
     // Define Subnet before beginning Soft AP.
     WiFi.softAPConfig(apIP, gateway, subnet);

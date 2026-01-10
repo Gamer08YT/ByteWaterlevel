@@ -10,6 +10,7 @@
 #include <ArduinoJson.h>
 #include <LittleFS.h>
 
+
 /**
  * @brief Initializes the file system using LittleFS.
  *
@@ -21,14 +22,14 @@ void FileHandler::begin()
 {
     if (!LittleFS.begin(true))
     {
-        #if DEBUG == true
-                Serial.println("LittleFS failed to mount");
-        #endif
+#if DEBUG == true
+        Serial.println("LittleFS failed to mount");
+#endif
         return;
     }
 
 #if DEBUG == true
-        Serial.println("LittleFS mounted");
+    Serial.println("LittleFS mounted");
 #endif
 }
 
@@ -66,42 +67,12 @@ String FileHandler::readFile(const char* path)
  * that the application retrieves and utilizes the necessary settings
  * for its operation based on the configuration data.
  */
-bool FileHandler::loadConfig()
+JsonDocument FileHandler::loadConfig()
 {
-    // File file = LittleFS.open("/config.json", "r");
-    // if (!file) {
-    //     Serial.println("❌ Failed to open config file");
-    //     return false;
-    // }
-    //
-    // StaticJsonDocument<512> doc;
-    // DeserializationError err = deserializeJson(doc, file);
-    // file.close();
-    //
-    // if (err) {
-    //     Serial.print("❌ JSON parse error: ");
-    //     Serial.println(err.c_str());
-    //     return false;
-    // }
-    //
-    // // Root
-    // config.name = doc["name"].as<String>();
-    //
-    // // WiFi client
-    // config.wifi.client.ssid =
-    //     doc["wifi"]["client"]["ssid"].as<String>();
-    // config.wifi.client.password =
-    //     doc["wifi"]["client"]["password"].as<String>();
-    //
-    // // WiFi AP
-    // config.wifi.ap.password =
-    //     doc["wifi"]["ap"]["password"].as<String>();
-    //
-    // // Hardware
-    // config.hardware.led =
-    //     doc["hardware"]["led"] | false; // default false
+    // Deserialize Json Config.
+    deserializeJson(config, readFile("/config.json"));
 
-    return true;
+    return config;
 }
 
 /**
@@ -118,4 +89,30 @@ void FileHandler::saveFile(const char* str, const String& string)
     File file = LittleFS.open(str, "w");
     file.println(string);
     file.close();
+}
+
+/**
+ * @brief Retrieves the current configuration stored in the file handler.
+ *
+ * This method returns the configuration data maintained by the FileHandler
+ * object, typically loaded or managed during runtime.
+ *
+ * @return The current configuration as a JsonDocument.
+ */
+JsonDocument FileHandler::getConfig()
+{
+    return config;
+}
+
+/**
+ * @brief Saves the provided configuration into the internal configuration object.
+ *
+ * This method updates the internal configuration object with the values
+ * provided in the input JsonObject.
+ *
+ * @param object The JsonObject containing the configuration to save.
+ */
+void FileHandler::saveConfig(ArduinoJson::JsonObject object)
+{
+    config.set(object);
 }

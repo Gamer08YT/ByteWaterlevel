@@ -147,10 +147,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else if (type == "info")
     {
-        JsonDocument doc;
-
-        // Deserialize Json Config.
-        deserializeJson(doc, FileHandler::readFile("/config.json"));
+        JsonDocument doc = FileHandler::getConfig();
 
         // Add Firmware Info
         doc["firmware"] = VERSION;
@@ -171,6 +168,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
             // Save File to Flash.
             FileHandler::saveFile("/config.json", response);
+
+            // Save Config.
+            FileHandler::saveConfig(json["config"]);
         }
         else
             sendInvalid(request);
