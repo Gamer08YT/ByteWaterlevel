@@ -12,10 +12,27 @@ The Board comes with two Relais (max 10A at 24 VDC) wich can be controlled via t
 
 The Relais on the Board can be toggled via the Relai Type, the Channel is the Relai (eq. Relais 1 or Relais 2).
 
+In this Example the Relais on Channel 1 is turned on.
+
 ```json
 {
   "type": "relais",
   "channel": 1,
+  "state": true
+}
+```
+
+#### Switch Relais on for X Seconds.
+
+The Relais on the Board can be turned on for a specified Time and then automatically turned off.
+
+In this Example the Relais on Channel 1 is turned on for 1 Minute.
+
+```json
+{
+  "type": "relais",
+  "channel": 1,
+  "duration": 60,
   "state": true
 }
 ```
