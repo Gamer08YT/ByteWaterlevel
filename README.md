@@ -21,6 +21,10 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 - USB
   - Flashing
   - JTAG
+- Webserver
+  - Status
+  - Configuration
+  - Info
 
 ## Specifications:
 
