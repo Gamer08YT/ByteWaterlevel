@@ -262,8 +262,37 @@ bool DeviceHandler::getState(int i)
  */
 uint16_t DeviceHandler::getADCValue()
 {
-    return analogRead(SENSE);
+    return readVoltage(SENSE, 10);
 }
+
+/**
+ * Reads and calculates the voltage at a specified analog pin by averaging multiple samples.
+ *
+ * This method performs multiple analog readings from the specified pin, averages these readings, and
+ * calculates the corresponding voltage based on the reference voltage and ADC resolution.
+ *
+ * Preconditions:
+ * - The specified analog pin must be properly configured and capable of returning ADC values.
+ * - The number of samples must be positive. Default value is 10 samples.
+ * - The ADC resolution is assumed to be 12-bit with a full-scale value of 4095, and the reference voltage is 3.3V.
+ *
+ * Behavior:
+ * - The method performs a loop to read the ADC value `samples` times.
+ * - A short delay of 10 milliseconds is applied between successive readings to reduce fluctuations.
+ * - The average ADC value is computed and converted to a voltage based*/
+float DeviceHandler::readVoltage(int pin, int samples = 10)
+{
+    int sum = 0;
+    for (int i = 0; i < samples; i++)
+    {
+        sum += analogRead(pin);
+        delay(10); // Kleine Verzögerung zwischen Messungen
+    }
+    int average = sum / samples;
+    float voltage = average * (3.3 / 4095.0);
+    return voltage;
+}
+
 
 /**
  * Retrieves the current CPU temperature.

@@ -14,7 +14,7 @@ PubSubClient client;
 bool isEnabled = false;
 
 // Stores last Publish Timestamp.
-unsigned long previousMillis = 0;
+unsigned long previousMillisMQTT = 0;
 
 void MQTTHandler::setup()
 {
@@ -73,7 +73,7 @@ void MQTTHandler::loop()
         unsigned long currentMillis = millis();
 
         // Check if the interval has passed
-        if (currentMillis - previousMillis >= MQTT_INTERVAL)
+        if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
         {
         }
     }

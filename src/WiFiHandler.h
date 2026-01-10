@@ -16,7 +16,6 @@ public:
     static bool isWiFiClientUsable();
     static void setup();
     static void loop();
-    static WiFiClient* getClient();
 };
 
 
