@@ -19,9 +19,9 @@ public:
     static void setup();
     static void setRelaisDuration(int as, int as1);
     static bool getState(int i);
-    static uint16_t getADCValue();
+    static float getADCValue();
     static float readVoltage(int pin, int samples);
-    static uint16_t getCPUTemperature();
+    static float getCPUTemperature();
 };
 
 

@@ -260,7 +260,7 @@ bool DeviceHandler::getState(int i)
  *
  * @return The analog-to-digital converted value from the `SENSE` pin.
  */
-uint16_t DeviceHandler::getADCValue()
+float DeviceHandler::getADCValue()
 {
     return readVoltage(SENSE, 10);
 }
@@ -317,7 +317,7 @@ float DeviceHandler::readVoltage(int pin, int samples = 10)
  *
  * @return The current CPU temperature as an unsigned 16-bit integer.
  */
-uint16_t DeviceHandler::getCPUTemperature()
+float DeviceHandler::getCPUTemperature()
 {
     return temperatureRead();
 }
