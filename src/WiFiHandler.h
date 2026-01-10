@@ -12,6 +12,7 @@ private:
     static void checkConnection();
 
 public:
+    static bool isWiFiClientUsable();
     static void setup();
     static void loop();
 };

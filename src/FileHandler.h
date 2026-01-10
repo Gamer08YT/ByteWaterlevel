@@ -4,9 +4,8 @@
 
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
-#include <WString.h>
-
-#include "ArduinoJson/Document/JsonDocument.hpp"
+#include <Arduino.h>
+#include <ArduinoJson.h>
 
 
 class FileHandler
@@ -14,11 +13,11 @@ class FileHandler
 public:
     static void begin();
     static String readFile(const char* path);
-    static ArduinoJson::JsonDocument loadConfig();
+    static JsonDocument loadConfig();
     static void saveFile(const char* str, const String& string);
-    static ArduinoJson::JsonDocument getConfig();
-    static void saveConfig(ArduinoJson::JsonObject object);
-    static ArduinoJson::JsonDocument config;
+    static JsonDocument getConfig();
+    static void saveConfig(JsonObject object);
+    static JsonDocument config;
 };
 
 

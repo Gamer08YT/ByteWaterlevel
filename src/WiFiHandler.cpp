@@ -6,6 +6,7 @@
 
 #include <WiFi.h>
 
+#include "FileHandler.h"
 #include "InternalConfig.h"
 
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
@@ -15,20 +16,32 @@ IPAddress subnet(255, 255, 255, 0);
 
 void WiFiHandler::setup()
 {
-    // Set AP mode explicitly
-    WiFi.mode(WIFI_AP_STA);
-
     // Enable Auto Reconnect.
     WiFi.setAutoConnect(true);
 
+    ArduinoJson::JsonDocument config = FileHandler::getConfig();
 
-    WiFi.begin()
+    // Check if Wi-Fi Credentials are set.
+    if (isWiFiClientUsable())
+    {
+        // Set AP mode explicitly
+        WiFi.mode(WIFI_MODE_STA);
 
-    // Define Subnet before beginning Soft AP.
-    WiFi.softAPConfig(apIP, gateway, subnet);
+        // Begin Wi-Fi Connection.
+        WiFi.begin(config["wifi"]["ssid"].as<String>(), config["wifi"]["password"].as<String>());
+    }
+    else
+    {
+        // Set AP mode explicitly
+        WiFi.mode(WIFI_MODE_AP);
 
-    // Begin Soft AP.
-    WiFi.softAP(NAME, PASSWORD);
+        // Define Subnet before beginning Soft AP.
+        WiFi.softAPConfig(apIP, gateway, subnet);
+
+        // Begin Soft AP.
+        WiFi.softAP(NAME, PASSWORD);
+    }
+
 #if DEBUG == true
     // Print Debug Message.
     Serial.println("WiFi started");
@@ -45,4 +58,19 @@ void WiFiHandler::loop()
 
 void WiFiHandler::checkConnection()
 {
+}
+
+/**
+ * Checks if the Wi-Fi client configuration is valid and usable.
+ * The method verifies whether the necessary Wi-Fi credentials
+ * (SSID and password) are present in the configuration file.
+ *
+ * @return true if the Wi-Fi configuration contains valid credentials;
+ *         false otherwise.
+ */
+bool WiFiHandler::isWiFiClientUsable()
+{
+    ArduinoJson::JsonDocument config = FileHandler::getConfig();
+
+    return (!config["wifi"].isNull() && !config["wifi"]["ssid"].isNull() && !config["wifi"]["password"].isNull());
 }

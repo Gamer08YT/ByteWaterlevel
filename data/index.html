@@ -438,7 +438,7 @@
             </div>
         </div>
 
-        <button id="save1" class="btn-save">Save</button>
+        <button onclick="save(1)" class="btn-save">Save</button>
     </div>
 
     <!-- TAB 3: SYSTEM -->
@@ -497,7 +497,7 @@
             </div>
         </div>
 
-        <button id="save2" class="btn-save">Save</button>
+        <button onclick="save(2)" class="btn-save">Save</button>
     </div>
 
 </div>
@@ -674,10 +674,12 @@
     }
 
     function val(id) {
-        return document.getElementById(id).value;
+        document.getElementById(id).value;
     }
 
     async function save(type) {
+        console.log("Save", type);
+
         if (type === 1) {
             window.configESP.ap.ssid = val("assid");
             window.configESP.ap.password = val("apw");
@@ -701,10 +703,9 @@
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({type: "save", config: window.configESP}),
-        });
+        }).then((res) => alert("Saved!")).catch((err) => alert("Error saving: " + err));
 
     }
-
 
 
     // relay1 -> channel 1, relay2 -> channel 2
@@ -712,14 +713,6 @@
         wireRelayToggle("relay1", 1);
         wireRelayToggle("relay2", 2);
         getInfo();
-
-        document.getElementById("save1").addEventListener("click", async () => {
-            await save(1);
-        })
-
-        document.getElementById("save2").addEventListener("click", async () => {
-            await save(2);
-        })
     });
 </script>
 <script>

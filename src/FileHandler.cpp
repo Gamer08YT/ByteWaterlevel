@@ -10,6 +10,9 @@
 #include <ArduinoJson.h>
 #include <LittleFS.h>
 
+// Definition der statischen Member-Variable
+JsonDocument FileHandler::config;
+
 
 /**
  * @brief Initializes the file system using LittleFS.
