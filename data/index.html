@@ -391,6 +391,13 @@
         <div class="group-title">MQTT Broker</div>
         <div class="control-group">
             <div class="control-row">
+                <label>Enable MQTT</label>
+                <label class="switch">
+                    <input id="men" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-row">
                 <label>Server</label>
                 <input id="mhost" type="text">
             </div>
@@ -476,12 +483,16 @@
 
     let inFlight = false;
 
-    function setRelayChecked(relayIndex, isOn) {
-        const el = document.getElementById(`relay${relayIndex}`);
+    function setChecked(id, isOn) {
+        const el = document.getElementById(id);
         if (!el) return;
         el.checked = Boolean(isOn);
     }
 
+
+    function setRelayChecked(ind, isOn) {
+        setChecked(`relay${ind}`, isOn);
+    }
 
     function formatUptime(s) {
 
@@ -624,6 +635,7 @@
 
             setValue("user", response.admin.user);
             setValue("pw", response.admin.password);
+            setChecked("auth", response.admin.state);
 
             setValue("assid", response.wifi.ap.ssid);
             setValue("apw", response.wifi.ap.password);
@@ -635,6 +647,9 @@
             setValue("muser", response.mqtt.user);
             setValue("mport", response.mqtt.port);
             setValue("mpw", response.mqtt.password);
+            setChecked("men", response.mqtt.state);
+
+
         }
 
     }
