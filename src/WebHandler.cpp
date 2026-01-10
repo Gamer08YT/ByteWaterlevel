@@ -94,10 +94,11 @@ void WebHandler::sendOK(AsyncWebServerRequest* request)
  */
 void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 {
-    switch (json["type"].as<String>())
+    String type = json["type"].as<String>();
+
+    if (type == "relais")
     {
-    case "relais":
-        // Check if Relais Query Contains channel (int) and state (bool).
+        // Check if Relais Query Contains a channel (int) and state (bool).
         if (json["channel"].is<int>() && json["state"].is<bool>())
         {
             DeviceHandler::setRelais(json["channel"].as<int>(), json["state"].as<bool>());
@@ -108,11 +109,10 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         {
             sendInvalid(request);
         }
-
-        break;
-    default:
+    }
+    else
+    {
         sendResponse(request, 400, "application/json", "{type: 'error', message: 'Not implemented'}");
-        break;
     }
 }
 
