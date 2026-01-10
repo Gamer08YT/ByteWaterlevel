@@ -33,6 +33,16 @@ void WebHandler::setup()
         request->send(404, "text/plain", "Page not found");
     });
 
+    // Add API Handler.
+    server.addHandler(new AsyncCallbackJsonWebHandler("/api", [](AsyncWebServerRequest* request, JsonVariant json)
+    {
+        if (checkRequest(request, json))
+        {
+            // Parse API Type and Execute Listener.
+            handleAPICall(request, json);
+        };
+    }));
+
     // Start Webserver.
     server.begin();
 
@@ -43,4 +53,28 @@ void WebHandler::setup()
 
 void WebHandler::loop()
 {
+}
+
+void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
+{
+}
+
+/**
+ * Checks if the provided JSON payload in the request is valid.
+ *
+ * If the JSON variant is null, it sends a 400 Bad Request response with an error message.
+ *
+ * @param request Pointer to the asynchronous web server request.
+ * @param json The JSON payload to be validated.
+ * @return true if the JSON payload is valid, false otherwise.
+ */
+bool WebHandler::checkRequest(AsyncWebServerRequest* request, JsonVariant json)
+{
+    if (json.isNull())
+    {
+        request->send(400, "application/json",
+                      "{type: 'error', message: 'No JSON payload provided.'}");
+        return false;
+    }
+    return true;
 }
