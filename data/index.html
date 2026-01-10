@@ -682,11 +682,11 @@
         console.log(window.configESP);
 
         if (type === 1) {
-            window.configESP.ap.ssid = val("assid");
-            window.configESP.ap.password = val("apw");
+            window.configESP.wifi.ap.ssid = val("assid");
+            window.configESP.wifi.ap.password = val("apw");
 
-            window.configESP.client.ssid = val("cssid");
-            window.configESP.client.password = val("cpw");
+            window.configESP.wifi.client.ssid = val("cssid");
+            window.configESP.wifi.client.password = val("cpw");
 
             window.configESP.mqtt.host = val("mhost");
             window.configESP.mqtt.port = val("mport");
