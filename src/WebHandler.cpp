@@ -31,6 +31,10 @@ void WebHandler::setup()
 
             request->send(LittleFS, "/index.html", "text/html; charset=utf-8", false);
         }
+        else
+        {
+            request->send(401, "text/plain", "Unauthorized");
+        }
     });
 
 
@@ -51,6 +55,8 @@ void WebHandler::setup()
                 handleAPICall(request, json);
             }
         }
+        else
+            request->send(401, "application/json", R"({"type":"error","message":"Unauthorized"})");
     }));
 
     // Start Webserver.
