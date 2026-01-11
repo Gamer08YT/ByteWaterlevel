@@ -11,6 +11,7 @@
 #include "DeviceHandler.h"
 #include "ESPAsyncWebServer.h"
 #include "FileHandler.h"
+#include "MQTTHandler.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -137,6 +138,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Set CPU Frequency.
         doc["frequency"] = ESP.getCpuFreqMHz();
+
+        // Set MQTT State.
+        doc["mqtt"] = MQTTHandler::isConnected();
 
         // Set Runtime.
         doc["up"] = millis() / 1000;

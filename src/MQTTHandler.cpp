@@ -99,3 +99,18 @@ void MQTTHandler::loop()
         }
     }
 }
+
+/**
+ * @brief Checks whether the MQTT client is currently connected.
+ *
+ * This method verifies the connection status of the internal MQTT client,
+ * indicating if it is actively connected to an MQTT broker. It helps determine
+ * the availability of the MQTT communication channel.
+ *
+ * @return A boolean value indicating the MQTT connection status.
+ *         Returns true if the client is connected; otherwise, false.
+ */
+bool MQTTHandler::isConnected()
+{
+    return client.connected();
+}
