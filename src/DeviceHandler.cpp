@@ -360,19 +360,21 @@ int DeviceHandler::getDuration(int i)
 
     if (i == 1)
     {
-        duration = (ch1 == -1 ? 0 : ch1);
+        duration = (ch1 <= 0 ? 0 : ch1);
     }
 
     if (i == 2)
     {
-        duration = (ch2 == -1 ? 0 : ch2);
+        duration = (ch2 <= 0 ? 0 : ch2);
     }
 
     // Timestamp to Seconds.
-    if (duration - millis() > 0)
+    //10 - 1 = 9 = true
+    // 10 - 11 = -1 = false
+    if (duration > 0 && (duration - millis()) > 0)
     {
-        duration = duration - millis();
+        return (duration - millis());
     }
 
-    return duration;
+    return 0;
 }

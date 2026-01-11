@@ -89,6 +89,9 @@ void MQTTHandler::setup()
             client.onConnect([](bool sessionPresent)
             {
                 Serial.printf("MQTT connected, sessionPresent=%s\n", (sessionPresent ? "true" : "false"));
+
+                // Reset last Will.
+                publish("waterlevel/status", "online");
             });
 
             // Add Disconnect Listener.
