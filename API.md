@@ -89,6 +89,7 @@ This will return the current Status:
 ### Restart Device
 
 You can restart the Device via the Restart Type.
+
 ```json
 {
   "type": "restart"
@@ -138,3 +139,21 @@ This will return the current Status:
   "firmware": "1.0.1"
 }
 ```
+
+## API Auth
+
+When you enable Authentification for the UI, the API will be becoming protected via the Admin Credentials.
+
+Because this is a non-High-Security-Device, it just uses Basic Auth.
+
+You need to replace <base64-encoded-password> as `username:password` decoded as Base64 String.
+
+```shell
+curl --location 'http://<host>/api' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Basic <base64-encoded-password>' \
+--data '{
+    "type": "info"
+}'
+```
+
