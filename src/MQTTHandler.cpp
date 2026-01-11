@@ -32,7 +32,7 @@ void MQTTHandler::setup()
         int mqttPort = config["mqtt"]["port"].as<int>();
 
         // Check if Hostname is Set.
-        if (mqttHost != nullptr && mqttPort)
+        if (mqttHost != nullptr && mqttPort != 0)
         {
             // Set Client Destination.
             client.setServer(mqttHost.c_str(), mqttPort);
@@ -42,11 +42,19 @@ void MQTTHandler::setup()
 
             // Connect to Server.
             client.connect();
+
+            Serial.println("MQTT connected");
         }
+        else
+            Serial.println("MQTT config");
 
 #if DEBUG == true
         Serial.println("MQTT started");
 #endif
+    }
+    else
+    {
+        Serial.println("MQTT disabled");
     }
 }
 
@@ -85,17 +93,14 @@ void MQTTHandler::loop()
         // Check if the interval has passed
         if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
         {
-            if (client.connected())
-            {
-                // Voltage (Float)
-                publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+            // Voltage (Float)
+            publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
 
-                // Channel 1 (Bool)
-                publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
+            // Channel 1 (Bool)
+            publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
 
-                // Channel 2 (Bool)
-                publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
-            }
+            // Channel 2 (Bool)
+            publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
         }
     }
 }
