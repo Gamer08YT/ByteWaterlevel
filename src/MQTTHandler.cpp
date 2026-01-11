@@ -7,14 +7,17 @@
 #include "FileHandler.h"
 #include "InternalConfig.h"
 #include "WiFiHandler.h"
-#include <AsyncMqttClient.h>
+#include <espMqttClientAsync.h>
 
-AsyncMqttClient client;
+espMqttClientAsync client;
 
 bool isEnabled = false;
 
 // Stores last Publish Timestamp.
 unsigned long previousMillisMQTT = 0;
+
+// Stores last Reconnect Timestamp.
+unsigned long reconnectMQTT = 0;
 
 void MQTTHandler::setup()
 {
@@ -24,6 +27,8 @@ void MQTTHandler::setup()
     {
         // Set Enabled State.
         isEnabled = true;
+
+        reconnectMQTT = millis();
 
         // Store strings in local variables to prevent temporary object destruction
         String mqttHost = config["mqtt"]["host"].as<String>();
@@ -37,19 +42,24 @@ void MQTTHandler::setup()
             // Set Client Destination.
             client.setServer(mqttHost.c_str(), mqttPort);
 
+            // Set Keep-Alive Interval.
+            client.setKeepAlive(120);
+
             // Set Client ID.
             client.setClientId("walterlevel");
 
-            // Check for Username otherwise use Anonymus.
+            // Check for Username otherwise use Anonymous.
             if (mqttUser.length() > 0)
             {
                 client.setCredentials(mqttUser.c_str(), mqttPassword.c_str());
+
+#if DEBUG == true
+                Serial.printf("MQTT %s PW %s\n", mqttUser.c_str(), mqttPassword.c_str());
+#endif
             }
 
 #if DEBUG == true
             Serial.printf("MQTT connecting to %s:%d\n", mqttHost.c_str(), mqttPort);
-            Serial.printf("MQTT user: %s\n", mqttUser.c_str());
-            Serial.printf("MQTT password: %s\n", mqttPassword.c_str());
 #endif
 
 
@@ -60,9 +70,9 @@ void MQTTHandler::setup()
             });
 
             // Add Disconnect Listener.
-            client.onDisconnect([](AsyncMqttClientDisconnectReason reason)
+            client.onDisconnect([](espMqttClientTypes::DisconnectReason disconnect_reason)
             {
-                Serial.printf("MQTT disconnected, reason=%d\n", reason);
+                Serial.printf("MQTT disconnected, reason=%d\n", disconnect_reason);
             });
 
             // Connect to Server.
@@ -93,14 +103,11 @@ void MQTTHandler::setup()
  */
 void MQTTHandler::publish(const char* topic, const char* payload)
 {
-    if (client.connected())
-    {
-        client.publish(topic, 1, false, payload);
+    client.publish(topic, 1, false, payload);
 
 #if DEBUG == true
-        Serial.printf("Publish %s: %s\n", topic, payload);
+    Serial.printf("Publish %s: %s\n", topic, payload);
 #endif
-    }
 }
 
 /**
@@ -120,19 +127,30 @@ void MQTTHandler::loop()
     {
         unsigned long currentMillis = millis();
 
-        // Check if the interval has passed
-        if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
+        if (isConnected())
         {
-            previousMillisMQTT = currentMillis;
+            // Check if the interval has passed
+            if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
+            {
+                previousMillisMQTT = currentMillis;
 
-            // Voltage (Float)
-            //publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+                // Voltage (Float)
+                //publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
 
-            // Channel 1 (Bool)
-            publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
+                // Channel 1 (Bool)
+                publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
 
-            // Channel 2 (Bool)
-            publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
+                // Channel 2 (Bool)
+                publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
+            }
+        }
+        else
+        {
+            if (currentMillis - reconnectMQTT > 5000)
+            {
+                // Rerun Setup.
+                setup();
+            }
         }
     }
 }
