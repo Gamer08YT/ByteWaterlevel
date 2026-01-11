@@ -35,7 +35,7 @@ unsigned long reconnectMQTT = 0;
  */
 void MQTTHandler::setLastWill()
 {
-    client.setWill("status", 1, true, "offline");
+    client.setWill("waterlevel/status", 1, true, "offline");
 }
 
 void MQTTHandler::setup()

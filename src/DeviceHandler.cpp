@@ -369,8 +369,6 @@ int DeviceHandler::getDuration(int i)
     }
 
     // Timestamp to Seconds.
-    //10 - 1 = 9 = true
-    // 10 - 11 = -1 = false
     if (duration > 0 && (duration - millis()) > 0)
     {
         return (duration - millis());
