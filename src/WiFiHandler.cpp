@@ -14,6 +14,9 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 unsigned long WiFiHandler::connectionStartTime = 0;
 bool WiFiHandler::apStarted = false;
 
+// Store WiFi Client Instance.
+WiFiClient* WiFiHandler::instance;
+
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
 IPAddress apIP(10, 10, 10, 1);
 IPAddress gateway(10, 10, 10, 1);
@@ -36,12 +39,21 @@ void WiFiHandler::setup()
         WiFi.mode(WIFI_MODE_STA);
 
         // Begin Wi-Fi Connection.
-        WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(), 
+        WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(),
                    config["wifi"]["client"]["password"].as<String>());
 
         // Start Timer for Connection Timeout.
         connectionStartTime = millis();
         apStarted = false;
+
+
+        // Wait for Connection.
+        int result = WiFi.waitForConnectResult(15000);
+
+        if (result != WL_CONNECTED)
+        {
+            startAP(config);
+        }
 
 #if DEBUG == true
         Serial.println("WiFi Client started. Try to connect...");
@@ -75,6 +87,34 @@ void WiFiHandler::setup()
 void WiFiHandler::loop()
 {
     checkConnection();
+}
+
+/**
+ * Determines if the device is currently connected to a Wi-Fi network. This
+ * method evaluates the Wi-Fi connection status and returns a boolean indicating
+ * whether the connection is active.
+ *
+ * @return true if the Wi-Fi is connected (status is WL_CONNECTED), false otherwise.
+ */
+bool WiFiHandler::isConnected()
+{
+    return WiFi.status() == WL_CONNECTED;
+}
+
+/**
+ * Provides the singleton instance of the WiFiClient managed by the WiFiHandler.
+ * This method ensures access to the single WiFiClient object used throughout the
+ * application, promoting consistency and reusability of the Wi-Fi functionality.
+ *
+ * The WiFiClient instance is used for communication over Wi-Fi, and this method
+ * allows external components to interact with or manage the Wi-Fi connection safely
+ * through the returned instance.
+ *
+ * @return A reference to the singleton WiFiClient instance managed by WiFiHandler.
+ */
+WiFiClient& WiFiHandler::getInstance()
+{
+    return *instance;
 }
 
 /**
@@ -115,7 +155,7 @@ void WiFiHandler::checkConnection()
 #if DEBUG == true
             Serial.println("WiFi Timeout after 30 Seconds. Starting AP...");
 #endif
-            
+
             // Timeout erreicht - starten Sie den AP
             JsonDocument config = FileHandler::getConfig();
             startAP(config);
@@ -140,7 +180,7 @@ void WiFiHandler::startAP(JsonDocument& config)
     WiFi.softAPConfig(apIP, gateway, subnet);
 
     // Begin Soft AP.
-    WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(), 
+    WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(),
                 config["wifi"]["ap"]["password"].as<String>());
 
     apStarted = true;
@@ -165,8 +205,8 @@ bool WiFiHandler::isWiFiClientUsable()
 {
     JsonDocument config = FileHandler::getConfig();
 
-    return (!config["wifi"].isNull() && 
-            !config["wifi"]["client"]["ssid"].isNull() && 
-            !config["wifi"]["client"]["ssid"].as<String>().isEmpty() && 
-            !config["wifi"]["client"]["password"].isNull());
+    return (!config["wifi"].isNull() &&
+        !config["wifi"]["client"]["ssid"].isNull() &&
+        !config["wifi"]["client"]["ssid"].as<String>().isEmpty() &&
+        !config["wifi"]["client"]["password"].isNull());
 }

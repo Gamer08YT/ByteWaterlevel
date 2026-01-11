@@ -38,8 +38,12 @@ void setup()
     // Setup Web.
     WebHandler::setup();
 
-    // Setup MQTT.
-    MQTTHandler::setup();
+    // Check for Connection.
+    if (WiFiHandler::isConnected())
+    {
+        // Setup MQTT.
+        MQTTHandler::setup();
+    }
 }
 
 void loop()

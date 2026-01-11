@@ -9,8 +9,6 @@
  * Define Default Values.
  */
 #define VERSION "1.0.0"
-#define NAME "BYTELEVEL"
-#define PASSWORD "BYTESTORE"
 #define DEBUG true
 #define BLINK_INTERVAL 250
 #define MQTT_INTERVAL 1000

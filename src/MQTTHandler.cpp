@@ -2,15 +2,14 @@
 // Created by JanHe on 10.01.2026.
 //
 
-#include <PubSubClient.h>
 #include "MQTTHandler.h"
-
 #include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "InternalConfig.h"
+#include "WiFiHandler.h"
+#include <AsyncMqttClient.h>
 
-
-PubSubClient client;
+AsyncMqttClient client;
 
 bool isEnabled = false;
 
@@ -32,11 +31,18 @@ void MQTTHandler::setup()
         String mqttPassword = config["mqtt"]["password"].as<String>();
         int mqttPort = config["mqtt"]["port"].as<int>();
 
-        // Set Client Destination.
-        client.setServer(mqttHost.c_str(), mqttPort);
+        // Check if Hostname is Set.
+        if (mqttHost != nullptr && mqttPort)
+        {
+            // Set Client Destination.
+            client.setServer(mqttHost.c_str(), mqttPort);
 
-        // Connect to Server.
-        client.connect("waterlevel", mqttUser.c_str(), mqttPassword.c_str());
+            // Set MQTT Credentials.
+            client.setCredentials(mqttUser.c_str(), mqttPassword.c_str());
+
+            // Connect to Server.
+            client.connect();
+        }
 
 #if DEBUG == true
         Serial.println("MQTT started");
@@ -56,7 +62,7 @@ void MQTTHandler::setup()
  */
 void MQTTHandler::publish(const char* topic, const char* payload)
 {
-    client.publish(topic, payload);
+    client.publish(topic, 1, false, payload);
 }
 
 /**
@@ -74,21 +80,22 @@ void MQTTHandler::loop()
 {
     if (isEnabled)
     {
-        client.loop();
-
         unsigned long currentMillis = millis();
 
         // Check if the interval has passed
         if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
         {
-            // Voltage (Float)
-            publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+            if (client.connected())
+            {
+                // Voltage (Float)
+                publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
 
-            // Channel 1 (Bool)
-            publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
+                // Channel 1 (Bool)
+                publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
 
-            // Channel 2 (Bool)
-            publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
+                // Channel 2 (Bool)
+                publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
+            }
         }
     }
 }
