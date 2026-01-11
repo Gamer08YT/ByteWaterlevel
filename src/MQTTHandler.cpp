@@ -26,12 +26,17 @@ void MQTTHandler::setup()
         // Set Enabled State.
         isEnabled = true;
 
+        // Store strings in local variables to prevent temporary object destruction
+        String mqttHost = config["mqtt"]["host"].as<String>();
+        String mqttUser = config["mqtt"]["user"].as<String>();
+        String mqttPassword = config["mqtt"]["password"].as<String>();
+        int mqttPort = config["mqtt"]["port"].as<int>();
+
         // Set Client Destination.
-        client.setServer(config["mqtt"]["host"].as<String>().c_str(), config["mqtt"]["port"].as<int>());
+        client.setServer(mqttHost.c_str(), mqttPort);
 
         // Connect to Server.
-        client.connect("waterlevel", config["mqtt"]["user"].as<String>().c_str(),
-                       config["mqtt"]["password"].as<String>().c_str());
+        client.connect("waterlevel", mqttUser.c_str(), mqttPassword.c_str());
 
 #if DEBUG == true
         Serial.println("MQTT started");
