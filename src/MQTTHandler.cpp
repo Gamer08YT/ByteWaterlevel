@@ -32,13 +32,26 @@ void MQTTHandler::setup()
         int mqttPort = config["mqtt"]["port"].as<int>();
 
         // Check if Hostname is Set.
-        if (mqttHost != nullptr && mqttPort != 0)
+        if (mqttHost.length() > 0 && mqttPort > 0)
         {
             // Set Client Destination.
             client.setServer(mqttHost.c_str(), mqttPort);
 
-            // Set MQTT Credentials.
-            client.setCredentials(mqttUser.c_str(), mqttPassword.c_str());
+            // Set Client ID.
+            client.setClientId("walterlevel");
+
+            // Check for Username otherwise use Anonymus.
+            if (mqttUser.length() > 0)
+            {
+                client.setCredentials(mqttUser.c_str(), mqttPassword.c_str());
+            }
+
+#if DEBUG == true
+            Serial.printf("MQTT connecting to %s:%d\n", mqttHost.c_str(), mqttPort);
+            Serial.printf("MQTT user: %s\n", mqttUser.c_str());
+            Serial.printf("MQTT password: %s\n", mqttPassword.c_str());
+#endif
+
 
             // Add Connect Listener.
             client.onConnect([](bool sessionPresent)
@@ -54,13 +67,13 @@ void MQTTHandler::setup()
 
             // Connect to Server.
             client.connect();
+
+#if DEBUG == true
+            Serial.println("MQTT started");
+#endif
         }
         else
             Serial.println("MQTT config");
-
-#if DEBUG == true
-        Serial.println("MQTT started");
-#endif
     }
     else
     {
@@ -80,7 +93,14 @@ void MQTTHandler::setup()
  */
 void MQTTHandler::publish(const char* topic, const char* payload)
 {
-    client.publish(topic, 1, false, payload);
+    if (client.connected())
+    {
+        client.publish(topic, 1, false, payload);
+
+#if DEBUG == true
+        Serial.printf("Publish %s: %s\n", topic, payload);
+#endif
+    }
 }
 
 /**
@@ -103,8 +123,10 @@ void MQTTHandler::loop()
         // Check if the interval has passed
         if (currentMillis - previousMillisMQTT >= MQTT_INTERVAL)
         {
+            previousMillisMQTT = currentMillis;
+
             // Voltage (Float)
-            publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+            //publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
 
             // Channel 1 (Bool)
             publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
