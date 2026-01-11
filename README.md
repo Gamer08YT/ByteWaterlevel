@@ -57,13 +57,13 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 ## Screenshots
 
 ### Status
-![img.png](img.png)
+![img.png](assets/img/status.png)
 
 ### Configuration
-![img_1.png](img_1.png)
+![img_1.png](assets/img/configuration.png)
 
 ### System
-![img_2.png](img_2.png)
+![img_2.png](assets/img/system.png)
 
 ## Disclaimer
 **As this is a prototype, we accept no liability for damage to persons or buildings.**
