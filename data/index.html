@@ -493,7 +493,7 @@
                 <div class="control-row">
                     <label>System LED</label>
                     <label class="switch">
-                        <input type="checkbox" checked>
+                        <input id="led" type="checkbox">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -707,6 +707,7 @@
             setValue("user", response.admin.user);
             setValue("pw", response.admin.password);
             setChecked("auth", response.admin.state);
+            setChecked("led", response.hardware.led);
 
             setValue("assid", response.wifi.ap.ssid);
             setValue("apw", response.wifi.ap.password);
@@ -743,11 +744,15 @@
             window.configESP.mqtt.port = val("mport");
             window.configESP.mqtt.user = val("muser");
             window.configESP.mqtt.password = val("mpw");
+            window.configESP.mqtt.state = document.getElementById("men").checked;
         }
 
         if (type === 2) {
             window.configESP.admin.user = val("user");
             window.configESP.admin.password = val("pw");
+            window.configESP.admin.state = document.getElementById("auth").checked;
+
+            window.configESP.hardware.led = document.getElementById("led").checked;
         }
 
         console.log("Save", window.configESP);
