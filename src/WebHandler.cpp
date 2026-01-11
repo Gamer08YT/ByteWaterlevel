@@ -21,13 +21,16 @@ void WebHandler::setup()
     // Route for root / web page
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request)
     {
-        if (!LittleFS.exists("/index.html"))
+        if (needAuth(request))
         {
-            request->send(500, "text/plain", "Invalid LittleFS");
-            return;
-        }
+            if (!LittleFS.exists("/index.html"))
+            {
+                request->send(500, "text/plain", "Invalid LittleFS");
+                return;
+            }
 
-        request->send(LittleFS, "/index.html", "text/html; charset=utf-8", false);
+            request->send(LittleFS, "/index.html", "text/html; charset=utf-8", false);
+        }
     });
 
 
@@ -40,10 +43,13 @@ void WebHandler::setup()
     // Add API Handler.
     server.addHandler(new AsyncCallbackJsonWebHandler("/api", [](AsyncWebServerRequest* request, JsonVariant json)
     {
-        if (checkRequest(request, json))
+        if (needAuth(request))
         {
-            // Parse API Type and Execute Listener.
-            handleAPICall(request, json);
+            if (checkRequest(request, json))
+            {
+                // Parse API Type and Execute Listener.
+                handleAPICall(request, json);
+            }
         }
     }));
 
@@ -58,6 +64,34 @@ void WebHandler::setup()
 void WebHandler::loop()
 {
 }
+
+/**
+ * Determines whether authentication is needed for the incoming request and enforces it if required.
+ *
+ * This method checks the configuration to see if the admin authentication is enabled. If enabled,
+ * it verifies the provided credentials against predefined "admin" values. If authentication fails,
+ * a challenge is sent to the client to request valid credentials.
+ *
+ * @param request Pointer to the asynchronous web server request being processed.
+ * @return True if the request is authenticated or authentication is not required;
+ *         false if authentication is required and the provided credentials are invalid.
+ */
+bool WebHandler::needAuth(AsyncWebServerRequest* request)
+{
+    JsonDocument doc = FileHandler::getConfig();
+
+    if (doc["admin"]["state"].as<bool>())
+    {
+        if (!request->authenticate(doc["admin"]["user"], doc["admin"]["password"]))
+        {
+            request->requestAuthentication();
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 /**
  * Sends an HTTP 400 Bad Request response to the client with a predefined error message.

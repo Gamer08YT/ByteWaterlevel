@@ -12,6 +12,7 @@ class WebHandler
 public:
     static void setup();
     static void loop();
+    static bool needAuth(AsyncWebServerRequest* request);
 
 private:
     static void sendInvalid(AsyncWebServerRequest* request);
