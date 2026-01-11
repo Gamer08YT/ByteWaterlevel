@@ -4,16 +4,15 @@
 
 #ifndef WIFIHANDLER_H
 #define WIFIHANDLER_H
-#include <WiFiClient.h>
 
-#include "ArduinoJson/Document/JsonDocument.hpp"
+#include <ArduinoJson.h>
 
 
 class WiFiHandler
 {
 private:
     static void checkConnection();
-    static void startAP(ArduinoJson::JsonDocument& config);
+    static void startAP(JsonDocument& config);
     static unsigned long connectionStartTime;
     static bool apStarted;
     static const unsigned long CONNECTION_TIMEOUT_MS;
