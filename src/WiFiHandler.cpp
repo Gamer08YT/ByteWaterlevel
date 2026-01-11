@@ -140,15 +140,6 @@ void WiFiHandler::checkConnection()
     // Try to connect when STA Mode is selected
     if (WiFi.getMode() == WIFI_MODE_STA)
     {
-        // If Connected send Debug Message.
-        if (WiFi.status() == WL_CONNECTED)
-        {
-#if DEBUG == true
-            Serial.println("WiFi successfully connected!");
-#endif
-            return;
-        }
-
         // Check if timeout was exceeded
         if (millis() - connectionStartTime > CONNECTION_TIMEOUT_MS)
         {
