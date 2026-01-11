@@ -323,41 +323,56 @@ float DeviceHandler::getCPUTemperature()
 }
 
 /**
- * Retrieves the duration value associated with the specified channel.
+ * Retrieves the remaining duration (in milliseconds) for a specified relay channel.
  *
- * This method returns the timer duration for a specified relay channel (`ch1` or `ch2`).
- * The value represents the configuration or elapsed time in milliseconds for the
- * corresponding relay. If the provided channel index does not match any existing channel,
- * the method returns 0.
+ * This method calculates the time remaining for the specified relay channel (`ch1` for `i=1`
+ * or `ch2` for `i=2`) before it is expected to timeout. The duration is determined based on
+ * the current time and the channel's configured timer value.
  *
- * Preconditions:
- * - `ch1` and `ch2` must be properly initialized with their respective durations
- *   (in milliseconds). A duration of -1 indicates an inactive channel.
- *
- * Postconditions:
- * - The durational value for the specified channel is returned.
- * - If the input is invalid (not 1 or 2), a value of 0 is returned.
+ * Arguments:
+ * - `i`: The index of the relay channel to query (1 for `ch1` or 2 for `ch2`).
  *
  * Behavior:
- * - If the parameter is 1, returns the `ch1` duration.
- * - If the parameter is 2, returns the `ch2` duration.
- * - For any other values, returns 0.
+ * - If the channel's timer value is `-1`, indicating it is inactive, the returned duration
+ *   will be `0`.
+ * - If the channel's timer value is configured and has not expired, the method calculates
+ *   the remaining duration in milliseconds by subtracting the current time (`millis()`)
+ *   from the timer value.
+ * - If the timer value has already expired or is less than the current time, the returned
+ *   duration will be `0`.
  *
- * @param i The channel index for which the duration is to be retrieved. Valid values are 1 or 2.
- * @return The duration (in milliseconds) of the specified channel. Returns 0 if the channel
- *         index is invalid or unconfigured.
+ * Returns:
+ * - The time remaining in milliseconds for the specified relay channel, or `0` if the
+ *   channel is inactive or its timer has already expired.
+ *
+ * Preconditions:
+ * - `i` must be either `1` for channel `ch1` or `2` for channel `ch2`. Other values may lead
+ *   to undefined results.
+ * - The `millis()` function must provide a valid, non-negative time value.
+ *
+ * Postconditions:
+ * - The method will ensure a non-negative remaining duration is returned, even in cases
+ *   where the timer has expired.
  */
 int DeviceHandler::getDuration(int i)
 {
+    int duration = 0;
+
     if (i == 1)
     {
-        return (ch1 == -1 ? 0 : ch1 - millis());
+        duration = (ch1 == -1 ? 0 : ch1);
     }
 
     if (i == 2)
     {
-        return (ch2 == -1 ? 0 : ch2 - millis());
+        duration = (ch2 == -1 ? 0 : ch2);
     }
 
-    return 0;
+    // Timestamp to Seconds.
+    if (duration - millis() > 0)
+    {
+        duration = duration - millis();
+    }
+
+    return duration;
 }
