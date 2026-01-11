@@ -12,8 +12,12 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 
 ## Features:
 - HTTP API
+  - Basic Auth
   - Enable/Disable Relais
   - Enable Relais for a given Time period
+  - Restart Device
+  - Save Configuration
+  - Get Device Info (CPU Temperature, Sensor etc...)
 - MQTT
 - WiFi
   - AP Mode
@@ -21,7 +25,7 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 - USB
   - Flashing
   - JTAG
-- Webserver
+- GUI
   - Status
   - Configuration
   - Info
@@ -48,6 +52,7 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 - esp32async/ESPAsyncWebServer
 - esp32async/AsyncTCP
 - anchon/ArduinoJson
+- bertmelis/espMqttClient
 
 ## Disclaimer
 **As this is a prototype, we accept no liability for damage to persons or buildings.**
