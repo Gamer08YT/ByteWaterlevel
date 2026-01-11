@@ -1,0 +1,27 @@
+{
+  "wifi": {
+    "client": {
+      "ssid": "",
+      "password": ""
+    },
+    "ap": {
+      "ssid": "BYTELEVEL",
+      "password": "BYTESTORE2026"
+    }
+  },
+  "mqtt": {
+    "state": false,
+    "host": "",
+    "port": 1883,
+    "user": "",
+    "password": ""
+  },
+  "admin": {
+    "state": false,
+    "user": "",
+    "password": ""
+  },
+  "hardware": {
+    "led": true
+  }
+}

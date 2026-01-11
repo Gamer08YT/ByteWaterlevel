@@ -190,6 +190,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Send 200 as Response.
         sendOK(request);
 
+        // Wait for 500ms.
+        delay(500);
+
         // Restart ESP.
         ESP.restart();
     }
