@@ -69,7 +69,7 @@ void WiFiHandler::setup()
     Serial.println("WiFi started");
 #endif
 
-    Serial.print("Ready on");
+    Serial.print("Ready on ");
     Serial.println(WiFi.softAPIP());
 }
 
@@ -138,7 +138,7 @@ void WiFiHandler::checkConnection()
     }
 
     // Try to connect when STA Mode is selected
-    if (WiFi.getMode() == WIFI_MODE_STA)
+    if (WiFi.getMode() == WIFI_MODE_STA && !isConnected())
     {
         // Check if timeout was exceeded
         if (millis() - connectionStartTime > CONNECTION_TIMEOUT_MS)

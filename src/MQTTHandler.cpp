@@ -40,10 +40,20 @@ void MQTTHandler::setup()
             // Set MQTT Credentials.
             client.setCredentials(mqttUser.c_str(), mqttPassword.c_str());
 
+            // Add Connect Listener.
+            client.onConnect([](bool sessionPresent)
+            {
+                Serial.printf("MQTT connected, sessionPresent=%s\n", (sessionPresent ? "true" : "false"));
+            });
+
+            // Add Disconnect Listener.
+            client.onDisconnect([](AsyncMqttClientDisconnectReason reason)
+            {
+                Serial.printf("MQTT disconnected, reason=%d\n", reason);
+            });
+
             // Connect to Server.
             client.connect();
-
-            Serial.println("MQTT connected");
         }
         else
             Serial.println("MQTT config");
