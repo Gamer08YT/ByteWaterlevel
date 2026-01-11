@@ -1,5 +1,7 @@
 # MQTT
 
+The current MQTT Implementation is compatible with the latest 3.1.1 Protocol.
+
 ### Structure
 
 - <prefix\>
