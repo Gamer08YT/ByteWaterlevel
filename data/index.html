@@ -761,7 +761,7 @@
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({type: "save", config: window.configESP}),
-        }).then((res) => alert("Saved!")).catch((err) => alert("Error saving: " + err));
+        }).then((res) => alert("Saved, please restart the Device!")).catch((err) => alert("Error saving: " + err));
     }
 
 
