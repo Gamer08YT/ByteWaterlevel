@@ -19,6 +19,25 @@ unsigned long previousMillisMQTT = 0;
 // Stores last Reconnect Timestamp.
 unsigned long reconnectMQTT = 0;
 
+/**
+ * @brief Sets the MQTT Last Will and Testament (LWT) message.
+ *
+ * This method configures the Last Will and Testament (LWT) for the MQTT client.
+ * If the client disconnects unexpectedly, the LWT message will be published
+ * to the specified topic. It is typically used to notify others of the client's
+ * offline status.
+ *
+ * Specifically, this method sets the will message with the following parameters:
+ * - Topic: "status"
+ * - QoS: 1
+ * - Retained: true
+ * - Payload: "offline"
+ */
+void MQTTHandler::setLastWill()
+{
+    client.setWill("status", 1, true, "offline");
+}
+
 void MQTTHandler::setup()
 {
     JsonDocument config = FileHandler::getConfig();
@@ -62,6 +81,9 @@ void MQTTHandler::setup()
             Serial.printf("MQTT connecting to %s:%d\n", mqttHost.c_str(), mqttPort);
 #endif
 
+
+            // Set Last Will.
+            setLastWill();
 
             // Add Connect Listener.
             client.onConnect([](bool sessionPresent)
@@ -135,13 +157,22 @@ void MQTTHandler::loop()
                 previousMillisMQTT = currentMillis;
 
                 // Voltage (Float)
-                //publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+                publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
 
                 // Channel 1 (Bool)
-                publish("waterlevel/channel1", DeviceHandler::getState(1) ? "1" : "0");
+                publish("waterlevel/channel/1/state", DeviceHandler::getState(1) ? "1" : "0");
+
+                // Channel 1 Duration  (Int)
+                publish("waterlevel/channel/1/duration", String(DeviceHandler::getDuration(1)).c_str());
 
                 // Channel 2 (Bool)
-                publish("waterlevel/channel2", DeviceHandler::getState(2) ? "1" : "0");
+                publish("waterlevel/channel/2/state", DeviceHandler::getState(2) ? "1" : "0");
+
+                // Channel 2 Duration  (Int)
+                publish("waterlevel/channel/2/duration", String(DeviceHandler::getDuration(2)).c_str());
+
+                // CPU Temperature
+                publish("waterlevel/cpu", String(DeviceHandler::getCPUTemperature(), 1).c_str());
             }
         }
         else

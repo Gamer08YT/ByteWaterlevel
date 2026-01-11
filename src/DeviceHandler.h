@@ -22,6 +22,7 @@ public:
     static float getADCValue();
     static float readVoltage(int pin, int samples);
     static float getCPUTemperature();
+    static int getDuration(int i);
 };
 
 
