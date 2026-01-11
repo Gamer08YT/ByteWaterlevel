@@ -187,6 +187,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
     }
     else if (type == "restart")
     {
+        // Send 200 as Response.
+        sendOK(request);
+
         // Restart ESP.
         ESP.restart();
     }
