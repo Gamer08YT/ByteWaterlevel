@@ -266,6 +266,29 @@ float DeviceHandler::getADCValue()
 }
 
 /**
+ * Calculates and returns the current in amperes based on the ADC (Analog-to-Digital Converter) value.
+ *
+ * This method retrieves the ADC value using the `getADCValue()` method and converts it into a current
+ * measurement by dividing the value by a constant factor (120.0). The ADC value is assumed to represent
+ * a voltage, which is transformed according to the device's characteristics to estimate the current.
+ *
+ * Preconditions:
+ * - The device must be configured to measure voltage correctly via its ADC subsystem.
+ * - The `getADCValue()` method must return a valid voltage reading.
+ *
+ * Postconditions:
+ * - Returns the calculated current as a floating-point value in amperes.
+ *
+ * Behavior:
+ * - The method performs a voltage-to-current transformation using a constant scaling factor.
+ * - No additional error handling for invalid ADC readings or division by zero is implemented.
+ */
+float DeviceHandler::getCurrent()
+{
+    return getADCValue() / 120;
+}
+
+/**
  * Reads and calculates the voltage at a specified analog pin by averaging multiple samples.
  *
  * This method performs multiple analog readings from the specified pin, averages these readings, and

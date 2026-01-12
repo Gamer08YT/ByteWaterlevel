@@ -22,12 +22,6 @@ void setup()
 {
     // Begin Serial.
     Serial.begin(115200);
-
-    // Required for ESP32-C3 USB CDC
-    while (!Serial) {
-        delay(10);
-    }
-
     Serial.setDebugOutput(true);
 
     // Setup Device Pins.
