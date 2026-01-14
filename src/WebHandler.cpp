@@ -173,6 +173,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Set ADC Voltage.
         doc["adc"] = DeviceHandler::getADCValue();
 
+        // Set Current (eq. 4-20mA).
+        doc["current"] = DeviceHandler::getCurrent();
+
         // Set CPU Temperature.
         doc["cpu"] = DeviceHandler::getCPUTemperature();
 
