@@ -5,7 +5,8 @@
 #include <ArduinoOTA.h>
 #include "OTAHandler.h"
 #include <WiFi.h>
-#include <ESP32OTAPull.h>
+
+#include "esp32FOTA.hpp"
 #include "FileHandler.h"
 #include "InternalConfig.h"
 
@@ -13,7 +14,7 @@
 bool otaEnabled = false;
 
 // Store Pull Instance.
-ESP32OTAPull pull;
+esp32FOTA pull("stable", VERSION, false, true);
 
 /**
  * @brief Sets up the OTA (Over-The-Air) update functionality if enabled in
@@ -33,6 +34,7 @@ ESP32OTAPull pull;
  */
 void OTAHandler::setup()
 {
+    // Local OTA Server.
     if (FileHandler::getConfig()["ota"].as<bool>())
     {
         otaEnabled = true;
@@ -70,6 +72,10 @@ void OTAHandler::setup()
         Serial.println("OTA started");
 #endif
     }
+
+    // Remote OTA Server.
+    // Set Manifest URL.
+    pull.setManifestURL(UPDATE_SERVER);
 }
 
 /**
@@ -91,6 +97,9 @@ void OTAHandler::loop()
         // Handle incoming OTA.
         ArduinoOTA.handle();
     }
+
+    // Handle Pull.
+    pull.handle();
 }
 
 /**
@@ -110,8 +119,7 @@ void OTAHandler::loop()
  */
 bool OTAHandler::hasUpdate()
 {
-    return pull.CheckForOTAUpdate(UPDATE_SERVER, VERSION, ESP32OTAPull::DONT_DO_UPDATE) ==
-        ESP32OTAPull::UPDATE_AVAILABLE;
+    return pull.execHTTPcheck();
 }
 
 /**
@@ -134,5 +142,5 @@ bool OTAHandler::hasUpdate()
  */
 void OTAHandler::update()
 {
-    pull.CheckForOTAUpdate(UPDATE_SERVER, VERSION, ESP32OTAPull::UPDATE_AND_BOOT);
+    pull.execOTA();
 }

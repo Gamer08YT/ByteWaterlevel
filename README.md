@@ -58,6 +58,7 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 - anchon/ArduinoJson
 - bertmelis/espMqttClient
 - Arduino
+- chrisjoyce911/esp32FOTA
 
 ## Screenshots
 

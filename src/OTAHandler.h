@@ -4,7 +4,6 @@
 
 #ifndef OTAHANDLER_H
 #define OTAHANDLER_H
-#include "ArduinoJson/Document/JsonDocument.hpp"
 
 
 class OTAHandler
