@@ -759,6 +759,10 @@
             setValue("cssid", response.wifi.client.ssid);
             setValue("cpw", response.wifi.client.password);
 
+            setValue("maxv", response.calibration.max);
+            setValue("minv", response.calibration.min);
+            setValue("tv", response.calibration.volume);
+
             setValue("mhost", response.mqtt.host);
             setValue("muser", response.mqtt.user);
             setValue("mport", response.mqtt.port);
@@ -812,6 +816,10 @@
 
             window.configESP.wifi.client.ssid = val("cssid");
             window.configESP.wifi.client.password = val("cpw");
+
+            window.configESP.calibration.max = val("maxv");
+            window.configESP.calibration.min = val("minv");
+            window.configESP.calibration.volume = val("tv");
 
             window.configESP.mqtt.host = val("mhost");
             window.configESP.mqtt.port = val("mport");
