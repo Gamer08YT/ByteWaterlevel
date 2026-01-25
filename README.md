@@ -1,6 +1,6 @@
 # ByteWaterlevel
 
-ByteWaterlevel in Short (BYTELEVEL) is an Device to Monitor Wells, Cisterns and co. 
+ByteWaterlevel in Short (BYTELEVEL) is an Device to Monitor Wells, Cisterns and co.
 It uses an TL136 Sensor to monitor the Fluid Level.
 
 It comes with two Relais to control Pumps, Sirens or other Appliances.
@@ -9,33 +9,40 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 
 <img height="600px" width="auto" src="./assets/img/bytelevel.png"/>
 
-
 ## Features:
+
 - HTTP API
-  - Basic Auth
-  - Enable/Disable Relais
-  - Enable Relais for a given Time period
-  - Restart Device
-  - Save Configuration
-  - Get Device Info (CPU Temperature, Sensor etc...)
+    - Basic Auth
+    - Enable/Disable Relais
+    - Enable Relais for a given Time period
+    - Restart Device
+    - Save Configuration
+    - Get Device Info (CPU Temperature, Sensor etc...)
 - MQTT
 - WiFi
-  - AP Mode
-  - Client Mode
+    - AP Mode
+    - Client Mode
+    - OTA
+        - Server
+        - Client
 - USB
-  - Flashing
-  - JTAG
+    - Flashing
+    - JTAG
 - GUI
-  - Status
-  - Configuration
-  - Info
+    - Status
+    - Configuration
+    - Info
+- Calculations
+    - Calibration
+    - Tank Level in %
+    - Tank Level in L (Works with rectangular / upright round / horizontal round tanks)
 
 ## Specifications:
 
 * Input: 12-24V (with Reverse protection)
 * USB: Micro USB (with Overvoltage protection)
 * MCU: ESP32 C3
-* Relais current (peak): **max 10A** 
+* Relais current (peak): **max 10A**
 * Power consumption: low
 * Sensor: TL136 (Optional with Overvoltage protection)
 
@@ -63,15 +70,19 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 ## Screenshots
 
 ### Status
+
 ![img.png](assets/img/status.png)
 
 ### Configuration
+
 ![img_1.png](assets/img/configuration.png)
 
 ### System
+
 ![img_2.png](assets/img/system.png)
 
 ## Disclaimer
+
 **As this is a prototype, we accept no liability for damage to persons or buildings.**
 
 **Any warranty is excluded.**
