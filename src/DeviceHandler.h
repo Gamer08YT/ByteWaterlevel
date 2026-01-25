@@ -3,6 +3,8 @@
 //
 #include <Arduino.h>
 
+#include "ArduinoJson/Document/JsonDocument.hpp"
+
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
 
@@ -24,6 +26,8 @@ public:
     static float readVoltage(int pin, int samples);
     static float getCPUTemperature();
     static int getDuration(int i);
+    static float getLevel();
+    static float getVolume();
 };
 
 

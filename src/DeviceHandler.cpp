@@ -30,6 +30,13 @@ float latestVoltage = 0.00;
 // Store State of System LED.
 bool systemLed = true;
 
+// Store Calibration Values.
+float maxV = 2.4;
+float minV = 0.0;
+
+// Store Tank Volume.
+float tankVolume = 1000.0;
+
 /**
  * Monitors and manages the state of relays based on their configured timers.
  *
@@ -207,6 +214,9 @@ void DeviceHandler::setup()
 
     // Set System LED State.
     systemLed = FileHandler::getConfig()["hardware"]["led"].as<bool>();
+    maxV = FileHandler::getConfig()["calibration"]["max"].as<float>();
+    minV = FileHandler::getConfig()["calibration"]["min"].as<float>();
+    tankVolume = FileHandler::getConfig()["calibration"]["volume"].as<float>();
 }
 
 /**
@@ -430,4 +440,51 @@ int DeviceHandler::getDuration(int i)
     }
 
     return 0;
+}
+
+/**
+ * Calculates the current level in percentage based on the latest voltage reading.
+ *
+ * This method computes the relative percentage of the latest voltage reading
+ * (`latestVoltage`) within the specified range (`minV` to `maxV`).
+ * The value is constrained to lie within the range of 0% to 100%.
+ *
+ * Behavior:
+ * - If the latest voltage is below `minV`, the level is set to 0%.
+ * - If the latest voltage is above `maxV`, the level is set to 100%.
+ * - For all other values, the percentage is calculated as:
+ *   `(latestVoltage - minV) / (maxV - minV) * 100.0f`.
+ *
+ * Preconditions:
+ * - `minV` and `maxV` define the valid range for voltage values, where `minV < maxV`.
+ *
+ * Postconditions:
+ * - The returned value is a floating-point percentage value within the range of 0 to 100.
+ *
+ * @return The calculated level as a percentage within the range of 0% to 100%.
+ */
+float DeviceHandler::getLevel()
+{
+    float percent = (latestVoltage - minV) / (maxV - minV) * 100.0f;
+
+    // Limit to 0–100 %
+    if (percent < 0.0f) percent = 0.0f;
+    if (percent > 100.0f) percent = 100.0f;
+
+    return percent;
+}
+
+/**
+ * Calculates the current volume of liquid in the tank.
+ *
+ * This method determines the volume of liquid in the tank by using the
+ * predefined total tank capacity (`tankVolume`) and the current liquid
+ * level percentage (`getLevel()`), returning the resulting volume in
+ * liters. The level percentage is expected to be a value between 0 and 100.
+ *
+ * @return The calculated volume of liquid in the tank, based on the current level and tank capacity.
+ */
+float DeviceHandler::getVolume()
+{
+    return tankVolume * (getLevel() / 100.0f);
 }

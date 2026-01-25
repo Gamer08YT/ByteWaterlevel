@@ -178,6 +178,12 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Set Current (eq. 4-20mA).
         doc["current"] = DeviceHandler::getCurrent(false);
 
+        // Set Tank Level in %.
+        doc["level"] = DeviceHandler::getLevel();
+
+        // Set Volume in L.
+        doc["volume"] = DeviceHandler::getVolume();
+
         // Set CPU Temperature.
         doc["cpu"] = DeviceHandler::getCPUTemperature();
 
