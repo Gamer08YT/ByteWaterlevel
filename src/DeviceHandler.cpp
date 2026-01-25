@@ -269,7 +269,7 @@ bool DeviceHandler::getState(int i)
  */
 float DeviceHandler::getADCValue()
 {
-    return readVoltage(SENSE, 32);
+    return readVoltage(SENSE, 256);
 }
 
 /**
