@@ -5,6 +5,7 @@
 #include "DeviceHandler.h"
 #include <Arduino.h>
 
+#include "FileHandler.h"
 #include "InternalConfig.h"
 
 // Store last Blink Timestamp.
@@ -24,6 +25,9 @@ bool ledState = LOW;
 
 // Store latest Voltage.
 float latestVoltage = 0.00;
+
+// Store State of System LED.
+bool systemLed = true;
 
 /**
  * Monitors and manages the state of relays based on their configured timers.
@@ -188,6 +192,9 @@ void DeviceHandler::setup()
     pinMode(LED_PIN, OUTPUT);
     pinMode(RELAIS_CH1, OUTPUT);
     pinMode(RELAIS_CH2, OUTPUT);
+
+    // Set System LED State.
+    systemLed = FileHandler::getConfig()["hardware"]["led"].as<bool>();
 }
 
 /**

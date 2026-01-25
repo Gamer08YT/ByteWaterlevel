@@ -768,7 +768,17 @@
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({type: "save", config: window.configESP}),
-        }).then((res) => alert("Saved, please restart the Device!")).catch((err) => alert("Error saving: " + err));
+        }).then((res) => {
+            if (confirm("Saved, restart Device now?")) {
+                fetch("/api", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({type: "restart"})
+                });
+            }
+        }).catch((err) => alert("Error saving: " + err));
     }
 
 
