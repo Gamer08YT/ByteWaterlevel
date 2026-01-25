@@ -7,6 +7,8 @@
 #include <WiFi.h>
 #include "FileHandler.h"
 
+bool otaEnabled = false;
+
 /**
  * @brief Sets up the OTA (Over-The-Air) update functionality if enabled in
  *        the configuration.
@@ -27,6 +29,8 @@ void OTAHandler::setup()
 {
     if (FileHandler::getConfig()["ota"].as<bool>())
     {
+        otaEnabled = true;
+
         // Set OTA Hostname.
         ArduinoOTA.setHostname(FileHandler::getConfig()["wifi"]["ap"]["ssid"].as<String>().c_str());
 
@@ -59,6 +63,9 @@ void OTAHandler::setup()
  */
 void OTAHandler::loop()
 {
-    // Handle incoming OTA.
-    ArduinoOTA.handle();
+    if (otaEnabled)
+    {
+        // Handle incoming OTA.
+        ArduinoOTA.handle();
+    }
 }
