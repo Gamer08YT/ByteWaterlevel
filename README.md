@@ -43,6 +43,10 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 
 For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
 
+## Factory reset:
+
+For Factory reset have a Look into <a href="./RESET.md">RESET.md</a>.
+
 ## API Docs
 
 For API Docs please have a Look into <a href="./API.md">API.md</a>.

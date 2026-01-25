@@ -96,6 +96,16 @@ You can restart the Device via the Restart Type.
 }
 ```
 
+### Reset
+
+You can reset the Device Config by using the Reset Type.
+
+```json
+{
+  "type": "reset"
+}
+```
+
 ### Info
 
 You can retrieve the Device Info by using the Info Type.
