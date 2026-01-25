@@ -498,6 +498,13 @@
                     </label>
                 </div>
                 <div class="control-row">
+                    <label>OTA</label>
+                    <label class="switch">
+                        <input id="ota" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
                     <label>Debug Log Level</label>
                     <input type="text" value="INFO" readonly style="opacity: 0.5;">
                 </div>
@@ -706,6 +713,7 @@
             setValue("pw", response.admin.password);
             setChecked("auth", response.admin.state);
             setChecked("led", response.hardware.led);
+            setChecked("ota", response.ota);
 
             setValue("assid", response.wifi.ap.ssid);
             setValue("apw", response.wifi.ap.password);
@@ -751,6 +759,7 @@
             window.configESP.admin.state = document.getElementById("auth").checked;
 
             window.configESP.hardware.led = document.getElementById("led").checked;
+            window.configESP.ota = document.getElementById("ota").checked;
         }
 
         console.log("Save", window.configESP);

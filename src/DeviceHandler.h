@@ -24,7 +24,6 @@ public:
     static float readVoltage(int pin, int samples);
     static float getCPUTemperature();
     static int getDuration(int i);
-    static float latestVoltage;
 };
 
 

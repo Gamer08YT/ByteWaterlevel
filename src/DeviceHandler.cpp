@@ -22,6 +22,9 @@ bool relay2 = LOW;
 // Current LED state
 bool ledState = LOW;
 
+// Store latest Voltage.
+float latestVoltage = 0.00;
+
 /**
  * Monitors and manages the state of relays based on their configured timers.
  *

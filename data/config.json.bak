@@ -23,5 +23,6 @@
   },
   "hardware": {
     "led": true
-  }
+  },
+  "ota": true
 }
