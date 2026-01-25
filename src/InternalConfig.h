@@ -8,7 +8,7 @@
 /**
  * Define Default Values.
  */
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 #define DEBUG true
 #define BLINK_INTERVAL 250
 #define MQTT_INTERVAL 1000

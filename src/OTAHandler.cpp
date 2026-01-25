@@ -40,6 +40,12 @@ void OTAHandler::setup()
         // Reboot on Success.
         ArduinoOTA.setRebootOnSuccess(true);
 
+#if DEBUG == true
+        ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); });
+        ArduinoOTA.onStart([]() { Serial.println("\nStart"); });
+        ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
+#endif
+
         // Begin OTA Server.
         ArduinoOTA.begin();
 
