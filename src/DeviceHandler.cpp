@@ -290,9 +290,9 @@ float DeviceHandler::getADCValue()
  * - The method performs a voltage-to-current transformation using a constant scaling factor.
  * - No additional error handling for invalid ADC readings or division by zero is implemented.
  */
-float DeviceHandler::getCurrent()
+float DeviceHandler::getCurrent(bool newReading = false)
 {
-    return (getADCValue() / 120) * 1000.0;
+    return ((newReading ? getADCValue() : latestVoltage) / 120) * 1000.0;
 }
 
 /**
@@ -325,6 +325,9 @@ float DeviceHandler::readVoltage(int pin, int samples = 10)
     }
     int average = sum / samples;
     float voltage = average * (3.3 / 4095.0);
+
+    latestVoltage = voltage;
+
     return voltage;
 }
 

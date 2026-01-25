@@ -20,10 +20,11 @@ public:
     static void setRelaisDuration(int as, int as1);
     static bool getState(int i);
     static float getADCValue();
-    static float getCurrent();
+    static float getCurrent(bool newReading);
     static float readVoltage(int pin, int samples);
     static float getCPUTemperature();
     static int getDuration(int i);
+    static float latestVoltage;
 };
 
 
