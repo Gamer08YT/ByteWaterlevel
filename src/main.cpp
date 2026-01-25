@@ -2,6 +2,7 @@
 #include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "MQTTHandler.h"
+#include "OTAHandler.h"
 #include "WebHandler.h"
 #include "WiFiHandler.h"
 
@@ -24,20 +25,23 @@ void setup()
     Serial.begin(115200);
     Serial.setDebugOutput(true);
 
-    // Setup Device Pins.
-    DeviceHandler::setup();
-
     // Setup File System.
     FileHandler::begin();
 
     // Load Config File.
     FileHandler::loadConfig();
 
+    // Setup Device Pins.
+    DeviceHandler::setup();
+
     // Setup Wi-Fi Connection from LittleFS.
     WiFiHandler::setup();
 
     // Setup Web.
     WebHandler::setup();
+
+    // Setup OTA.
+    OTAHandler::setup();
 
     // Check for Connection.
     if (WiFiHandler::isConnected())
