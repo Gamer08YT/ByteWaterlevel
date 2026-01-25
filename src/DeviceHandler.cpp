@@ -171,6 +171,13 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
  */
 void DeviceHandler::setup()
 {
+    // Setup ADC Resolution.
+    analogReadResolution(12);
+
+    // Set ADC Attenuation.
+    analogSetPinAttenuation(SENSE, ADC_6db);
+
+
     // Input Pins.
     pinMode(SENSE, INPUT);
 
@@ -262,7 +269,7 @@ bool DeviceHandler::getState(int i)
  */
 float DeviceHandler::getADCValue()
 {
-    return readVoltage(SENSE, 10);
+    return readVoltage(SENSE, 32);
 }
 
 /**
@@ -285,7 +292,7 @@ float DeviceHandler::getADCValue()
  */
 float DeviceHandler::getCurrent()
 {
-    return getADCValue() / 120;
+    return (getADCValue() / 120) * 1000.0;
 }
 
 /**
