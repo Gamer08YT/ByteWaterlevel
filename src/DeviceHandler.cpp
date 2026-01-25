@@ -182,7 +182,7 @@ void DeviceHandler::setup()
     analogReadResolution(12);
 
     // Set ADC Attenuation.
-    analogSetPinAttenuation(SENSE, ADC_6db);
+    analogSetPinAttenuation(SENSE, ADC_11db);
 
 
     // Input Pins.
