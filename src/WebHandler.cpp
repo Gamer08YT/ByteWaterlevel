@@ -244,7 +244,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Restart ESP.
         ESP.restart();
     }
-    else if (type == "upgrade")
+    else if (type == "update")
     {
         if (OTAHandler::hasUpdate())
         {
