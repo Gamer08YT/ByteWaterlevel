@@ -127,7 +127,11 @@ bool OTAHandler::hasUpdate()
  * performed is specified as `ESP32OTAPull::UPDATE_AND_BOOT`, which updates
  * the firmware and reboots the device to apply the update.
  *
- * @note Ensure a stable*/
+ * @note Ensure a stable network connection is available for contacting the
+ *       update server and downloading the firmware.
+ *
+ * @see ESP32OTAPull::CheckForOTAUpdate
+ */
 void OTAHandler::update()
 {
     pull.CheckForOTAUpdate(UPDATE_SERVER, VERSION, ESP32OTAPull::UPDATE_AND_BOOT);
