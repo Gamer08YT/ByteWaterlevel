@@ -18,6 +18,7 @@ public:
     static JsonDocument getConfig();
     static void saveConfig(JsonObject object);
     static bool copyFile(const char* source, const char* destination);
+    static void reset();
     static JsonDocument config;
 };
 

@@ -127,13 +127,37 @@ void FileHandler::saveConfig(JsonObject object)
 }
 
 
+/**
+ * @brief Copies the contents of one file to another.
+ *
+ * This method reads the contents of the source file and writes them
+ * to the destination file. If the debug mode is enabled, a success
+ * message is printed to Serial.
+ *
+ * @param source The path to the source file to be copied.
+ * @param destination The path to the destination file where the contents
+ * will be written.
+ * @return true if the file has been successfully copied.
+ */
 bool FileHandler::copyFile(const char* source, const char* destination)
 {
     saveFile(destination, readFile(source));
-    
+
 #if DEBUG == true
     Serial.println("File successfully created.");
 #endif
 
     return true;
+}
+
+/**
+ * @brief Resets the configuration file to its backup state.
+ *
+ * This method replaces the current configuration file with its backup version
+ * by copying "/config.json.bak" to "/config.json", effectively restoring
+ * the settings to a known backup state.
+ */
+void FileHandler::reset()
+{
+    copyFile("/config.json.bak", "/config.json");
 }

@@ -4,6 +4,7 @@
 
 #include "DeviceHandler.h"
 #include <Arduino.h>
+#include <FS.h>
 
 #include "FileHandler.h"
 #include "InternalConfig.h"
@@ -192,6 +193,17 @@ void DeviceHandler::setup()
     pinMode(LED_PIN, OUTPUT);
     pinMode(RELAIS_CH1, OUTPUT);
     pinMode(RELAIS_CH2, OUTPUT);
+    pinMode(RESET, OUTPUT);
+
+    // If Pin 9 is HIGH, reset Configuration.
+    if (digitalRead(RESET))
+    {
+        // Print Debug Message.
+        Serial.println("Reset");
+
+        // Reset Configuration.
+        FileHandler::reset();
+    }
 
     // Set System LED State.
     systemLed = FileHandler::getConfig()["hardware"]["led"].as<bool>();
