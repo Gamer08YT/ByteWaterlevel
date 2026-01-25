@@ -365,6 +365,7 @@
 
         .btn-update {
             padding: 5px;
+            margin-left: 0.5rem;
         }
 
         .btn-save:hover, .btn-update:hover {
@@ -546,14 +547,14 @@
                     <label>Firmware</label>
                     <div class="flex">
                         <span id="firmware"></span>
-                        <button style="display: none" onclick="update()" id="update" class="btn-update">Update</button>
+                        <button style="display: none" onclick="aupdate()" id="update" class="btn-update">Update</button>
                     </div>
                 </div>
                 <div class="control-row">
                     <label>Uptime</label>
                     <div class="flex">
                         <span id="up"></span>
-                        <button class="btn-update" onclick="restart()" style="background-color: green">Restart</button>
+                        <button class="btn-update" onclick="arestart()" style="background-color: green">Restart</button>
                     </div>
                 </div>
                 <div class="control-row">
@@ -758,6 +759,10 @@
         return document.getElementById(id).value;
     }
 
+    function arestart() {
+        if (confirm("Are you sure?")) restart();
+    }
+
     function restart() {
         fetch("/api", {
             method: "POST",
@@ -766,6 +771,10 @@
             },
             body: JSON.stringify({type: "restart"})
         });
+    }
+
+    function aupdate() {
+        if (confirm("Are you sure?")) update();
     }
 
     function update() {
@@ -888,7 +897,7 @@
     // Initial Data
     const initialData = Array.from({length: 20}, () => Math.random() * 0.5 + 1.2); // Fake start data around 1.2V
     const initialCurrent = Array.from({length: 20}, () => Math.random() * 0.5 + 0.5); // Fake start data around 1.2V
-
+    const labels = Array.from({length: 20}, (_, i) => i);
 
     // Gradient for Chart
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -898,7 +907,7 @@
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [],
+            labels: labels,
             datasets: [{
                 label: 'Spannung (V)',
                 data: initialData,
