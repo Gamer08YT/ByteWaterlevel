@@ -20,6 +20,10 @@
             --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
 
+        .flex {
+            display: flex;
+        }
+
         [data-theme="dark"] {
             --bg-gradient-1: #0f2027;
             --bg-gradient-2: #203a43;
@@ -637,12 +641,16 @@
 
                 const v = window.myChart.data.datasets[0].data;
                 const c = window.myChart.data.datasets[1].data;
+                const l = window.myChart.data.labels;
 
                 v.shift();
                 v.push(response.adc);
 
                 c.shift();
                 c.push(response.current);
+
+                l.shift();
+                l.push(new Date().toLocaleTimeString());
 
                 window.myChart.update('none'); // Update without full re-render
 
@@ -880,7 +888,7 @@
     // Initial Data
     const initialData = Array.from({length: 20}, () => Math.random() * 0.5 + 1.2); // Fake start data around 1.2V
     const initialCurrent = Array.from({length: 20}, () => Math.random() * 0.5 + 0.5); // Fake start data around 1.2V
-    const labels = Array.from({length: 20}, (_, i) => i);
+
 
     // Gradient for Chart
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -890,7 +898,7 @@
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels: [],
             datasets: [{
                 label: 'Spannung (V)',
                 data: initialData,
