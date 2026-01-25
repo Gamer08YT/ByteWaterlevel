@@ -4,6 +4,7 @@
 
 #ifndef OTAHANDLER_H
 #define OTAHANDLER_H
+#include "ArduinoJson/Document/JsonDocument.hpp"
 
 
 class OTAHandler
@@ -11,6 +12,8 @@ class OTAHandler
 public:
     static void setup();
     static void loop();
+    static bool hasUpdate();
+    static void update();
 };
 
 

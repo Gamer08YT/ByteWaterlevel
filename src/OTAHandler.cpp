@@ -5,9 +5,15 @@
 #include <ArduinoOTA.h>
 #include "OTAHandler.h"
 #include <WiFi.h>
+#include <ESP32OTAPull.h>
 #include "FileHandler.h"
+#include "InternalConfig.h"
 
+// Store OTA Server State.
 bool otaEnabled = false;
+
+// Store Pull Instance.
+ESP32OTAPull pull;
 
 /**
  * @brief Sets up the OTA (Over-The-Air) update functionality if enabled in
@@ -40,8 +46,19 @@ void OTAHandler::setup()
         // Reboot on Success.
         ArduinoOTA.setRebootOnSuccess(true);
 
+        JsonDocument doc = FileHandler::getConfig();
+
+        if (doc["admin"]["state"].as<bool>())
+        {
+            // Set the Password for OTA.
+            ArduinoOTA.setPassword(doc["admin"]["password"].as<String>().c_str());
+        }
+
 #if DEBUG == true
-        ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) { Serial.printf("Progress: %u%%\r", (progress / (total / 100))); });
+        ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+        {
+            Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+        });
         ArduinoOTA.onStart([]() { Serial.println("\nStart"); });
         ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
 #endif
@@ -74,4 +91,44 @@ void OTAHandler::loop()
         // Handle incoming OTA.
         ArduinoOTA.handle();
     }
+}
+
+/**
+ * @brief Checks if a new firmware update is available on the update server.
+ *
+ * This function communicates with the update server to determine if a newer
+ * version of the firmware is available. It compares the current firmware
+ * version with the available version on the server without initiating
+ * the update process.
+ *
+ * The function uses the `ESP32OTAPull` class to check for updates by querying
+ * the server defined by `UPDATE_SERVER` and comparing it to the software
+ * version defined by `VERSION`. The check only determines the availability
+ * of an update without performing the update itself.
+ *
+ * @return True if an update is available; otherwise, false.
+ */
+bool OTAHandler::hasUpdate()
+{
+    return pull.CheckForOTAUpdate(UPDATE_SERVER, VERSION, ESP32OTAPull::DONT_DO_UPDATE) ==
+        ESP32OTAPull::UPDATE_AVAILABLE;
+}
+
+/**
+ * @brief Initiates the OTA update process by checking for available updates.
+ *
+ * This function uses the `ESP32OTAPull` library to check for firmware updates
+ * from a specified update server. It compares the current firmware version
+ * against the versions available on the server and decides whether to update
+ * and boot the device into the new firmware.
+ *
+ * The update server and current version are defined in the configuration
+ * headers as `UPDATE_SERVER` and `VERSION`, respectively. The update action
+ * performed is specified as `ESP32OTAPull::UPDATE_AND_BOOT`, which updates
+ * the firmware and reboots the device to apply the update.
+ *
+ * @note Ensure a stable*/
+void OTAHandler::update()
+{
+    pull.CheckForOTAUpdate(UPDATE_SERVER, VERSION, ESP32OTAPull::UPDATE_AND_BOOT);
 }

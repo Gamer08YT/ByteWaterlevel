@@ -346,17 +346,24 @@
         .btn-save {
             width: 100%;
             padding: 15px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 14px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             margin-top: 20px;
         }
 
-        .btn-save:hover {
+        .btn-save, .btn-update {
+            border-radius: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-update {
+            padding: 5px;
+        }
+
+        .btn-save:hover, .btn-update:hover {
             opacity: 0.9;
         }
 
@@ -533,11 +540,17 @@
             <div class="control-group">
                 <div class="control-row">
                     <label>Firmware</label>
-                    <span id="firmware"></span>
+                    <div class="flex">
+                        <span id="firmware"></span>
+                        <button style="display: none" onclick="update()" id="update" class="btn-update">Update</button>
+                    </div>
                 </div>
                 <div class="control-row">
                     <label>Uptime</label>
-                    <span id="up"></span>
+                    <div class="flex">
+                        <span id="up"></span>
+                        <button class="btn-update" onclick="restart()" style="background-color: green">Restart</button>
+                    </div>
                 </div>
                 <div class="control-row">
                     <label>CPU Temp.</label>
@@ -727,6 +740,7 @@
             setValue("mpw", response.mqtt.password);
             setChecked("men", response.mqtt.state);
 
+            document.getElementById("update").style.display = data.update ? "block" : "none";
             setText("firmware", data.firmware);
         }
 
@@ -734,6 +748,26 @@
 
     function val(id) {
         return document.getElementById(id).value;
+    }
+
+    function restart() {
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({type: "restart"})
+        });
+    }
+
+    function update() {
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({type: "update"})
+        });
     }
 
     async function save(type) {
@@ -770,13 +804,7 @@
             body: JSON.stringify({type: "save", config: window.configESP}),
         }).then((res) => {
             if (confirm("Saved, restart Device now?")) {
-                fetch("/api", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({type: "restart"})
-                });
+                restart();
             }
         }).catch((err) => alert("Error saving: " + err));
     }

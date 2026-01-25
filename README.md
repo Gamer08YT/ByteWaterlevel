@@ -57,6 +57,7 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 - esp32async/AsyncTCP
 - anchon/ArduinoJson
 - bertmelis/espMqttClient
+- Arduino
 
 ## Screenshots
 

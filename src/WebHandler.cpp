@@ -13,6 +13,7 @@
 #include "ESPAsyncWebServer.h"
 #include "FileHandler.h"
 #include "MQTTHandler.h"
+#include "OTAHandler.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -203,6 +204,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         // Add Firmware Info
         doc["firmware"] = VERSION;
 
+        // Add Update Info.
+        doc["update"] = OTAHandler::hasUpdate();
+
         // Set Response Type.
         doc["type"] = "success";
 
@@ -239,6 +243,22 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Restart ESP.
         ESP.restart();
+    }
+    else if (type == "upgrade")
+    {
+        if (OTAHandler::hasUpdate())
+        {
+            // Send 200 as Response.
+            sendOK(request);
+
+            // Update to Latest Version.
+            OTAHandler::update();
+        }
+        else
+        {
+            // Send no Update Available Response.
+            sendResponse(request, 400, R"({"type":"error","message":"No update available"})");
+        }
     }
     else if (type == "reset")
     {

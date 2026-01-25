@@ -22,4 +22,9 @@
 #define SENSE 3
 #define RESET 6
 
+/**
+ * Define Update Server
+ */
+#define UPDATE_SERVER "https://space.byte-store.de/external/waterlevel/versions.json"
+
 #endif //INTERNALCONFIG_H
