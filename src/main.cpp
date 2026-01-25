@@ -64,4 +64,7 @@ void loop()
 
     // Loop Client.
     MQTTHandler::loop();
+
+    // Loop OTA.
+    OTAHandler::loop();
 }

@@ -6,11 +6,12 @@
 #define OTAHANDLER_H
 
 
-
-class OTAHandler {
+class OTAHandler
+{
+public:
     static void setup();
+    static void loop();
 };
-
 
 
 #endif //OTAHANDLER_H
