@@ -7,6 +7,8 @@ device again.
 
 ![img.png](assets/img/reset.png)
 
+**Since the board is powered via USB, the on/off switch does not work for rebooting, this is only possible when working on the 24V side.**
+
 ### Reset via API
 
 You can reset the Device via API (**If the login details have been forgotten, only a manual reset is possible**).
