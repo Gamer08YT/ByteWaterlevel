@@ -20,6 +20,6 @@
 #define RELAIS_CH1 0
 #define RELAIS_CH2 1
 #define SENSE 3
-#define RESET 9
+#define RESET 6
 
 #endif //INTERNALCONFIG_H

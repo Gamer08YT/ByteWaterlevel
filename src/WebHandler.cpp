@@ -7,6 +7,7 @@
 #include "WebHandler.h"
 #include <InternalConfig.h>
 #include <LittleFS.h>
+#include <lwip/sockets.h>
 
 #include "DeviceHandler.h"
 #include "ESPAsyncWebServer.h"
@@ -235,6 +236,20 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Wait for 500ms.
         delay(500);
+
+        // Restart ESP.
+        ESP.restart();
+    }
+    else if (type == "reset")
+    {
+        // Send 200 as Response.
+        sendOK(request);
+
+        // Copy Backup Config to config.json.
+        FileHandler::reset();
+
+        // Wait for 1 Second.
+        delay(1000);
 
         // Restart ESP.
         ESP.restart();
