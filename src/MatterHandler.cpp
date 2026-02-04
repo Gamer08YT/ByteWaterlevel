@@ -8,8 +8,8 @@
 #include <Matter.h>
 
 // Store Matter Plugin Instances.
-MatterOnOffPlugin relay1;
-MatterOnOffPlugin relay2;
+MatterOnOffPlugin mrelay1;
+MatterOnOffPlugin mrelay2;
 
 /**
  * @brief Initializes and sets up the plugins for relay devices used in the MatterHandler.
@@ -28,10 +28,10 @@ MatterOnOffPlugin relay2;
 void MatterHandler::beginPlugins()
 {
     // Begin Relais 1.
-    relay1.begin();
+    mrelay1.begin();
 
     // Add Listener for Relais 1.
-    relay1.onChange([](bool cond)
+    mrelay1.onChange([](bool cond)
     {
         DeviceHandler::setRelais(1, cond);
 
@@ -39,10 +39,10 @@ void MatterHandler::beginPlugins()
     });
 
     // Begin Relais 2.
-    relay2.begin();
+    mrelay2.begin();
 
     // Add Listener for Relais 2.
-    relay2.onChange([](bool cond)
+    mrelay2.onChange([](bool cond)
     {
         DeviceHandler::setRelais(2, cond);
 
@@ -89,8 +89,8 @@ void MatterHandler::loop()
     // Check Matter Plugin Commissioning state, which may change during execution of loop()
     if (Matter.isDeviceConnected())
     {
-        relay1.updateAccessory();
-        relay2.updateAccessory();
+        mrelay1.updateAccessory();
+        mrelay2.updateAccessory();
     }
 }
 
