@@ -18,15 +18,12 @@ private:
     static unsigned long connectionStartTime;
     static bool apStarted;
     static const unsigned long CONNECTION_TIMEOUT_MS;
-    static WiFiClient* instance;
-
 
 public:
     static bool isWiFiClientUsable();
     static void setup();
     static void loop();
     static bool isConnected();
-    static WiFiClient& getInstance();
 
 };
 

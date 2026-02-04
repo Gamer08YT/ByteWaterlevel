@@ -25,7 +25,7 @@ IPAddress subnet(255, 255, 255, 0);
 void WiFiHandler::setup()
 {
     // Enable Auto Reconnect.
-    WiFi.setAutoConnect(true);
+    WiFi.setAutoReconnect(true);
 
     JsonDocument config = FileHandler::getConfig();
 
@@ -101,21 +101,6 @@ bool WiFiHandler::isConnected()
     return WiFi.status() == WL_CONNECTED;
 }
 
-/**
- * Provides the singleton instance of the WiFiClient managed by the WiFiHandler.
- * This method ensures access to the single WiFiClient object used throughout the
- * application, promoting consistency and reusability of the Wi-Fi functionality.
- *
- * The WiFiClient instance is used for communication over Wi-Fi, and this method
- * allows external components to interact with or manage the Wi-Fi connection safely
- * through the returned instance.
- *
- * @return A reference to the singleton WiFiClient instance managed by WiFiHandler.
- */
-WiFiClient& WiFiHandler::getInstance()
-{
-    return *instance;
-}
 
 /**
  * Checks the current Wi-Fi connection status and handles reconnection or starting
