@@ -37,6 +37,9 @@ The Device is designed only to work with external Antennas to provide a good Wi-
     - Tank Level in %
     - Tank Level in L (Works with rectangular / upright round / horizontal round tanks)
 
+Planned:
+  - Update Config after Update with new Keys/Values from Backup File.
+
 ## Specifications:
 
 * Input: 12-24V (with Reverse protection)
