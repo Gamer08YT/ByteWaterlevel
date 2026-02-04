@@ -161,3 +161,120 @@ void FileHandler::reset()
 {
     copyFile("/config.json.bak", "/config.json");
 }
+
+/**
+ * @brief Merges configuration data from a backup file into the main configuration.
+ *
+ * Reads a backup JSON file and the main configuration JSON file, then merges
+ * missing keys or values from the backup into the main configuration. Finally,
+ * saves the updated configuration back to the file system.
+ *
+ * @param configPath The file path to the main configuration file.
+ * @param backupPath The file path to the backup configuration file.
+ * @return True if the merge and update process completes successfully, false otherwise.
+ */
+bool FileHandler::mergeConfigFromBackup(const char* configPath, const char* backupPath)
+{
+    // Load Backup File.
+    File backupFile = LittleFS.open(backupPath, "r");
+    if (!backupFile)
+    {
+        Serial.println("F404");
+        return false;
+    }
+
+    // Parse JSON from Backup.
+    JsonDocument backupDoc;
+    DeserializationError backupError = deserializeJson(backupDoc, backupFile);
+    backupFile.close();
+
+    if (backupError)
+    {
+        Serial.print("B500");
+        Serial.println(backupError.c_str());
+        return false;
+    }
+
+    // Load Primary File.
+    File configFile = LittleFS.open(configPath, "r");
+    JsonDocument configDoc;
+
+    if (configFile)
+    {
+        DeserializationError configError = deserializeJson(configDoc, configFile);
+        configFile.close();
+
+        if (configError)
+        {
+            Serial.print("P500 ");
+            Serial.println(configError.c_str());
+            configDoc.clear();
+        }
+    }
+
+    // Add missing Keys.
+    mergeJsonObjects(configDoc, backupDoc);
+
+    // Save missing Keys.
+    File outputFile = LittleFS.open(configPath, "w");
+    if (!outputFile)
+    {
+        Serial.println("W500");
+        return false;
+    }
+
+    serializeJsonPretty(configDoc, outputFile);
+    outputFile.close();
+
+    Serial.println("WOK");
+    return true;
+}
+
+
+/**
+ * @brief Merges two JSON objects recursively.
+ *
+ * This function merges key-value pairs from a source JSON object into a target JSON object.
+ * If the same key exists in both objects and its value is a nested JSON object, the function
+ * performs a recursive merge. For keys present in the source but absent in the target, it
+ * directly adds those keys into the target object.
+ *
+ * @param target The target JSON object where source key-value pairs are merged into.
+ * @param source The source JSON object containing key-value pairs to be merged.
+ *
+ * @details
+ * - If the source is not a JSON object, the function exits without making any changes.
+ * - For keys that point to nested JSON objects in the source, the function creates a
+ *   nested object in the target (if not present) and merges recursively.
+ * - Non-overlapping keys in the source are directly added to the target.
+ */
+void FileHandler::mergeJsonObjects(JsonVariant target, JsonVariant source)
+{
+    if (!source.is<JsonObject>())
+    {
+        return;
+    }
+
+    for (JsonPair p : source.as<JsonObject>())
+    {
+        if (source[p.key()].is<JsonObject>())
+        {
+            // If Primary Config is missing Object, add new one.
+            if (!target[p.key()].is<JsonObject>())
+            {
+                target[p.key()] = target.to<JsonObject>().createNestedObject(p.key());
+            }
+
+            // Rekursiv merge
+            mergeJsonObjects(target[p.key()], source[p.key()]);
+        }
+        else
+        {
+            // If target is missing Key, add key.
+            if (!target.containsKey(p.key()))
+            {
+                target[p.key()] = source[p.key()];
+            }
+        }
+    }
+}

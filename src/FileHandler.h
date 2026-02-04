@@ -19,6 +19,8 @@ public:
     static void saveConfig(JsonObject object);
     static bool copyFile(const char* source, const char* destination);
     static void reset();
+    static bool mergeConfigFromBackup(const char* configPath, const char* backupPath);
+    static void mergeJsonObjects(JsonVariant target, JsonVariant source);
     static JsonDocument config;
 };
 
