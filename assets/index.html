@@ -483,6 +483,14 @@
                 </div>
             </div>
 
+            <div class="group-title">Matter</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Pairing Code</label>
+                    <input id="mpair" disabled>
+                </div>
+            </div>
+
             <div class="group-title">MQTT Broker</div>
             <div class="control-group">
                 <div class="control-row">
@@ -769,6 +777,8 @@
                 setValue("maxv", response.calibration.max);
                 setValue("minv", response.calibration.min);
                 setValue("tv", response.calibration.volume);
+
+                setValue("mpair", data.matter);
 
                 setValue("mhost", response.mqtt.host);
                 setValue("muser", response.mqtt.user);

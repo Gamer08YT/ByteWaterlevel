@@ -4,6 +4,8 @@
 
 #ifndef MATTERHANDLER_H
 #define MATTERHANDLER_H
+#include <Matter.h>
+#include <ArduinoJson/Document/JsonDocument.hpp>
 
 
 class MatterHandler
@@ -14,6 +16,7 @@ private:
 public:
     static void setup();
     static void loop();
+    static String getPairingCode();
 };
 
 

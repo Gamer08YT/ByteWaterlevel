@@ -50,6 +50,17 @@ void MatterHandler::beginPlugins()
     });
 }
 
+/**
+ * @brief Sets up the MatterHandler by initializing its plugins and starting the Matter
+ *        protocol.
+ *
+ * This method performs the following operations:
+ * - Registers and initializes the Matter plugins via the beginPlugins method, which
+ *   configures and links the required relay devices.
+ * - Starts the Matter protocol stack, enabling Matter-based communication and functionality.
+ *
+ * This is a critical setup routine that ensures the MatterHandler is ready for operation
+ **/
 void MatterHandler::setup()
 {
     // Register Matter Plugins.
@@ -59,6 +70,18 @@ void MatterHandler::setup()
     Matter.begin();
 }
 
+/**
+ * @brief Executes a continuous loop for processing or managing tasks.
+ *
+ * This method is designed to run indefinitely unless interrupted or terminated externally.
+ * Within the loop, it can perform repetitive or necessary operations such as monitoring
+ * conditions, handling events, or managing resources. The specific functionality inside
+ * the loop depends on the implementation details of the application.
+ *
+ * Typical use cases include managing state, polling input or sensors, and executing
+ * periodic actions. Care must be taken to include mechanisms for gracefully breaking or
+ * exiting the loop if required.
+ */
 void MatterHandler::loop()
 {
     // Check Matter Plugin Commissioning state, which may change during execution of loop()
@@ -67,4 +90,18 @@ void MatterHandler::loop()
         relay1.updateAccessory();
         relay2.updateAccessory();
     }
+}
+
+/**
+ * @brief Retrieves the manual pairing code for the Matter device.
+ *
+ * This method fetches the manual pairing code that can be used to pair
+ * the Matter device with a controller or ecosystem. The pairing code
+ * is fetched directly from the Matter instance.
+ *
+ * @return A string representing the manual pairing code for the Matter device.
+ */
+String MatterHandler::getPairingCode()
+{
+    return Matter.getManualPairingCode();
 }
