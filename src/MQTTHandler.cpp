@@ -176,6 +176,12 @@ void MQTTHandler::loop()
 
                 // CPU Temperature
                 publish("waterlevel/cpu", String(DeviceHandler::getCPUTemperature(), 1).c_str());
+
+                // Level (Float)
+                publish("waterlevel/level", String(DeviceHandler::getLevel(), 1).c_str());
+
+                // Volume (Float)
+                publish("waterlevel/volume", String(DeviceHandler::getVolume(), 1).c_str());
             }
         }
         else
