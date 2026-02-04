@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BYTELEVEL</title>
+    <!-- Chart.js von CDN laden -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --success: #34C759;
+            --bg-gradient-1: #4facfe;
+            --bg-gradient-2: #00f2fe;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --text-color: #1d1d1f;
+            --text-secondary: #86868b;
+            --input-bg: rgba(255, 255, 255, 0.5);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-1: #0f2027;
+            --bg-gradient-2: #203a43;
+            --glass-bg: rgba(28, 28, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .tab-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tab-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Dark Mode */
+        [data-theme="dark"] .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Light Mode */
+        [data-theme="light"] .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+
+        .tab-container::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .tab-container::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.45);
+        }
+
+
+        body {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            overflow: hidden;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Ambient Orbs Animation */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #ff0080;
+            top: -50px;
+            left: -50px;
+            opacity: 0.4;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: #7928ca;
+            bottom: -100px;
+            right: -100px;
+            opacity: 0.4;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(30px, 50px);
+            }
+        }
+
+        #connection {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            opacity: 0.5;
+            z-index: 999;
+            background-color: red;
+            padding: 1rem;
+            border-radius: 1.5rem;
+            display: none;
+        }
+
+        /* Glass Container */
+        .app-container {
+            width: 100%;
+            max-width: 45rem;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container[disabled="disabled"] {
+            filter: blur(5px);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        /* Darkmode Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            background: var(--input-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-color);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--input-bg);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--glass-bg);
+            color: var(--text-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Sections */
+        .tab-content {
+            overflow: hidden;
+            height: 100%;
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-container {
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Forms & Groups */
+        .group-title {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .control-group {
+            background: var(--input-bg);
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .control-row:last-child {
+            border-bottom: none;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            background: transparent;
+            border: 1px solid transparent;
+            text-align: right;
+            color: var(--primary);
+            font-size: 1rem;
+            outline: none;
+            width: 60%;
+        }
+
+        input:focus {
+            border-bottom: 1px solid var(--primary);
+        }
+
+        /* Apple Style Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(120, 120, 128, 0.3); /* iOS gray */
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Buttons */
+        .btn-save {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-save, .btn-update {
+            border-radius: 0.8rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-update {
+            padding: 5px;
+            margin-left: 0.5rem;
+        }
+
+        .btn-save:hover, .btn-update:hover {
+            opacity: 0.9;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--input-bg);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hintergrundelemente für Glass-Effekt -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div id="connection">
+    Lost connection, please wait or try again later.
+</div>
+
+<div class="app-container">
+    <header>
+        <h1 style="font-weight: lighter"><b>BYTE</b>LEVEL</h1>
+        <button class="theme-toggle" id="themeSwitcher" aria-label="Toggle Dark Mode">
+            <!-- Sun Icon -->
+            <svg class="theme-icon" id="iconSun" viewBox="0 0 24 24" style="display: none;">
+                <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41l-1.29-1.29zm-1.29-11.08c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0L16.07 7.28a.996.996 0 010-1.41zm-10.49 10.49c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0l-1.29-1.29a.996.996 0 010-1.41z"></path>
+            </svg>
+            <!-- Moon Icon -->
+            <svg class="theme-icon" id="iconMoon" viewBox="0 0 24 24">
+                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('status')">Status</button>
+        <button class="tab-btn" onclick="openTab('config')">Configuration</button>
+        <button class="tab-btn" onclick="openTab('system')">System</button>
+    </div>
+
+    <!-- TAB 1: STATUS -->
+    <div id="status" class="tab-content active">
+        <div class="group-title">TL136 Sensor</div>
+        <div class="chart-container">
+            <canvas id="adcChart"></canvas>
+        </div>
+
+        <div class="group-title">Control</div>
+        <div class="control-group">
+            <div class="control-row">
+                <label for="relay1">Channel 1</label>
+                <label class="switch">
+                    <input type="checkbox" id="relay1">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-row">
+                <label for="relay2">Channel 2</label>
+                <label class="switch">
+                    <input type="checkbox" id="relay2">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: KONFIGURATION -->
+    <div id="config" class="tab-content">
+        <div class="tab-container">
+            <div class="group-title">WiFi Settings</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>SSID</label>
+                    <input id="cssid" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Password</label>
+                    <input id="cpw" type="password">
+                </div>
+            </div>
+
+            <div class="group-title">Access Point (Fallback)</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>AP SSID</label>
+                    <input id="assid" type="text">
+                </div>
+                <div class="control-row">
+                    <label>AP Password</label>
+                    <input id="apw" type="password">
+                </div>
+            </div>
+
+            <div class="group-title">Caliration</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Min. Voltage</label>
+                    <input id="minv" type="number">
+                </div>
+                <div class="control-row">
+                    <label>Max. Voltage</label>
+                    <input id="maxv" type="number">
+                </div>
+                <div class="control-row">
+                    <label>Tank Volume</label>
+                    <input id="tv" type="number">
+                </div>
+            </div>
+
+            <div class="group-title">MQTT Broker</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Enable MQTT</label>
+                    <label class="switch">
+                        <input id="men" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Server</label>
+                    <input id="mhost" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Port</label>
+                    <input id="mport" type="number" value="1883">
+                </div>
+                <div class="control-row">
+                    <label>User</label>
+                    <input id="muser" type="text">
+                </div>
+                <div class="control-row">
+                    <label>Password</label>
+                    <input id="mpw" type="password">
+                </div>
+            </div>
+            <button onclick="save(1)" class="btn-save">Save</button>
+        </div>
+    </div>
+
+    <!-- TAB 3: SYSTEM -->
+    <div id="system" class="tab-content">
+        <div class="tab-container">
+            <div class="group-title">Device Settings</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>System LED</label>
+                    <label class="switch">
+                        <input id="led" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>OTA</label>
+                    <label class="switch">
+                        <input id="ota" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Debug Log Level</label>
+                    <input type="text" value="INFO" readonly style="opacity: 0.5;">
+                </div>
+            </div>
+
+            <div class="group-title">WebGUI Security</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Enable Auth</label>
+                    <label class="switch">
+                        <input id="auth" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label>Admin User</label>
+                    <input id="user" type="text">
+                </div>
+                <div class="control-row">
+                    <label>New Password</label>
+                    <input id="pw" type="password">
+                </div>
+            </div>
+
+            <div class="group-title">Info</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Firmware</label>
+                    <div class="flex">
+                        <span id="firmware"></span>
+                        <button style="display: none" onclick="aupdate()" id="update" class="btn-update">Update</button>
+                    </div>
+                </div>
+                <div class="control-row">
+                    <label>Uptime</label>
+                    <div class="flex">
+                        <span id="up"></span>
+                        <button class="btn-update" onclick="arestart()" style="background-color: green">Restart</button>
+                    </div>
+                </div>
+                <div class="control-row">
+                    <label>CPU Temp.</label>
+                    <span id="temperature"></span>
+                </div>
+                <div class="control-row">
+                    <label>CPU Freq.</label>
+                    <span id="frequency"></span>
+                </div>
+            </div>
+            <button onclick="save(2)" class="btn-save">Save</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    let inFlight = false;
+
+    function setChecked(id, isOn) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.checked = Boolean(isOn);
+    }
+
+
+    function setRelayChecked(ind, isOn) {
+        setChecked(`relay${ind}`, isOn);
+    }
+
+    function formatUptime(s) {
+
+        const days = Math.floor(s / 86400);
+        s %= 86400;
+        const hours = Math.floor(s / 3600);
+        s %= 3600;
+        const mins = Math.floor(s / 60);
+        s %= 60;
+        const secs = s;
+
+        // Dynamisch: zeige immer die "größte" Einheit und alle kleineren bis Sekunden,
+        // aber überspringe führende 0-Einheiten.
+        const units = [
+            ["d", days],
+            ["h", hours],
+            ["min", mins],
+            ["s", secs],
+        ];
+
+        const firstNonZero = units.findIndex(([, v]) => v > 0);
+        if (firstNonZero === -1) return "0s";
+
+        return units
+            .slice(firstNonZero)
+            .filter(([, v]) => v > 0) // innerhalb der Anzeige keine 0-Teile
+            .map(([label, v]) => `${v}${label}`)
+            .join(" ");
+    }
+
+
+    function startStatusPing() {
+        setInterval(async () => {
+            if (inFlight) return;
+            inFlight = true;
+
+            try {
+                const res = await fetch("/api", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({type: "status"}),
+                });
+
+                const response = await res.json();
+
+                if (response.channels !== undefined) {
+                    setRelayChecked(1, response.channels[0]);
+                    setRelayChecked(2, response.channels[1]);
+                }
+
+                document.getElementById("temperature").textContent = (response.cpu + "°C");
+                document.getElementById("frequency").textContent = (response.frequency + " MHz");
+                document.getElementById("up").textContent = formatUptime(response.up);
+
+                const v = window.myChart.data.datasets[0].data;
+                const c = window.myChart.data.datasets[1].data;
+                const l = window.myChart.data.labels;
+
+                v.shift();
+                v.push(response.adc);
+
+                c.shift();
+                c.push(response.current);
+
+                l.shift();
+                l.push(new Date().toLocaleTimeString());
+
+                window.myChart.update('none'); // Update without full re-render
+
+            } catch (err) {
+                // optional: Fehlerbehandlung
+                // console.error("Status-Ping fehlgeschlagen:", err);
+            } finally {
+                inFlight = false;
+            }
+        }, 1000);
+    }
+
+    startStatusPing();
+
+    async function postRelayState(channel, state) {
+        const payload = {
+            type: "relais",
+            channel: channel,
+            state: !!state
+        };
+
+        const res = await fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            throw new Error(`API Fehler: HTTP ${res.status} ${text}`);
+        }
+
+
+        // Optional: falls /api JSON zurückgibt
+        // return res.json();
+        return true;
+    }
+
+    function wireRelayToggle(id, channel) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("change", async (e) => {
+            const state = e.target.checked;
+
+            try {
+                await postRelayState(channel, state);
+            } catch (err) {
+                console.error(err);
+
+                // Optional: UI zurücksetzen, wenn der Call fehlschlägt
+                e.target.checked = !state;
+            }
+        });
+    }
+
+    function setValue(id, text) {
+        document.getElementById(id).value = text;
+    }
+
+    function setText(id, text) {
+        document.getElementById(id).textContent = text;
+    }
+
+    function setOffline(b) {
+        console.log("Offline: " + b);
+
+        document.getElementById("connection").style.display = b ? "block" : "none";
+    }
+
+    async function getInfo() {
+        try {
+            const res = await fetch("/api", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({type: "info"}),
+            });
+
+            const data = await res.json();
+
+            if (data.type == "success") {
+                const response = data.config;
+                window.configESP = response;
+
+                setValue("user", response.admin.user);
+                setValue("pw", response.admin.password);
+                setChecked("auth", response.admin.state);
+                setChecked("led", response.hardware.led);
+                setChecked("ota", response.ota);
+
+                setValue("assid", response.wifi.ap.ssid);
+                setValue("apw", response.wifi.ap.password);
+
+                setValue("cssid", response.wifi.client.ssid);
+                setValue("cpw", response.wifi.client.password);
+
+                setValue("maxv", response.calibration.max);
+                setValue("minv", response.calibration.min);
+                setValue("tv", response.calibration.volume);
+
+                setValue("mhost", response.mqtt.host);
+                setValue("muser", response.mqtt.user);
+                setValue("mport", response.mqtt.port);
+                setValue("mpw", response.mqtt.password);
+                setChecked("men", response.mqtt.state);
+
+                document.getElementById("update").style.display = data.update ? "block" : "none";
+                setText("firmware", data.firmware);
+            }
+
+            setOffline(false);
+        } catch (e) {
+            setOffline(true);
+        }
+
+    }
+
+    function val(id) {
+        return document.getElementById(id).value;
+    }
+
+    function arestart() {
+        if (confirm("Are you sure?")) restart();
+    }
+
+    function restart() {
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({type: "restart"})
+        });
+    }
+
+    function aupdate() {
+        if (confirm("Are you sure?")) update();
+    }
+
+    function update() {
+        fetch("/api", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({type: "update"})
+        });
+    }
+
+    async function save(type) {
+        console.log(window.configESP);
+
+        if (type === 1) {
+            window.configESP.wifi.ap.ssid = val("assid");
+            window.configESP.wifi.ap.password = val("apw");
+
+            window.configESP.wifi.client.ssid = val("cssid");
+            window.configESP.wifi.client.password = val("cpw");
+
+            window.configESP.calibration.max = val("maxv");
+            window.configESP.calibration.min = val("minv");
+            window.configESP.calibration.volume = val("tv");
+
+            window.configESP.mqtt.host = val("mhost");
+            window.configESP.mqtt.port = val("mport");
+            window.configESP.mqtt.user = val("muser");
+            window.configESP.mqtt.password = val("mpw");
+            window.configESP.mqtt.state = document.getElementById("men").checked;
+        }
+
+        if (type === 2) {
+            window.configESP.admin.user = val("user");
+            window.configESP.admin.password = val("pw");
+            window.configESP.admin.state = document.getElementById("auth").checked;
+
+            window.configESP.hardware.led = document.getElementById("led").checked;
+            window.configESP.ota = document.getElementById("ota").checked;
+        }
+
+        console.log("Save", window.configESP);
+
+        await fetch("/api", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({type: "save", config: window.configESP}),
+        }).then((res) => {
+            if (confirm("Saved, restart Device now?")) {
+                restart();
+            }
+        }).catch((err) => alert("Error saving: " + err));
+    }
+
+
+    // relay1 -> channel 1, relay2 -> channel 2
+    document.addEventListener("DOMContentLoaded", () => {
+        wireRelayToggle("relay1", 1);
+        wireRelayToggle("relay2", 2);
+        getInfo();
+    });
+</script>
+<script>
+    // --- Tab Logic ---
+    function openTab(tabName) {
+        // Hide all
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        // Show Target
+        document.getElementById(tabName).classList.add('active');
+
+        // Highlight Button (simple logic based on order or text could be used, here just finding the button)
+        const buttons = document.querySelectorAll('.tab-btn');
+        if (tabName === 'status') buttons[0].classList.add('active');
+        if (tabName === 'config') buttons[1].classList.add('active');
+        if (tabName === 'system') buttons[2].classList.add('active');
+    }
+
+    // --- Theme Switcher Logic ---
+    const themeBtn = document.getElementById('themeSwitcher');
+    const iconSun = document.getElementById('iconSun');
+    const iconMoon = document.getElementById('iconMoon');
+    const html = document.documentElement;
+
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setDark(true);
+    } else {
+        setDark(false);
+    }
+
+    themeBtn.addEventListener('click', () => {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        setDark(!isDark);
+    });
+
+    function setDark(enable) {
+        if (enable) {
+            html.setAttribute('data-theme', 'dark');
+            iconSun.style.display = 'block';
+            iconMoon.style.display = 'none';
+            if (window.myChart) {
+                window.myChart.options.scales.x.grid.color = 'rgba(255,255,255,0.1)';
+                window.myChart.options.scales.y.grid.color = 'rgba(255,255,255,0.1)';
+                window.myChart.update();
+            }
+        } else {
+            html.setAttribute('data-theme', 'light');
+            iconSun.style.display = 'none';
+            iconMoon.style.display = 'block';
+            if (window.myChart) {
+                window.myChart.options.scales.x.grid.color = 'rgba(0,0,0,0.05)';
+                window.myChart.options.scales.y.grid.color = 'rgba(0,0,0,0.05)';
+                window.myChart.update();
+            }
+        }
+    }
+
+    // --- Chart.js Setup (TL136 0-3.3V) ---
+    const ctx = document.getElementById('adcChart').getContext('2d');
+
+    // Initial Data
+    const initialData = Array.from({length: 20}, () => Math.random() * 0.5 + 1.2); // Fake start data around 1.2V
+    const initialCurrent = Array.from({length: 20}, () => Math.random() * 0.5 + 0.5); // Fake start data around 1.2V
+    const labels = Array.from({length: 20}, (_, i) => i);
+
+    // Gradient for Chart
+    let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(0, 122, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 122, 255, 0.0)');
+
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Spannung (V)',
+                data: initialData,
+                borderColor: '#007AFF',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                fill: true,
+                tension: 0.4
+            },
+                {
+                    label: 'Strom (mA)',
+                    data: initialCurrent,
+                    borderColor: '#007AFF',
+                    backgroundColor: gradient,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {display: false},
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff'
+                }
+            },
+            scales: {
+                x: {
+                    display: false, // Hide x labels for clean look
+                    grid: {color: 'rgba(0,0,0,0.05)'}
+                },
+                y: {
+                    min: 0,
+                    max: 3.3,
+                    grid: {color: 'rgba(0,0,0,0.05)'},
+                    ticks: {
+                        callback: function (value) {
+                            return value + ' V';
+                        },
+                        color: '#86868b'
+                    }
+                }
+            },
+            animation: {duration: 0} // Disable init animation for updates
+        }
+    });
+
+</script>
