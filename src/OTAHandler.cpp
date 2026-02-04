@@ -2,9 +2,8 @@
 // Created by JanHe on 25.01.2026.
 //
 
-#include <ArduinoOTA.h>
 #include "OTAHandler.h"
-#include <WiFi.h>
+#include <ArduinoOTA.h>
 
 #include "esp32FOTA.hpp"
 #include "FileHandler.h"
