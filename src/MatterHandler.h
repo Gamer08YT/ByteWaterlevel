@@ -4,8 +4,8 @@
 
 #ifndef MATTERHANDLER_H
 #define MATTERHANDLER_H
-#include <Matter.h>
 
+#include <Arduino.h>
 
 class MatterHandler
 {
