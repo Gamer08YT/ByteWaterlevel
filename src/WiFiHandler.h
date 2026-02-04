@@ -8,8 +8,6 @@
 #include <ArduinoJson.h>
 
 
-class WiFiClient;
-
 class WiFiHandler
 {
 private:
