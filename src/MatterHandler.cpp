@@ -60,7 +60,9 @@ void MatterHandler::beginPlugins()
  * - Starts the Matter protocol stack, enabling Matter-based communication and functionality.
  *
  * This is a critical setup routine that ensures the MatterHandler is ready for operation
- **/
+ * and capable of handling Matter communication. It orchestrates the initialization of
+ * necessary components for Matter compliance.
+ */
 void MatterHandler::setup()
 {
     // Register Matter Plugins.
