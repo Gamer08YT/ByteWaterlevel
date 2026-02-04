@@ -14,9 +14,6 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 unsigned long WiFiHandler::connectionStartTime = 0;
 bool WiFiHandler::apStarted = false;
 
-// Store WiFi Client Instance.
-WiFiClient* WiFiHandler::instance;
-
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
 IPAddress apIP(10, 10, 10, 1);
 IPAddress gateway(10, 10, 10, 1);
