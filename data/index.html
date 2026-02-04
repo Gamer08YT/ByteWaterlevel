@@ -734,43 +734,55 @@
         document.getElementById(id).textContent = text;
     }
 
+    function setOffline(b) {
+        console.log("Offline: " + b);
+
+        document.getElementById("connection").style.display = b ? "block" : "none";
+    }
+
     async function getInfo() {
-        const res = await fetch("/api", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({type: "info"}),
-        });
+        try {
+            const res = await fetch("/api", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({type: "info"}),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (data.type == "success") {
-            const response = data.config;
-            window.configESP = response;
+            if (data.type == "success") {
+                const response = data.config;
+                window.configESP = response;
 
-            setValue("user", response.admin.user);
-            setValue("pw", response.admin.password);
-            setChecked("auth", response.admin.state);
-            setChecked("led", response.hardware.led);
-            setChecked("ota", response.ota);
+                setValue("user", response.admin.user);
+                setValue("pw", response.admin.password);
+                setChecked("auth", response.admin.state);
+                setChecked("led", response.hardware.led);
+                setChecked("ota", response.ota);
 
-            setValue("assid", response.wifi.ap.ssid);
-            setValue("apw", response.wifi.ap.password);
+                setValue("assid", response.wifi.ap.ssid);
+                setValue("apw", response.wifi.ap.password);
 
-            setValue("cssid", response.wifi.client.ssid);
-            setValue("cpw", response.wifi.client.password);
+                setValue("cssid", response.wifi.client.ssid);
+                setValue("cpw", response.wifi.client.password);
 
-            setValue("maxv", response.calibration.max);
-            setValue("minv", response.calibration.min);
-            setValue("tv", response.calibration.volume);
+                setValue("maxv", response.calibration.max);
+                setValue("minv", response.calibration.min);
+                setValue("tv", response.calibration.volume);
 
-            setValue("mhost", response.mqtt.host);
-            setValue("muser", response.mqtt.user);
-            setValue("mport", response.mqtt.port);
-            setValue("mpw", response.mqtt.password);
-            setChecked("men", response.mqtt.state);
+                setValue("mhost", response.mqtt.host);
+                setValue("muser", response.mqtt.user);
+                setValue("mport", response.mqtt.port);
+                setValue("mpw", response.mqtt.password);
+                setChecked("men", response.mqtt.state);
 
-            document.getElementById("update").style.display = data.update ? "block" : "none";
-            setText("firmware", data.firmware);
+                document.getElementById("update").style.display = data.update ? "block" : "none";
+                setText("firmware", data.firmware);
+            }
+
+            setOffline(false);
+        } catch (e) {
+            setOffline(true);
         }
 
     }
