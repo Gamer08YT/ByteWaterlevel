@@ -6,11 +6,15 @@
 #define MATTERHANDLER_H
 
 
+class MatterHandler
+{
+private:
+    static void beginPlugins();
 
-class MatterHandler {
-
+public:
+    static void setup();
+    static void loop();
 };
-
 
 
 #endif //MATTERHANDLER_H

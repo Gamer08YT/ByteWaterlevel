@@ -1,3 +1,5 @@
+#include <MatterHandler.h>
+
 #include "Arduino.h"
 #include "DeviceHandler.h"
 #include "FileHandler.h"
@@ -43,6 +45,9 @@ void setup()
     // Setup OTA.
     OTAHandler::setup();
 
+    // Setup Matter.
+    MatterHandler::setup();
+
     // Check for Connection.
     if (WiFiHandler::isConnected())
     {
@@ -67,4 +72,7 @@ void loop()
 
     // Loop OTA.
     OTAHandler::loop();
+
+    // Loop Matter.
+    MatterHandler::loop();
 }
