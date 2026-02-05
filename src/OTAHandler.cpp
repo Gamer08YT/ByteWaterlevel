@@ -97,8 +97,29 @@ void OTAHandler::loop()
         ArduinoOTA.handle();
     }
 
-    // Handle Pull.
-    pull.handle();
+
+    if (checkWAN())
+    {
+        // Handle Pull.
+        pull.handle();
+    }
+}
+
+/**
+ * @brief Checks the current Wi-Fi connection status.
+ *
+ * This function verifies if the device is connected to a Wi-Fi network
+ * by checking the status of the Wi-Fi connection. It returns true
+ * if the Wi-Fi connection is established, otherwise false.
+ *
+ * @return `true` if Wi-Fi is connected (`WL_CONNECTED`), otherwise `false`.
+ *
+ * @note This function primarily relies on the `WiFi.status()` method
+ *       to determine the connectivity state.
+ */
+bool OTAHandler::checkWAN()
+{
+    return WiFi.status() == WL_CONNECTED;
 }
 
 /**
@@ -118,7 +139,11 @@ void OTAHandler::loop()
  */
 bool OTAHandler::hasUpdate()
 {
-    return pull.execHTTPcheck();
+    if (checkWAN())
+    {
+        return pull.execHTTPcheck();
+    }
+    return false;
 }
 
 /**
@@ -138,7 +163,7 @@ bool OTAHandler::hasUpdate()
  *       update server and downloading the firmware.
  *
  * @see ESP32OTAPull::CheckForOTAUpdate
- */
+     */
 void OTAHandler::update()
 {
     pull.execOTA();

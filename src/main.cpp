@@ -1,5 +1,3 @@
-#include <MatterHandler.h>
-
 #include "Arduino.h"
 #include "DeviceHandler.h"
 #include "FileHandler.h"
@@ -7,6 +5,7 @@
 #include "OTAHandler.h"
 #include "WebHandler.h"
 #include "WiFiHandler.h"
+//#include <MatterHandler.h>
 
 /**
  * @brief Initializes the system components necessary for operation.
@@ -46,7 +45,7 @@ void setup()
     OTAHandler::setup();
 
     // Setup Matter.
-    MatterHandler::setup();
+    //MatterHandler::setup();
 
     // Check for Connection.
     if (WiFiHandler::isConnected())
@@ -54,6 +53,8 @@ void setup()
         // Setup MQTT.
         MQTTHandler::setup();
     }
+
+    Serial.println("Ready");
 }
 
 void loop()
@@ -74,5 +75,5 @@ void loop()
     OTAHandler::loop();
 
     // Loop Matter.
-    MatterHandler::loop();
+    //MatterHandler::loop();
 }

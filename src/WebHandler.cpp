@@ -7,7 +7,7 @@
 #include "WebHandler.h"
 #include <InternalConfig.h>
 #include <LittleFS.h>
-#include <MatterHandler.h>
+//#include <MatterHandler.h>
 #include <lwip/sockets.h>
 
 #include "DeviceHandler.h"
@@ -212,7 +212,7 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
         doc["firmware"] = VERSION;
 
         // Add Matter manuel Pairing Code.
-        doc["matter"] = MatterHandler::getPairingCode();
+        //doc["matter"] = MatterHandler::getPairingCode();
 
         // Add Update Info.
         doc["update"] = OTAHandler::hasUpdate();

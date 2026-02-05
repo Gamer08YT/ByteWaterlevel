@@ -11,6 +11,7 @@ class OTAHandler
 public:
     static void setup();
     static void loop();
+    static bool checkWAN();
     static bool hasUpdate();
     static void update();
 };
