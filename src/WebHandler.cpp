@@ -179,19 +179,19 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
 
         // Set ADC Voltage.
-        doc["adc"] = DeviceHandler::getADCValue();
+        doc["adc"] = DeviceHandler::getADCValueCached();
 
         // Set Current (eq. 4-20mA).
-        doc["current"] = DeviceHandler::getCurrent(false);
+        doc["current"] = DeviceHandler::getCurrentCached();
 
         // Set Tank Level in %.
-        doc["level"] = DeviceHandler::getLevel();
+        doc["level"] = DeviceHandler::getLevelCached();
 
         // Set Volume in L.
-        doc["volume"] = DeviceHandler::getVolume();
+        doc["volume"] = DeviceHandler::getVolumeCached();
 
         // Set CPU Temperature.
-        doc["cpu"] = DeviceHandler::getCPUTemperature();
+        doc["cpu"] = DeviceHandler::getCPUTemperatureCached();
 
         // Set CPU Frequency.
         doc["frequency"] = ESP.getCpuFreqMHz();

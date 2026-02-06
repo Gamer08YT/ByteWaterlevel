@@ -11,6 +11,7 @@
 #define VERSION "1.3.0"
 #define DEBUG true
 #define BLINK_INTERVAL 250
+#define SCAN_INTERVAL 1000
 #define MQTT_INTERVAL 1000
 
 /**

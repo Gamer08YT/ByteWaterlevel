@@ -3,6 +3,8 @@
 //
 #include <Arduino.h>
 
+#include "ArduinoJson/Document/JsonDocument.hpp"
+
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
 
@@ -12,6 +14,8 @@ class DeviceHandler
 private:
     static void handleRelais();
     static void handleBlink();
+    static void scanSensors();
+    static void handleScan();
 
 public:
     static void loop();
@@ -26,6 +30,11 @@ public:
     static int getDuration(int i);
     static float getLevel();
     static float getVolume();
+    static float getVolumeCached();
+    static float getCPUTemperatureCached();
+    static float getLevelCached();
+    static float getCurrentCached();
+    static float getADCValueCached();
 };
 
 

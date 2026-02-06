@@ -12,6 +12,9 @@
 // Store last Blink Timestamp.
 unsigned long previousMillis = 0;
 
+// Store last Scan Timestamp.
+unsigned long scanMillis = 0;
+
 // Store last Relais Duration Timestamp.
 unsigned long ch1 = -1;
 unsigned long ch2 = -1;
@@ -36,6 +39,13 @@ float minV = 0.0;
 
 // Store Tank Volume.
 float tankVolume = 1000.0;
+
+// Store scanned Values (Caching to save CPU)
+float scanCurrent = 0.00;
+float scanTemperature = 0.00;
+float scanWaterLevel = 0.00;
+float scanWaterVolume = 0.00;
+
 
 /**
  * Monitors and manages the state of relays based on their configured timers.
@@ -109,10 +119,60 @@ void DeviceHandler::handleBlink()
     }
 }
 
+
+void DeviceHandler::scanSensors()
+{
+    // Read ADC First = latestVoltage as ref.
+    getADCValue();
+
+    // Read Sensor Values.
+    scanCurrent = getCurrent(false);
+    scanTemperature = getCPUTemperature();
+    scanWaterLevel = getLevel();
+    scanWaterVolume = getVolume();
+}
+
+void DeviceHandler::handleScan()
+{
+    unsigned long currentMillis = millis();
+
+    // Check if the interval has passed
+    if (currentMillis - scanMillis >= SCAN_INTERVAL)
+    {
+        scanMillis = currentMillis;
+
+        scanSensors();
+    }
+}
+
+/**
+ * Executes periodic tasks required for the proper functioning of the device.
+ *
+ * This method acts as the main loop for the `DeviceHandler` class, invoking
+ * specific subroutines in a predefined sequence. Each subroutine manages
+ * a distinct functionality of the device, such as blinking an LED, handling
+ * relay states, and performing scanning operations.
+ *
+ * Behavior:
+ * - Calls `handleBlink()` to manage the LED blinking operation based on the specified
+ *   blink interval.
+ * - Calls `handleRelais()` to monitor and control the state of relays based on their
+ *   configured timers.
+ * - Calls `handleScan()` to handle scanning-related tasks.
+ *
+ * Preconditions:
+ * - The device and its components (e.g., relays, LED) must be properly initialized and
+ *   functional.
+ * - Any required configurations (e.g., timers, intervals) must be defined and valid.
+ *
+ * Postconditions:
+ * - Executes the subroutines sequentially, ensuring periodic tasks are handled as needed.
+ */
 void DeviceHandler::loop()
 {
     handleBlink();
     handleRelais();
+    handleScan();
 }
 
 /**
@@ -191,7 +251,6 @@ void DeviceHandler::setup()
 
     // Set ADC Attenuation.
     analogSetPinAttenuation(SENSE, ADC_11db);
-
 
     // Input Pins.
     pinMode(SENSE, INPUT);
@@ -487,4 +546,118 @@ float DeviceHandler::getLevel()
 float DeviceHandler::getVolume()
 {
     return tankVolume * (getLevel() / 100.0f);
+}
+
+/**
+ * Retrieves the cached value of the water volume measurement.
+ *
+ * This method returns the most recently scanned water volume, stored in the `scanWaterVolume`
+ * variable. The value represents the last known measurement without triggering a new
+ * volume scanning operation. It is useful for applications where frequent or real-time
+ * volume updates are not required, thus saving computational resources.
+ *
+ * @return The cached water volume as a floating-point value. The value is the last recorded
+ *         measurement of the water volume or the default initialized value if no update
+ *         has occurred.
+ */
+float DeviceHandler::getVolumeCached()
+{
+    return scanWaterVolume;
+}
+
+/**
+ * Retrieves the cached value of the CPU temperature.
+ *
+ * This method provides the most recently scanned value of the CPU temperature,
+ * stored in the `scanTemperature` variable. The value is updated periodically
+ * by other components or processes, ensuring low-latency access to temperature
+ * data without performing a new scan.
+ *
+ * Preconditions:
+ * - The `scanTemperature` variable must contain an updated temperature reading.
+ *
+ * Postconditions:
+ * - Returns the cached CPU temperature value as a floating-point number.
+ *
+ * @return The cached value of the CPU temperature in degrees Celsius.
+ */
+float DeviceHandler::getCPUTemperatureCached()
+{
+    return scanTemperature;
+}
+
+/**
+ * Retrieves the cached value of the water level measurement.
+ *
+ * This method returns the most recently stored value of the water level percentage,
+ * which was previously measured and cached. The cached value provides quick access
+ * without requiring a new measurement or sensor scan.
+ *
+ * Preconditions:
+ * - The `scanWaterLevel` variable must hold a valid cached water level percentage, as
+ *   updated by the appropriate scanning or sensing process.
+ *
+ * Postconditions:
+ * - The cached water level percentage remains unchanged after this method call.
+ *
+ * Behavior:
+ * - The method simply fetches and returns the current cached value of water level
+ *   from the `scanWaterLevel` variable without initiating any additional sensor reads.
+ *
+ * @return The cached water level percentage as a floating-point value.
+ */
+float DeviceHandler::getLevelCached()
+{
+    return scanWaterLevel;
+}
+
+/**
+ * Retrieves the most recently cached current value measured by the device.
+ *
+ * This method returns the current measurement previously scanned and stored
+ * in the internal cache. It provides quick access to the last recorded value
+ * without initiating a new sensor reading.
+ *
+ * Preconditions:
+ * - The `scanCurrent` variable must have been updated with a valid measurement
+ *   from a prior sensor scan operation.
+ *
+ * Postconditions:
+ * - No sensor is queried or updated as this method only fetches the cached value.
+ *
+ * Behavior:
+ * - The method simply returns the value of the `scanCurrent` variable, representing
+ *   the last recorded current measurement in floating-point format.
+ *
+ * @return The cached current measurement as a float value.
+ */
+float DeviceHandler::getCurrentCached()
+{
+    return scanCurrent;
+}
+
+/**
+ * Retrieves the most recently cached ADC voltage value.
+ *
+ * This method provides the last stored analog-to-digital converter (ADC)
+ * voltage reading without initiating a new measurement. It serves as a
+ * faster alternative to obtaining the latest ADC value when repeated
+ * readings are unnecessary or when the cached value suffices.
+ *
+ * Preconditions:
+ * - The `latestVoltage` variable must have been updated previously
+ *   through a measurement or initialization process.
+ *
+ * Postconditions:
+ * - The returned value reflects the last stored ADC voltage reading,
+ *   which may not represent the current state of the ADC.
+ *
+ * Behavior:
+ * - Always returns the cached ADC voltage value stored in `latestVoltage`.
+ *
+ * @return The cached ADC voltage value as a floating-point number.
+ */
+float DeviceHandler::getADCValueCached()
+{
+    return latestVoltage;
 }

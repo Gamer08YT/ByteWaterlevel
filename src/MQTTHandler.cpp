@@ -160,7 +160,7 @@ void MQTTHandler::loop()
                 previousMillisMQTT = currentMillis;
 
                 // Voltage (Float)
-                publish("waterlevel/voltage", String(DeviceHandler::getADCValue(), 2).c_str());
+                publish("waterlevel/voltage", String(DeviceHandler::getADCValueCached(), 2).c_str());
 
                 // Channel 1 (Bool)
                 publish("waterlevel/channel/1/state", DeviceHandler::getState(1) ? "1" : "0");
@@ -175,13 +175,13 @@ void MQTTHandler::loop()
                 publish("waterlevel/channel/2/duration", String(DeviceHandler::getDuration(2)).c_str());
 
                 // CPU Temperature
-                publish("waterlevel/cpu", String(DeviceHandler::getCPUTemperature(), 1).c_str());
+                publish("waterlevel/cpu", String(DeviceHandler::getCPUTemperatureCached(), 1).c_str());
 
                 // Level (Float)
-                publish("waterlevel/level", String(DeviceHandler::getLevel(), 1).c_str());
+                publish("waterlevel/level", String(DeviceHandler::getLevelCached(), 1).c_str());
 
                 // Volume (Float)
-                publish("waterlevel/volume", String(DeviceHandler::getVolume(), 1).c_str());
+                publish("waterlevel/volume", String(DeviceHandler::getVolumeCached(), 1).c_str());
             }
         }
         else
