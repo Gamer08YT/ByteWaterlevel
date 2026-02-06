@@ -935,8 +935,6 @@
     const ctx = document.getElementById('adcChart').getContext('2d');
 
     // Initial Data
-    const initialData = Array.from({length: 20}, () => Math.random() * 0.5 + 1.2); // Fake start data around 1.2V
-    const initialCurrent = Array.from({length: 20}, () => Math.random() * 0.5 + 0.5); // Fake start data around 1.2V
     const labels = Array.from({length: 20}, (_, i) => i);
 
     // Gradient for Chart
@@ -949,8 +947,8 @@
         data: {
             labels: labels,
             datasets: [{
-                label: 'Spannung (V)',
-                data: initialData,
+                label: 'Voltage (V)',
+                data: [],
                 borderColor: '#007AFF',
                 backgroundColor: gradient,
                 borderWidth: 2,
@@ -960,8 +958,8 @@
                 tension: 0.4
             },
                 {
-                    label: 'Strom (mA)',
-                    data: initialCurrent,
+                    label: 'Current (mA)',
+                    data: [],
                     borderColor: '#007AFF',
                     backgroundColor: gradient,
                     borderWidth: 2,
@@ -987,7 +985,7 @@
             },
             scales: {
                 x: {
-                    display: false, // Hide x labels for clean look
+                    display: false,
                     grid: {color: 'rgba(0,0,0,0.05)'}
                 },
                 y: {
@@ -997,6 +995,18 @@
                     ticks: {
                         callback: function (value) {
                             return value + ' V';
+                        },
+                        color: '#86868b'
+                    }
+                },
+                y1: {
+                    min: 0,
+                    max: 20,
+                    grid: {color: 'rgba(0,0,0,0.05)'},
+                    position: 'right',
+                    ticks: {
+                        callback: function (value) {
+                            return value + ' mA';
                         },
                         color: '#86868b'
                     }

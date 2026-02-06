@@ -1,9 +1,9 @@
 //
 // Created by JanHe on 10.01.2026.
 //
+#pragma once
 #include <Arduino.h>
 
-#include "ArduinoJson/Document/JsonDocument.hpp"
 
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
