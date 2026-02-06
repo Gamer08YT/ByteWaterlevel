@@ -143,6 +143,7 @@ bool OTAHandler::hasUpdate()
     {
         return pull.execHTTPcheck();
     }
+
     return false;
 }
 

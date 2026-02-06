@@ -753,8 +753,6 @@
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({type: "info"}),
-        }).catch(() => {
-            setOffline(true);
         });
 
         const data = await res.json();

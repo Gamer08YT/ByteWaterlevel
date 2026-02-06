@@ -19,7 +19,7 @@
   },
   "calibration": {
     "min": "0.00",
-    "max": "2.40"
+    "max": "2.40",
     "volume": 1000
   }
   "admin": {
