@@ -142,6 +142,11 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 {
     String type = json["type"].as<String>();
 
+#if DEBUG == true
+    Serial.printf("API Call: %s\n", type.c_str());
+#endif
+
+
     if (type == "relais")
     {
         // Check if Relais Query Contains a channel (int) and state (bool).
