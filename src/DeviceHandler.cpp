@@ -120,10 +120,78 @@ void DeviceHandler::handleBlink()
 }
 
 
+/**
+ * Executes an ADC (Analog-to-Digital Converter) reading task and terminates itself.
+ *
+ * This task function retrieves the latest ADC value by invoking the `DeviceHandler::getADCValue` method.
+ * The resulting value is stored in the `latestVoltage` variable, serving as a reference for subsequent operations
+ * or calculations. Following the read operation, the task automatically deletes itself to free up system resources.
+ *
+ * Preconditions:
+ * - The ADC and its associated configurations (e.g., `SENSE` pin defined in `InternalConfig.h`) must be properly initialized.
+ * - The `DeviceHandler` class must be accessible and configured for ADC operations.
+ *
+ * Postconditions:
+ * - The `latestVoltage` variable contains the most recent ADC-converted voltage value.
+ * - The task is deleted and will no longer consume system resources.
+ *
+ * Behavior:
+ * - Reads an analog voltage value through the `DeviceHandler::getADCValue` method.
+ * - Transfers control to the FreeRTOS scheduler for task deletion via `vTaskDelete`.
+ *
+ * Note:
+ * - This function runs once and is self-terminating upon completion.
+ */
+void adcTaskFunction(void* parameter)
+{
+    // Read ADC First = latestVoltage as ref.
+    DeviceHandler::getADCValue();
+
+    // Task beendet sich automatisch
+    vTaskDelete(NULL);
+}
+
+
+/**
+ * Conducts a sensor scan by initiating ADC conversion and retrieving sensor values.
+ *
+ * This method performs multiple actions:
+ * - Starts a task to initiate ADC voltage reading, updating the `latestVoltage` reference.
+ * - Reads and updates various sensor-related parameters, including current, CPU temperature,
+ *   water level percentage, and water volume.
+ *
+ * Behavior:
+ * - The ADC task (`adcTaskFunction`) is created to asynchronously read the voltage via ADC,
+ *   updating the `latestVoltage` value. The task is automatically destroyed after execution.
+ * - The `getCurrent()` method fetches the current sensor value based on the ADC reading.
+ * - The `getCPUTemperature()` method retrieves the CPU's current temperature.
+ * - The `getLevel()` method calculates the water level percentage using the latest ADC voltage.
+ * - The `getVolume()` method computes the water tank's volume based on the water level percentage.
+ *
+ * Preconditions:
+ * - The ADC hardware and associated pins must be properly configured and operational.
+ * - The system should support task creation using `xTaskCreate`.
+ * - The `minV`, `maxV`, and `tankVolume` must be configured appropriately to ensure accurate calculations.
+ *
+ * Postconditions:
+ * - Updates the global variables `scanCurrent`, `scanTemperature`, `scanWaterLevel`, and `scanWaterVolume`
+ *   with the most recent sensor readings.
+ *
+ * Threading Model:
+ * - Utilizes FreeRTOS task functionality (`xTaskCreate`) to perform ADC reading asynchronously.
+ */
 void DeviceHandler::scanSensors()
 {
     // Read ADC First = latestVoltage as ref.
-    getADCValue();
+    xTaskCreate(
+        adcTaskFunction,
+        "ADC Task",
+        2048,
+        NULL,
+        1,
+        NULL
+    );
+
 
     // Read Sensor Values.
     scanCurrent = getCurrent(false);
@@ -132,6 +200,25 @@ void DeviceHandler::scanSensors()
     scanWaterVolume = getVolume();
 }
 
+/**
+ * Manages periodic sensor scanning based on a predefined time interval.
+ *
+ * This method verifies if the specified time interval (`SCAN_INTERVAL`) has elapsed.
+ * If the interval has passed, it updates the `scanMillis` timestamp to the current time
+ * and invokes the `scanSensors()` method to read sensor data.
+ *
+ * Preconditions:
+ * - The `SCAN_INTERVAL` constant must be defined to specify the time interval between scans.
+ * - Sensor-related functionalities, handled in the `scanSensors()` method, must be implemented and operational.
+ *
+ * Postconditions:
+ * - If the interval has elapsed, sensor data is refreshed via `scanSensors()`.
+ * - The `scanMillis` variable is updated to the current time to track the last scan moment.
+ *
+ * Behavior:
+ * - Performs no operation if the elapsed time since the last scan is less than the defined interval.
+ * - Triggers the sensor scanning process as soon as the interval has been satisfied.
+ */
 void DeviceHandler::handleScan()
 {
     unsigned long currentMillis = millis();
@@ -360,7 +447,7 @@ bool DeviceHandler::getState(int i)
  */
 float DeviceHandler::getADCValue()
 {
-    return readVoltage(SENSE, 256);
+    return readVoltage(SENSE, 64);
 }
 
 /**

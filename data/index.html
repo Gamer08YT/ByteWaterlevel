@@ -945,7 +945,8 @@
             datasets: [{
                 label: 'Voltage (V)',
                 data: [],
-                borderColor: '#007AFF',
+                yAxisID: 'y',
+                borderColor: '#0A84FF',
                 backgroundColor: gradient,
                 borderWidth: 2,
                 pointRadius: 0,
@@ -956,8 +957,9 @@
                 {
                     label: 'Current (mA)',
                     data: [],
-                    borderColor: '#007AFF',
-                    backgroundColor: gradient,
+                    yAxisID: 'y1',
+                    borderColor: '#30D158',
+                    backgroundColor: 'rgba(48,209,88,0.15)',
                     borderWidth: 2,
                     pointRadius: 0,
                     pointHoverRadius: 4,
@@ -985,6 +987,7 @@
                     grid: {color: 'rgba(0,0,0,0.05)'}
                 },
                 y: {
+                    beginAtZero: true,
                     min: 0,
                     max: 3.3,
                     grid: {color: 'rgba(0,0,0,0.05)'},
@@ -996,6 +999,7 @@
                     }
                 },
                 y1: {
+                    beginAtZero: true,
                     min: 0,
                     max: 20,
                     grid: {color: 'rgba(0,0,0,0.05)'},
