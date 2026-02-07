@@ -39,7 +39,8 @@ The Device is designed only to work with external Antennas to provide a good Wi-
     - Tank Level in L (Works with rectangular / upright round / horizontal round tanks)
 
 Planned:
-  - Update Config after Update with new Keys/Values from Backup File.
+
+- Update Config after Update with new Keys/Values from Backup File.
 
 ## Specifications:
 
@@ -49,6 +50,18 @@ Planned:
 * Relais current (peak): **max 10A**
 * Power consumption: low
 * Sensor: TL136 (Optional with Overvoltage protection)
+
+### Working Principle
+
+ByteWaterlevel is a Current to Voltage Converter for the Liquid Sensor TL-136 wich outputs an current between 4–20mA.
+
+The supply Voltage for the Board is designed for 24V, but the board has a Buck converter wich allows supply voltage
+from 12–26V.
+
+An OP-Amp is used to amplify the Voltage Drop on a 120-Ohm Resistor.
+
+The Sensor is tied directly to VCC In, so please use a good power supply otherwise the measurement tolerance can be big.
+
 
 ## Setup
 
