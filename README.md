@@ -28,6 +28,7 @@ The Device is designed only to work with external Antennas to provide a good Wi-
 - USB
     - Flashing
     - JTAG
+- Fastboot (Device is ready in under 1 Second)
 - GUI
     - Status
     - Configuration
