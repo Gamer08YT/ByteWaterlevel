@@ -1,5 +1,9 @@
 # Setup
 
+## Firmware Setup
+
+If you received an blank ESP32 on you board or you damaged the firmware please look at <a href="./FLASH.md">FLASH.md</a>.
+
 ## Initial Setup
 
 When powering up the Device for the first Time, it opens an WiFI AP, you need then to connect to the WiFi.
