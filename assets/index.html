@@ -934,9 +934,6 @@
     // --- Chart.js Setup (TL136 0-3.3V) ---
     const ctx = document.getElementById('adcChart').getContext('2d');
 
-    // Initial Data
-    const labels = Array.from({length: 20}, (_, i) => i);
-
     // Gradient for Chart
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(0, 122, 255, 0.5)');
@@ -945,7 +942,7 @@
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels: [],
             datasets: [{
                 label: 'Voltage (V)',
                 data: [],
