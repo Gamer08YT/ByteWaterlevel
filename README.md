@@ -1,7 +1,7 @@
 # ByteWaterlevel
 
 ByteWaterlevel in Short (BYTELEVEL) is an Device to Monitor Wells, Cisterns and co.
-It uses an TL136 Sensor to monitor the Fluid Level.
+It uses an TL136 Sensor to monitor the Fluid Level, but it works with all 4-20mA Sensors.
 
 It comes with two Relais to control Pumps, Sirens or other Appliances.
 
@@ -62,14 +62,14 @@ An OP-Amp is used to amplify the Voltage Drop on a 120-Ohm Resistor.
 
 The Sensor is tied directly to VCC In, so please use a good power supply otherwise the measurement tolerance can be big.
 
-
 ## Setup
 
 For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
 
 ## Automation
 
-The Device comes with integrated Automation Functions for more Information look at <a href="./AUTOMATION.md">AUTOMATION.md</a>.
+The Device comes with integrated Automation Functions for more Information look at <a href="./AUTOMATION.md">
+AUTOMATION.md</a>.
 
 ## Factory reset:
 

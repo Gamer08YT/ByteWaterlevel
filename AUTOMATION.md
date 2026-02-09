@@ -5,6 +5,8 @@ The Device Firmware comes with integrated Automations.
 - Pump and Fill
 - Fill
 
+![img.png](assets/img/automation.png)
+
 ### Pump and Fill
 
 In this Mode the Device will enable <code>Relay 2</code> if the Level is between the given <code>max</code> and <code>
