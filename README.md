@@ -67,6 +67,10 @@ The Sensor is tied directly to VCC In, so please use a good power supply otherwi
 
 For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
 
+## Automation
+
+The Device comes with integrated Automation Functions for more Information look at <a href="./AUTOMATION.md">AUTOMATION.md</a>.
+
 ## Factory reset:
 
 For Factory reset have a Look into <a href="./RESET.md">RESET.md</a>.
