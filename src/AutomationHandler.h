@@ -9,7 +9,9 @@
 class AutomationHandler
 {
 private:
+    static void setPump(bool cond);
     static void handlePump();
+    static void setFill(bool cond);
     static void handleFill();
 
 public:
