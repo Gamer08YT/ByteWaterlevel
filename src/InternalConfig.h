@@ -8,7 +8,7 @@
 /**
  * Define Default Values.
  */
-#define VERSION "1.4.0"
+#define VERSION "1.5.0"
 #define DEBUG true
 #define BLINK_INTERVAL 250
 #define SCAN_INTERVAL 1000
