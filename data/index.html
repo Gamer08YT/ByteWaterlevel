@@ -285,7 +285,7 @@
             font-weight: 500;
         }
 
-        input[type="text"], input[type="password"], input[type="number"] {
+        input[type="text"], input[type="password"], input[type="number"], select {
             background: transparent;
             border: 1px solid transparent;
             text-align: right;
@@ -498,6 +498,18 @@
                 <div class="control-row">
                     <label>Tank Volume</label>
                     <input id="tv" type="number">
+                </div>
+            </div>
+
+            <div class="group-title">Automation</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label for="mode">Mode</label>
+                    <select id="mode">
+                        <option value="0">Off</option>
+                        <option value="1">Fill & Pump</option>
+                        <option value="2">Fill</option>
+                    </select>
                 </div>
             </div>
 
