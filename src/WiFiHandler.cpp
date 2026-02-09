@@ -98,6 +98,19 @@ bool WiFiHandler::isConnected()
     return WiFi.status() == WL_CONNECTED;
 }
 
+/**
+ * Retrieves the current Received Signal Strength Indicator (RSSI) value
+ * of the connected Wi-Fi network. RSSI represents the signal strength,
+ * where higher negative values indicate a weaker signal (e.g., -30 dBm
+ * represents a strong signal, while -90 dBm represents a weak signal).
+ *
+ * @return The current RSSI value as a float, measured in dBm.
+ */
+float WiFiHandler::getRSSI()
+{
+    return WiFi.RSSI();
+}
+
 
 /**
  * Checks the current Wi-Fi connection status and handles reconnection or starting

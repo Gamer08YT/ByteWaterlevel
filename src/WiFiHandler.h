@@ -22,7 +22,7 @@ public:
     static void setup();
     static void loop();
     static bool isConnected();
-
+    static float getRSSI();
 };
 
 

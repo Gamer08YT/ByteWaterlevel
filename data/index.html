@@ -346,21 +346,6 @@
             transform: translateX(20px);
         }
 
-        /* Signal Icon */
-        .signal-icon {
-            background: var(--input-bg);
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .signal-path {
-            fill: var(--text-color);
-        }
-
-        /* Buttons */
         .btn-save {
             width: 100%;
             padding: 15px;
@@ -386,7 +371,6 @@
             opacity: 0.9;
         }
 
-        /* Chart Container */
         .chart-container {
             background: var(--input-bg);
             border-radius: 16px;
@@ -398,7 +382,6 @@
 </head>
 <body>
 
-<!-- Hintergrundelemente für Glass-Effekt -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
@@ -410,23 +393,16 @@
     <header>
         <h1 style="font-weight: lighter"><b>BYTE</b>LEVEL</h1>
 
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <div class="signal-icon">
-                <svg viewBox="0 0 24 24" width="24" height="24">
-                    <path class="signal-path"
-                          d="M12,3C7.41,3 3.86,4.53 0.89,6.59L2.19,8.37C4.86,6.51 8.14,5.5 12,5.5C15.86,5.5 19.14,6.51 21.81,8.37L23.11,6.59C20.14,4.53 16.59,3 12,3M12,8C9.3,8 6.81,8.89 4.69,10.34L6.07,12.19C7.89,10.94 9.86,10.5 12,10.5C14.14,10.5 16.11,10.94 17.93,12.19L19.31,10.34C17.19,8.89 14.7,8 12,8M12,13C10.44,13 8.84,13.55 7.46,14.35L8.83,16.2C9.83,15.71 10.91,15.5 12,15.5C13.09,15.5 14.17,15.71 15.17,16.2L16.54,14.35C15.16,13.55 13.56,13 12,13M12,18A2,2 0 0,0 10,20A2,2 0 0,0 12,22A2,2 0 0,0 14,20A2,2 0 0,0 12,18Z"/>
-                </svg>
-            </div>
-            <button class="theme-toggle" id="themeSwitcher" aria-label="Toggle Dark Mode">
-                <!-- Sun Icon -->
-                <svg class="theme-icon" id="iconSun" viewBox="0 0 24 24" style="display: none;">
-                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41l-1.29-1.29zm-1.29-11.08c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0L16.07 7.28a.996.996 0 010-1.41zm-10.49 10.49c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0l-1.29-1.29a.996.996 0 010-1.41z"></path>
-                </svg>
-                <!-- Moon Icon -->
-                <svg class="theme-icon" id="iconMoon" viewBox="0 0 24 24">
-                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path>
-                </svg>
-            </button>
+        <button class="theme-toggle" id="themeSwitcher" aria-label="Toggle Dark Mode">
+            <!-- Sun Icon -->
+            <svg class="theme-icon" id="iconSun" viewBox="0 0 24 24" style="display: none;">
+                <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.29 1.29c.19.19.45.29.71.29s.51-.1.71-.29a.996.996 0 000-1.41l-1.29-1.29zm-1.29-11.08c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0L16.07 7.28a.996.996 0 010-1.41zm-10.49 10.49c.39-.39 1.03-.39 1.41 0l1.29 1.29a.996.996 0 010 1.41c-.39.39-1.03.39-1.41 0l-1.29-1.29a.996.996 0 010-1.41z"></path>
+            </svg>
+            <!-- Moon Icon -->
+            <svg class="theme-icon" id="iconMoon" viewBox="0 0 24 24">
+                <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path>
+            </svg>
+        </button>
     </header>
 
     <!-- Navigation Tabs -->
@@ -611,6 +587,10 @@
                     <label>CPU Freq.</label>
                     <span id="frequency"></span>
                 </div>
+                <div class="control-row">
+                    <label>RSSI</label>
+                    <span id="rssi"></span>
+                </div>
             </div>
             <button onclick="save(2)" class="btn-save">Save</button>
         </div>
@@ -684,6 +664,7 @@
 
                 document.getElementById("temperature").textContent = (response.cpu + "°C");
                 document.getElementById("frequency").textContent = (response.frequency + " MHz");
+                document.getElementById("rssi").textContent (response.rssi);
                 document.getElementById("up").textContent = formatUptime(response.up);
 
                 const v = window.myChart.data.datasets[0].data;

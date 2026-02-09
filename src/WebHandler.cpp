@@ -8,6 +8,7 @@
 #include <InternalConfig.h>
 #include <LittleFS.h>
 //#include <MatterHandler.h>
+#include <WiFi.h>
 #include <lwip/sockets.h>
 
 #include "DeviceHandler.h"
@@ -15,6 +16,7 @@
 #include "FileHandler.h"
 #include "MQTTHandler.h"
 #include "OTAHandler.h"
+#include "WiFiHandler.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -195,6 +197,9 @@ void WebHandler::handleAPICall(AsyncWebServerRequest* request, JsonVariant json)
 
         // Set CPU Frequency.
         doc["frequency"] = ESP.getCpuFreqMHz();
+
+        // Set RSSI.
+        doc["rssi"] = WiFiHandler::getRSSI();
 
         // Set MQTT State.
         doc["mqtt"] = MQTTHandler::isConnected();
