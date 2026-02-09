@@ -9,6 +9,8 @@
 #include "WiFiHandler.h"
 #include <espMqttClientAsync.h>
 
+#include "AutomationHandler.h"
+
 espMqttClientAsync client;
 
 bool isEnabled = false;
@@ -182,6 +184,15 @@ void MQTTHandler::loop()
 
                 // Volume (Float)
                 publish("waterlevel/volume", String(DeviceHandler::getVolumeCached(), 1).c_str());
+
+                // Mode Fill (Bool)
+                publish("waterlevel/operation/fill", AutomationHandler::isFilling() ? "1" : "0");
+
+                // Mode Pump (Bool)
+                publish("waterlevel/operation/pump", AutomationHandler::isPumping() ? "1" : "0");
+
+                // Operation Mode (Integer)
+                publish("waterlevel/operation/mode", AutomationHandler::getMode());
             }
         }
         else

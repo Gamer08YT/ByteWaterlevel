@@ -17,6 +17,9 @@ private:
 public:
     static void loop();
     static void setup();
+    static bool isFilling();
+    static bool isPumping();
+    static int getMode();
 };
 
 

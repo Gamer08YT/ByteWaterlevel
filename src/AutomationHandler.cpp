@@ -192,3 +192,42 @@ void AutomationHandler::setup()
     minL = FileHandler::getConfig()["auto"]["min"].as<float>();
     fillL = FileHandler::getConfig()["auto"]["fill"].as<float>();
 }
+
+/**
+ * Indicates whether the system is currently in a filling mode.
+ *
+ * This method checks the internal state flag `fillM` to determine
+ * if the fill operation is active and returns its value.
+ *
+ * @return `true` if the system is currently filling, otherwise `false`.
+ */
+bool AutomationHandler::isFilling()
+{
+    return fillM;
+}
+
+/**
+ * Retrieves the current operational state of the pump.
+ *
+ * This method checks the internal `pumpM` variable to determine whether
+ * the pump is currently active.
+ *
+ * @return `true` if the pump is active, `false` otherwise.
+ */
+bool AutomationHandler::isPumping()
+{
+    return pumpM;
+}
+
+/**
+ * Retrieves the current operational mode of the automation handler.
+ *
+ * This method provides the value of the internal `mode` variable, which represents
+ * the current mode of the AutomationHandler.
+ *
+ * @return The current mode as an integer.
+ */
+int AutomationHandler::getMode()
+{
+    return mode;
+}
