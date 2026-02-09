@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "wifi": {
     "client": {
       "ssid": "",
@@ -21,6 +21,11 @@
     "min": "0.00",
     "max": "2.40",
     "volume": 1000
+  },
+  "auto": {
+    "mode": "0",
+    "max": "50.00",
+    "min": "10.00"
   },
   "admin": {
     "state": false,
