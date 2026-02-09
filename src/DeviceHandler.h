@@ -35,6 +35,7 @@ public:
     static float getLevelCached();
     static float getCurrentCached();
     static float getADCValueCached();
+    static float roundToTwoDecimals(float value);
 };
 
 

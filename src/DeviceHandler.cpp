@@ -194,10 +194,10 @@ void DeviceHandler::scanSensors()
 
 
     // Read Sensor Values.
-    scanCurrent = getCurrent(false);
-    scanTemperature = getCPUTemperature();
-    scanWaterLevel = getLevel();
-    scanWaterVolume = getVolume();
+    scanCurrent = roundToTwoDecimals(getCurrent(false));
+    scanTemperature = roundToTwoDecimals(getCPUTemperature());
+    scanWaterLevel = roundToTwoDecimals(getLevel());
+    scanWaterVolume = roundToTwoDecimals(getVolume());
 }
 
 /**
@@ -504,7 +504,7 @@ float DeviceHandler::readVoltage(int pin, int samples = 10)
     int average = sum / samples;
     float voltage = average * (3.3 / 4095.0);
 
-    latestVoltage = voltage;
+    latestVoltage = roundToTwoDecimals(voltage);
 
     return voltage;
 }
@@ -747,4 +747,19 @@ float DeviceHandler::getCurrentCached()
 float DeviceHandler::getADCValueCached()
 {
     return latestVoltage;
+}
+
+/**
+ * Rounds a floating-point number to two decimal places.
+ *
+ * This method takes a single float input value and rounds it to two decimal places
+ * using standard rounding logic. The result is achieved by scaling the number,
+ * rounding it, and then scaling back to the original range.
+ *
+ * @param value The floating-point number to be rounded.
+ * @return The input value rounded to two decimal places.
+ */
+float DeviceHandler::roundToTwoDecimals(float value)
+{
+    return std::round(value * 100.0f) / 100.0f;
 }
