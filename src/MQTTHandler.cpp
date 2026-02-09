@@ -192,7 +192,7 @@ void MQTTHandler::loop()
                 publish("waterlevel/operation/pump", AutomationHandler::isPumping() ? "1" : "0");
 
                 // Operation Mode (Integer)
-                publish("waterlevel/operation/mode", AutomationHandler::getMode());
+                publish("waterlevel/operation/mode", String(AutomationHandler::getMode()).c_str());
             }
         }
         else
