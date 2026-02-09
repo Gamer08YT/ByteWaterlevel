@@ -15,3 +15,7 @@ The current MQTT Implementation is compatible with the latest 3.1.1 Protocol.
     - voltage
     - cpu
     - status
+    - operation
+      - mode
+      - fill
+      - pump
