@@ -830,6 +830,10 @@
             setValue("mpw", response.mqtt.password);
             setChecked("men", response.mqtt.state);
 
+            setValue("mode", response.auto.mode);
+            setValue("maxl", response.auto.max);
+            setValue("minl", response.auto.min);
+
             document.getElementById("update").style.display = data.update ? "block" : "none";
             setText("firmware", data.firmware);
 
