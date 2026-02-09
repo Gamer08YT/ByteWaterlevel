@@ -169,7 +169,12 @@ void AutomationHandler::loop()
                 handleFill();
                 break;
             default:
-                // Do nothing.
+                // Disable Relais.
+                if (fillM || pumpM)
+                {
+                    setPump(false);
+                    setFill(false);
+                }
                 break;
             }
         }
