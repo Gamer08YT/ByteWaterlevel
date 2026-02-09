@@ -414,26 +414,46 @@
 
     <!-- TAB 1: STATUS -->
     <div id="status" class="tab-content active">
-        <div class="group-title">TL136 Sensor</div>
-        <div class="chart-container">
-            <canvas id="adcChart"></canvas>
-        </div>
-
-        <div class="group-title">Control</div>
-        <div class="control-group">
-            <div class="control-row">
-                <label for="relay1">Channel 1</label>
-                <label class="switch">
-                    <input type="checkbox" id="relay1">
-                    <span class="slider"></span>
-                </label>
+        <div class="tab-container">
+            <div class="group-title">Status</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label>Level</label>
+                    <div class="flex">
+                        <span id="sl"></span>
+                        <span>%</span>
+                    </div>
+                </div>
+                <div class="control-row">
+                    <label>Volume</label>
+                    <div class="flex">
+                        <span id="sv"></span>
+                        <span>L</span>
+                    </div>
+                </div>
             </div>
-            <div class="control-row">
-                <label for="relay2">Channel 2</label>
-                <label class="switch">
-                    <input type="checkbox" id="relay2">
-                    <span class="slider"></span>
-                </label>
+
+            <div class="group-title">TL136 Sensor</div>
+            <div class="chart-container">
+                <canvas id="adcChart"></canvas>
+            </div>
+
+            <div class="group-title">Control</div>
+            <div class="control-group">
+                <div class="control-row">
+                    <label for="relay1">Channel 1</label>
+                    <label class="switch">
+                        <input type="checkbox" id="relay1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label for="relay2">Channel 2</label>
+                    <label class="switch">
+                        <input type="checkbox" id="relay2">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -664,8 +684,10 @@
 
                 document.getElementById("temperature").textContent = (response.cpu + "°C");
                 document.getElementById("frequency").textContent = (response.frequency + " MHz");
-                document.getElementById("rssi").textContent (response.rssi);
                 document.getElementById("up").textContent = formatUptime(response.up);
+                document.getElementById("rssi").textContent = (response.rssi);
+                document.getElementById("sv").textContent = (response.volume);
+                document.getElementById("sl").textContent = (response.level);
 
                 const v = window.myChart.data.datasets[0].data;
                 const c = window.myChart.data.datasets[1].data;
