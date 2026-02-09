@@ -509,16 +509,19 @@
                         <option value="0">Off</option>
                         <option value="1">Fill & Pump</option>
                         <option value="2">Fill</option>
-                        <option value="3">Refill</option>
                     </select>
                 </div>
                 <div class="control-row">
                     <label>Max Level</label>
-                    <input id="maxl" type="number">
+                    <input max="100" id="maxl" type="number">
+                </div>
+                <div class="control-row">
+                    <label>Fill Level</label>
+                    <input max="100" id="minfl" type="number">
                 </div>
                 <div class="control-row">
                     <label>Min Level</label>
-                    <input id="minl" type="number">
+                    <input max="90" id="minl" type="number">
                 </div>
             </div>
 
@@ -793,6 +796,17 @@
         document.getElementById("connection").style.display = b ? "block" : "none";
     }
 
+    function setValueSl(id, val) {
+        const select = document.getElementById(id);
+
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === val) {
+                select.selectedIndex = i;
+                break;
+            }
+        }
+    }
+
     async function getInfo() {
         const res = await fetch("/api", {
             method: "POST",
@@ -830,9 +844,10 @@
             setValue("mpw", response.mqtt.password);
             setChecked("men", response.mqtt.state);
 
-            setValue("mode", response.auto.mode);
+            setValueSl("mode", response.auto.mode);
             setValue("maxl", response.auto.max);
             setValue("minl", response.auto.min);
+            setValue("minfl", response.auto.fill);
 
             document.getElementById("update").style.display = data.update ? "block" : "none";
             setText("firmware", data.firmware);
@@ -891,6 +906,11 @@
             window.configESP.mqtt.user = val("muser");
             window.configESP.mqtt.password = val("mpw");
             window.configESP.mqtt.state = document.getElementById("men").checked;
+
+            window.configESP.auto.mode = document.getElementById("mode").value;
+            window.configESP.auto.max = val("maxl");
+            window.configESP.auto.min = val("minl");
+            window.configESP.auto.fill = val("minfl");
         }
 
         if (type === 2) {

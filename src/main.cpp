@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "AutomationHandler.h"
 #include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "MQTTHandler.h"
@@ -44,6 +45,9 @@ void setup()
     // Setup OTA.
     OTAHandler::setup();
 
+    // Setup Automation Handler.
+    AutomationHandler::setup();
+
     // Setup Matter.
     //MatterHandler::setup();
 
@@ -73,6 +77,9 @@ void loop()
 
     // Loop OTA.
     OTAHandler::loop();
+
+    // Loop Automation Handler.
+    AutomationHandler::loop();
 
     // Loop Matter.
     //MatterHandler::loop();

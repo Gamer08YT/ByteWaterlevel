@@ -13,6 +13,7 @@
 #define BLINK_INTERVAL 250
 #define SCAN_INTERVAL 1000
 #define MQTT_INTERVAL 1000
+#define AUTO_INTERVAL 1000
 
 /**
  * Define Pinouts.
@@ -22,6 +23,13 @@
 #define RELAIS_CH2 1
 #define SENSE 3
 #define RESET 6
+
+/**
+ * Define default Automation.
+ */
+
+#define PUMP_FILL 1
+#define PUMP_EMPTY 2
 
 /**
  * Define Update Server
