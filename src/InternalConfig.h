@@ -16,6 +16,14 @@
 #define AUTO_INTERVAL 1000
 
 /**
+ * Define Display Settings.
+ */
+#define OLED_HEIGHT 64
+#define OLED_WIDTH 128
+#define OLED_RESET     -1
+#define SCREEN_ADDRESS 0x3D
+
+/**
  * Define EMA Filtering
  * 0.05 very good, very slow => 5% from new Value
  * 0.30 ok, ok => 30% from new Value

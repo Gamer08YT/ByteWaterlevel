@@ -5,9 +5,14 @@
 #include "DeviceHandler.h"
 #include <Arduino.h>
 #include <FS.h>
+#include <Wire.h>
 
+#include "Adafruit_SSD1306.h"
 #include "FileHandler.h"
 #include "InternalConfig.h"
+
+// Define a new Display Instance.
+Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT, &Wire, OLED_RESET);
 
 // Store last Blink Timestamp.
 unsigned long previousMillis = 0;
@@ -774,6 +779,29 @@ float DeviceHandler::roundToTwoDecimals(float value)
 }
 
 
+/**
+ * Updates the device's display with relevant information and graphics.
+ *
+ * This method refreshes the display by first clearing it and then rendering a
+ * series of text indicators and graphical elements. The presented data includes
+ * WiFi status, fluid level, volume, ADC voltage, and current measurements. It also
+ * displays a graphical filled rectangle for visual representation of data.
+ *
+ * Rendered elements:
+ * - A header with "BYTE LEVEL".
+ * - A horizontal dividing line below the header.
+ * - System status information such as WiFi signal strength, fluid level percentage,
+ *   fluid volume, ADC voltage, and electrical current.
+ * - A graphical representation of a filled rectangle positioned on the right side of the display.
+ *
+ * Postconditions:
+ * - The display is refreshed with the updated information and visuals.
+ *
+ * Behavior:
+ * - The method assumes that the display is properly initialized and connected.
+ * - Existing content on the display is fully cleared before rendering updated information.
+ * - Data is rendered at specific, pre-determined positions on the display.
+ */
 void DeviceHandler::updateDisplay() {
     display.clearDisplay();
     display.setCursor(0, 0);

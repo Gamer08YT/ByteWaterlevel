@@ -16,6 +16,7 @@ private:
     static void handleBlink();
     static void scanSensors();
     static void handleScan();
+    static void updateDisplay();
 
 public:
     static void loop();

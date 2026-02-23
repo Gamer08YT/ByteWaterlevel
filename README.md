@@ -66,7 +66,7 @@ The Sensor is tied directly to VCC In, so please use a good power supply otherwi
 
 ## Display
 
-You can add an SSD1306 Display to the Device.
+You can add an SSD1306 (I²C 128x64) Display to the Device.
 
 ![display.png](assets/img/display.png)
 
