@@ -888,12 +888,12 @@ void DeviceHandler::updateDisplay()
 
     // Print ADC.
     display.print("ADC: ");
-    display.print(getADCValueCached(), 2);
+    display.print(roundToTwoDecimals(getADCValueCached()), 2);
     display.println("V");
 
     // Print Current.
     display.println("Current: ");
-    display.println(getCurrentCached(), 2);
+    display.println(roundToTwoDecimals(getCurrentCached()), 2);
     display.println("mA");
 
     // Print Tank Mockup.
