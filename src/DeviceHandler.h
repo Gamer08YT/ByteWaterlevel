@@ -4,9 +4,6 @@
 #pragma once
 #include <Arduino.h>
 
-#include "Adafruit_SSD1306.h"
-#include "ArduinoJson/Document/JsonDocument.hpp"
-
 
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
@@ -19,10 +16,10 @@ private:
     static void handleBlink();
     static void scanSensors();
     static void handleScan();
+    static void handleDisplay();
     static void updateDisplay();
     static void setBrightness(uint8_t brightness);
     static void setupDisplay();
-
 
 public:
     static void loop();

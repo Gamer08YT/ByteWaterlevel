@@ -10,6 +10,7 @@
 #include "Adafruit_SSD1306.h"
 #include "FileHandler.h"
 #include "InternalConfig.h"
+#include "WiFiHandler.h"
 
 // Define a new Display Instance.
 Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT, &Wire, OLED_RESET);
@@ -19,6 +20,9 @@ unsigned long previousMillis = 0;
 
 // Store last Scan Timestamp.
 unsigned long scanMillis = 0;
+
+// Store last Display Timestamp.
+unsigned long displayMillis = 0;
 
 // Store last Relais Duration Timestamp.
 unsigned long ch1 = -1;
@@ -241,6 +245,46 @@ void DeviceHandler::handleScan()
 }
 
 /**
+ * Handles the periodic update of the display based on a predefined time interval.
+ *
+ * This method checks if the display functionality is enabled and if the scheduled
+ * interval for updating the display has elapsed. If the conditions are met, the
+ * display is updated using the `updateDisplay()` method.
+ *
+ * Preconditions:
+ * - `displayEnabled` must be set to `true` for the display to be updated.
+ * - `DISPLAY_INTERVAL` is defined as the time interval (in milliseconds) for updating the display.
+ * - The display must be initialized and functional prior to calling this method.
+ *
+ * Postconditions:
+ * - If the current time exceeds the last update time by the value of `DISPLAY_INTERVAL`,
+ *   the display is refreshed through `updateDisplay()`, and `displayMillis` is updated
+ *   with the current time.
+ *
+ * Behavior:
+ * - If `displayEnabled` is `false`, no updates are performed, and the method exits.
+ * - Compares the current system time (`millis()`) with the last recorded time
+ *   (`displayMillis`). If the interval has passed, updates the display and resets
+ *   the tracking timer (`displayMillis`).
+ */
+void DeviceHandler::handleDisplay()
+{
+    if (displayEnabled)
+    {
+        unsigned long currentMillis = millis();
+
+        // Check if the interval has passed
+        if (currentMillis - displayMillis >= DISPLAY_INTERVAL)
+        {
+            displayMillis = currentMillis;
+
+            // Update Display Content.
+            updateDisplay();
+        }
+    }
+}
+
+/**
  * Executes periodic tasks required for the proper functioning of the device.
  *
  * This method acts as the main loop for the `DeviceHandler` class, invoking
@@ -268,11 +312,7 @@ void DeviceHandler::loop()
     handleBlink();
     handleRelais();
     handleScan();
-
-    if (displayEnabled)
-    {
-        updateDisplay();
-    }
+    handleDisplay();
 }
 
 /**
@@ -834,7 +874,7 @@ void DeviceHandler::updateDisplay()
 
     // Print WiFi.
     display.print("WiFi: ");
-    display.println("OK");
+    display.println((WiFiHandler::isConnected() ? "OK" : "AP"));
 
     // Print Water Level.
     display.print("Level: ");
