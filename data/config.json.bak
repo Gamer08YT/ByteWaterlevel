@@ -34,7 +34,9 @@
     "password": ""
   },
   "hardware": {
-    "led": true
+    "led": true,
+    "oled": true,
+    "level": 128
   },
   "ota": true
 }

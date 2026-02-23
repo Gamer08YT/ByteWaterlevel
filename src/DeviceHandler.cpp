@@ -51,6 +51,9 @@ float scanTemperature = 0.00;
 float scanWaterLevel = 0.00;
 float scanWaterVolume = 0.00;
 
+// Store Display State.
+bool displayEnabled = false;
+
 
 /**
  * Monitors and manages the state of relays based on their configured timers.
@@ -265,6 +268,11 @@ void DeviceHandler::loop()
     handleBlink();
     handleRelais();
     handleScan();
+
+    if (displayEnabled)
+    {
+        updateDisplay();
+    }
 }
 
 /**
@@ -368,6 +376,13 @@ void DeviceHandler::setup()
     maxV = FileHandler::getConfig()["calibration"]["max"].as<float>();
     minV = FileHandler::getConfig()["calibration"]["min"].as<float>();
     tankVolume = FileHandler::getConfig()["calibration"]["volume"].as<float>();
+
+    // Check if OLED is enabled.
+    if (FileHandler::getConfig()["hardware"]["oled"].as<bool>())
+    {
+        // Setup Display.
+        setupDisplay();
+    }
 }
 
 /**
@@ -802,20 +817,106 @@ float DeviceHandler::roundToTwoDecimals(float value)
  * - Existing content on the display is fully cleared before rendering updated information.
  * - Data is rendered at specific, pre-determined positions on the display.
  */
-void DeviceHandler::updateDisplay() {
+void DeviceHandler::updateDisplay()
+{
     display.clearDisplay();
     display.setCursor(0, 0);
+
+    // Print Header
     display.print("BYTE");
     display.print("LEVEL");
+
+    // Draw Header Line.
     display.drawLine(0, 9, 128, 9, 1);
+
+    // Set Center Text Position.
     display.setCursor(0, 18);
-    display.println("WiFi: OK");
-    display.println("Level: 10%");
-    display.println("Volume: 10L");
-    display.println("ADC: 0.5V");
-    display.println("Current: 4mA");
+
+    // Print WiFi.
+    display.print("WiFi: ");
+    display.println("OK");
+
+    // Print Water Level.
+    display.print("Level: ");
+    display.print(getLevelCached(), 1);
+    display.println("%");
+
+    // Print Volume.
+    display.print("Volume: ");
+    display.println(getVolumeCached(), 2);
+    display.println("L");
+
+    // Print ADC.
+    display.print("ADC: ");
+    display.print(getADCValueCached(), 2);
+    display.println("V");
+
+    // Print Current.
+    display.println("Current: ");
+    display.println(getCurrentCached(), 2);
+    display.println("mA");
+
+    // Print Tank Mockup.
     display.drawRect(95, 18, 30, 40, 1);
     display.fillRect(97, 20, 26, 36, 1);
+
+    // Update Display.
     display.display();
 }
 
+/**
+ * Adjusts the brightness of the OLED display by setting the display's contrast.
+ *
+ * The method sends a command to the OLED display to modify its contrast level,
+ * which directly influences the perceived brightness of the screen. The brightness
+ * is controlled by providing a contrast value as an input. This method utilizes
+ * the Adafruit_SSD1306 library to communicate with the display hardware.
+ *
+ * Preconditions:
+ * - The display must be properly initialized and functional prior to calling this method.
+ * - A valid brightness value (0-255) must be provided.
+ *
+ * @param brightness The contrast value to be set for the OLED display, where 0 is the
+ *                   minimum brightness (off) and 255 is the maximum brightness level.
+ */
+void DeviceHandler::setBrightness(uint8_t brightness)
+{
+    display.ssd1306_command(SSD1306_SETCONTRAST);
+    display.ssd1306_command(brightness);
+}
+
+/**
+ * Initializes and configures the OLED display for the device.
+ *
+ * This method sets up the display using the Adafruit_SSD1306 library. It initiates communication
+ * with the OLED screen at the designated `SCREEN_ADDRESS` and configures it with the specified
+ * capacitor type (`SSD1306_SWITCHCAPVCC`).
+ *
+ * Preconditions:
+ * - The OLED display hardware must be properly connected to the system.
+ * - The `Wire` library must be initialized for I2C communication.
+ *
+ * Postconditions:
+ * - If the initialization is successful, the display becomes ready for rendering content.
+ * - If the initialization fails, an error message ("SSD1306 allocation failed") is output
+ *   to the serial monitor.
+ *
+ * Behavior:
+ * - The method attempts to initialize the display. If the initialization fails, it does not
+ *   crash the program but logs the failure to the serial output.
+ */
+void DeviceHandler::setupDisplay()
+{
+    if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
+    {
+        Serial.println(F("SSD1306 allocation failed"));
+    }
+    else
+    {
+        // Set Display Brightness.
+        setBrightness(FileHandler::getConfig()["hardware"]["level"].as<uint8_t>());
+
+        // Set Enabled State.
+        displayEnabled = true;
+    }
+}
