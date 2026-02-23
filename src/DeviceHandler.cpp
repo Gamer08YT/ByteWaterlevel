@@ -504,7 +504,7 @@ float DeviceHandler::readVoltage(int pin, int samples = 10)
     int average = sum / samples;
     float voltage = average * (3.3 / 4095.0);
 
-    latestVoltage = roundToTwoDecimals(voltage);
+    latestVoltage = voltage;
 
     return voltage;
 }
