@@ -16,6 +16,14 @@
 #define AUTO_INTERVAL 1000
 
 /**
+ * Define EMA Filtering
+ * 0.05 very good, very slow => 5% from new Value
+ * 0.30 ok, ok => 30% from new Value
+ * 0.50 very bad, very fast => 50% from new Value
+ */
+#define EMA_ALPHA 0.3
+
+/**
  * Define Pinouts.
  */
 #define LED_PIN 2
