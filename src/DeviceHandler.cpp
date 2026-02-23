@@ -772,3 +772,22 @@ float DeviceHandler::roundToTwoDecimals(float value)
 {
     return std::round(value * 100.0f) / 100.0f;
 }
+
+
+void DeviceHandler::updateDisplay() {
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.print("BYTE");
+    display.print("LEVEL");
+    display.drawLine(0, 9, 128, 9, 1);
+    display.setCursor(0, 18);
+    display.println("WiFi: OK");
+    display.println("Level: 10%");
+    display.println("Volume: 10L");
+    display.println("ADC: 0.5V");
+    display.println("Current: 4mA");
+    display.drawRect(95, 18, 30, 40, 1);
+    display.fillRect(97, 20, 26, 36, 1);
+    display.display();
+}
+

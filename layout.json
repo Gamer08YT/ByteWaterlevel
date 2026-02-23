@@ -1,0 +1,76 @@
+[
+  {
+    "op": "setCursor",
+    "id": 8,
+    "x": "0",
+    "y": "0"
+  },
+  {
+    "op": "print",
+    "id": 6,
+    "text": "BYTE"
+  },
+  {
+    "op": "print",
+    "id": 7,
+    "text": "LEVEL"
+  },
+  {
+    "op": "drawLine",
+    "id": 9,
+    "x0": "0",
+    "y0": "9",
+    "x1": "128",
+    "y1": "9",
+    "color": "1"
+  },
+  {
+    "op": "setCursor",
+    "id": 10,
+    "x": "0",
+    "y": "18"
+  },
+  {
+    "op": "println",
+    "id": 12,
+    "text": "WiFi: OK"
+  },
+  {
+    "op": "println",
+    "id": 13,
+    "text": "Level: 10%"
+  },
+  {
+    "op": "println",
+    "id": 14,
+    "text": "Volume: 10L"
+  },
+  {
+    "op": "println",
+    "id": 15,
+    "text": "ADC: 0.5V"
+  },
+  {
+    "op": "println",
+    "id": 16,
+    "text": "Current: 4mA"
+  },
+  {
+    "op": "drawRect",
+    "id": 19,
+    "x": "95",
+    "y": "18",
+    "w": "30",
+    "h": "40",
+    "color": "1"
+  },
+  {
+    "op": "fillRect",
+    "id": 20,
+    "x": "97",
+    "y": "20",
+    "w": "26",
+    "h": "36",
+    "color": "1"
+  }
+]

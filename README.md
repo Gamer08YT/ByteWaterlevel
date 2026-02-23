@@ -37,6 +37,8 @@ The Device is designed only to work with external Antennas to provide a good Wi-
     - Calibration
     - Tank Level in %
     - Tank Level in L (Works with rectangular / upright round / horizontal round tanks)
+- OLED
+- EMA Filter
 
 Planned:
 
@@ -61,6 +63,12 @@ from 12–26V.
 An OP-Amp is used to amplify the Voltage Drop on a 120-Ohm Resistor.
 
 The Sensor is tied directly to VCC In, so please use a good power supply otherwise the measurement tolerance can be big.
+
+## Display
+
+You can add an SSD1306 Display to the Device.
+
+![display.png](assets/img/display.png)
 
 ## Setup
 
