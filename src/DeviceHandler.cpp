@@ -337,7 +337,7 @@ void DeviceHandler::setup()
     analogReadResolution(12);
 
     // Set ADC Attenuation.
-    analogSetPinAttenuation(SENSE, ADC_11db);
+    analogSetPinAttenuation(SENSE, ADC_6db);
 
     // Input Pins.
     pinMode(SENSE, INPUT);
@@ -495,15 +495,24 @@ float DeviceHandler::getCurrent(bool newReading = false)
  */
 float DeviceHandler::readVoltage(int pin, int samples = 10)
 {
-    int sum = 0;
+    float sum = 0;
+
     for (int i = 0; i < samples; i++)
     {
-        sum += analogRead(pin);
-        delay(10); // Kleine Verzögerung zwischen Messungen
-    }
-    int average = sum / samples;
-    float voltage = average * (3.3 / 4095.0);
+        // Read Voltage via ADC.
+        sum += analogReadMilliVolts(pin);
 
+        // Short delay between reads.
+        delay(10);
+    }
+
+    // Calculate average voltage.
+    float average = (sum / samples) / 1000.0f;
+
+    // Do some EMA Filtering.
+    float voltage = (latestVoltage * 0.9f) + (average * 0.1f);
+
+    // Cache latest voltage.
     latestVoltage = voltage;
 
     return voltage;
