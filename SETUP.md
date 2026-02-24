@@ -23,6 +23,8 @@ Wi-Fi Network.
 
 ## Installation
 
+### Basic Wiring
+
 Please only use SELV Voltage, you can control big Pumps, for example, with external Contactors.
 
 Work should always be carried out in accordance with local guidelines, e.g. VDE. We accept no liability for personal injury, property damage, or other damage.
