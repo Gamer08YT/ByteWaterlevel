@@ -30,7 +30,7 @@ You can order or print yourself a Shell for the PCB.
 
 There are currently two designs, one for a DIN Rail aka (Hutschiene) and one with Screw Mounts.
 
-<img src="assets/img/case.png" height="200rem" alt="Case">
+<img src="assets/img/case.png" height="350rem" alt="Case">
 
 The circuit board is coated with a protective lacquer to protect it from moisture, but the housing does not offer full
 protection, which is why a waterproof box is profitable for outdoor installation.
