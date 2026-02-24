@@ -70,7 +70,7 @@ You can add an SSD1306 (I²C 128x64) Display to the Device.
 
 ![display.png](assets/img/display.png)
 
-## Setup
+## Setup && Installation
 
 For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
 
