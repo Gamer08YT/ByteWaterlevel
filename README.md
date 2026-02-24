@@ -1,7 +1,7 @@
 # ByteWaterlevel
 
-ByteWaterlevel in Short (BYTELEVEL) is an Device to Monitor Wells, Cisterns and co.
-It uses an TL136 Sensor to monitor the Fluid Level, but it works with all 4-20mA Sensors.
+ByteWaterlevel in Short (BYTELEVEL) is a Device to Monitor Wells, Cisterns and co.
+It uses an TL136 Sensor to monitor the Fluid Level, but it works with all 4–20 mA Sensors.
 
 It comes with two Relais to control Pumps, Sirens or other Appliances.
 
@@ -46,7 +46,7 @@ Planned:
 
 ## Specifications:
 
-* Input: 12-24V (with Reverse protection)
+* Input: 12–24 V (with Reverse protection)
 * USB: Micro USB (with Overvoltage protection)
 * MCU: ESP32 C3
 * Relais current (peak): **max 10A**
@@ -55,10 +55,10 @@ Planned:
 
 ### Working Principle
 
-ByteWaterlevel is a Current to Voltage Converter for the Liquid Sensor TL-136 wich outputs an current between 4–20mA.
+ByteWaterlevel is a Current to Voltage Converter for the Liquid Sensor TL-136 that outputs a current between 4–20 mA.
 
-The supply Voltage for the Board is designed for 24V, but the board has a Buck converter wich allows supply voltage
-from 12–26V.
+The supply Voltage for the Board is designed for 24 V, but the board has a Buck converter which allows supply voltage
+from 12 to 26 V.
 
 An OP-Amp is used to amplify the Voltage Drop on a 120-Ohm Resistor.
 
@@ -100,13 +100,30 @@ For API Docs please have a Look into <a href="./API.md">API.md</a>.
 
 ### Status
 
+The Status Page contains a Chart about the Sensors Analogs Values.
+
+- Voltage
+- Current
+
+On the Top it calculates the Tank Level in Percentage and Tank Volume in Liters.
+
+At the Bottom you can manually enable/disable the Relais on the Board.
+
 ![img.png](assets/img/status.png)
 
 ### Configuration
 
+On the Configuration Page you can change MQTT, Wi-Fi and Access Point Credentials.
+
+You can calibrate the Sensor and ADC here.
+
 ![img_1.png](assets/img/configuration.png)
 
 ### System
+
+On the System Tab you can enable/disable OTA and Authentification.
+
+You can set the Behavior of the System LED and much more.
 
 ![img_2.png](assets/img/system.png)
 
