@@ -20,3 +20,13 @@ After connecting to the Device, open a Webbrowser on your System and open http:/
 
 Fill in your WiFi Credentials you want to connect to and press "Save", the Device will now reboot and connect to your
 WiFi Network.
+
+## Installation
+
+Please only use SELV Voltage, you can control big Pumps for example with external Contactors.
+
+Work should always be carried out in accordance with local guidelines, e.g. VDE. We accept no liability for personal injury, property damage, or other damage.
+
+![schematic.png](assets/img/schematic.png)
+
+Please note that the relay channels are only designed for 10A for short periods; external contactors should be used for continuous loads.
