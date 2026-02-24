@@ -2,11 +2,11 @@
 
 ## Firmware Setup
 
-If you received an blank ESP32 on you board or you damaged the firmware please look at <a href="./FLASH.md">FLASH.md</a>.
+If you received a blank ESP32 on your board, or you damaged the firmware, please look at <a href="./FLASH.md">FLASH.md</a>.
 
 ## Initial Setup
 
-When powering up the Device for the first Time, it opens an WiFI AP, you need then to connect to the WiFi.
+When powering up the Device for the first Time, it opens a Wi-Fi AP, you need then to connect to the Wi-Fi.
 
 #### Default Credentials:
 
@@ -18,12 +18,12 @@ After connecting to the Device, open a Webbrowser on your System and open http:/
 
 ![img_1.png](assets/img/configuration.png)
 
-Fill in your WiFi Credentials you want to connect to and press "Save", the Device will now reboot and connect to your
-WiFi Network.
+Fill in your Wi-Fi Credentials you want to connect to and press "Save", the Device will now reboot and connect to your
+Wi-Fi Network.
 
 ## Installation
 
-Please only use SELV Voltage, you can control big Pumps for example with external Contactors.
+Please only use SELV Voltage, you can control big Pumps, for example, with external Contactors.
 
 Work should always be carried out in accordance with local guidelines, e.g. VDE. We accept no liability for personal injury, property damage, or other damage.
 

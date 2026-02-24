@@ -28,7 +28,7 @@ This Error occurs if the Software has problems parsing your JSON Request.
 
 ### Relais
 
-The Board comes with two Relais (max 10A at 24 VDC) wich can be controlled via the HTTP POST API.
+The Board comes with two Relais (max 10 A at 24 VDC) wich can be controlled via the HTTP POST API.
 
 #### Set Relais State
 
