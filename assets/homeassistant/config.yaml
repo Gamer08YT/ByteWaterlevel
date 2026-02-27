@@ -1,0 +1,80 @@
+mqtt:
+  - sensor:
+      availability_topic: waterlevel/status
+      device:
+        hw_version: 1.1.0
+        identifiers:
+          - 01KJFGYFNRNZ0NNAAHS51RNFEB
+        manufacturer: BYTESTORE
+        model: ByteWaterlevel
+        name: Zisterne
+        sw_version: 1.5.0
+      device_class: temperature
+      entity_category: diagnostic
+      name: CPU Temperature
+      payload_available: online
+      payload_not_available: offline
+      qos: 0.0
+      state_class: measurement
+      state_topic: waterlevel/cpu
+      unique_id: 01KJFGYFNRNZ0NNAAHS51RNFEB_b3c5badd018542979389c6b581df6514
+      unit_of_measurement: "\xB0C"
+  - sensor:
+      availability_topic: waterlevel/status
+      device:
+        hw_version: 1.1.0
+        identifiers:
+          - 01KJFGYFNRNZ0NNAAHS51RNFEB
+        manufacturer: BYTESTORE
+        model: ByteWaterlevel
+        name: Zisterne
+        sw_version: 1.5.0
+      device_class: voltage
+      entity_category: diagnostic
+      name: Voltage
+      payload_available: online
+      payload_not_available: offline
+      qos: 0.0
+      state_class: measurement
+      state_topic: waterlevel/voltage
+      suggested_display_precision: 2
+      unique_id: 01KJFGYFNRNZ0NNAAHS51RNFEB_4bcbe612eb8041888e879e3ec26f4404
+      unit_of_measurement: V
+  - sensor:
+      availability_topic: waterlevel/status
+      device:
+        hw_version: 1.1.0
+        identifiers:
+          - 01KJFGYFNRNZ0NNAAHS51RNFEB
+        manufacturer: BYTESTORE
+        model: ByteWaterlevel
+        name: Zisterne
+        sw_version: 1.5.0
+      entity_category: diagnostic
+      name: Level
+      payload_available: online
+      payload_not_available: offline
+      qos: 0.0
+      state_class: measurement
+      state_topic: waterlevel/level
+      unique_id: 01KJFGYFNRNZ0NNAAHS51RNFEB_a98d497a1e64477d8c080a453f845188
+      unit_of_measurement: '%'
+  - sensor:
+      availability_topic: waterlevel/status
+      device:
+        hw_version: 1.1.0
+        identifiers:
+          - 01KJFGYFNRNZ0NNAAHS51RNFEB
+        manufacturer: BYTESTORE
+        model: ByteWaterlevel
+        name: Zisterne
+        sw_version: 1.5.0
+      device_class: volume
+      name: Volume
+      payload_available: online
+      payload_not_available: offline
+      qos: 0.0
+      state_class: measurement
+      state_topic: waterlevel/volume
+      unique_id: 01KJFGYFNRNZ0NNAAHS51RNFEB_3211636db8c04f559d5700efaa648da8
+      unit_of_measurement: L

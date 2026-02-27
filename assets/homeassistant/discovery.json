@@ -1,0 +1,75 @@
+{
+  "payload_available": "online",
+  "payload_not_available": "offline",
+  "availability_topic": "waterlevel/status",
+  "dev": {
+    "name": "Zisterne",
+    "model": "ByteWaterlevel",
+    "manufacturer": "BYTESTORE",
+    "hw_version": "1.1.0",
+    "sw_version": "1.5.0",
+    "identifiers": [
+      "01KJFGYFNRNZ0NNAAHS51RNFEB"
+    ]
+  },
+  "o": {
+    "name": "MQTT subentry export"
+  },
+  "cmps": {
+    "b3c5badd018542979389c6b581df6514": {
+      "platform": "sensor",
+      "name": "CPU Temperature",
+      "device_class": "temperature",
+      "state_class": "measurement",
+      "unit_of_measurement": "\u00b0C",
+      "state_topic": "waterlevel/cpu",
+      "entity_category": "diagnostic",
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_b3c5badd018542979389c6b581df6514",
+      "payload_available": "online",
+      "payload_not_available": "offline",
+      "availability_topic": "waterlevel/status",
+      "qos": 0.0
+    },
+    "4bcbe612eb8041888e879e3ec26f4404": {
+      "platform": "sensor",
+      "name": "Voltage",
+      "device_class": "voltage",
+      "state_class": "measurement",
+      "unit_of_measurement": "V",
+      "state_topic": "waterlevel/voltage",
+      "entity_category": "diagnostic",
+      "suggested_display_precision": 2,
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_4bcbe612eb8041888e879e3ec26f4404",
+      "payload_available": "online",
+      "payload_not_available": "offline",
+      "availability_topic": "waterlevel/status",
+      "qos": 0.0
+    },
+    "a98d497a1e64477d8c080a453f845188": {
+      "platform": "sensor",
+      "name": "Level",
+      "entity_category": "diagnostic",
+      "state_class": "measurement",
+      "unit_of_measurement": "%",
+      "state_topic": "waterlevel/level",
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_a98d497a1e64477d8c080a453f845188",
+      "payload_available": "online",
+      "payload_not_available": "offline",
+      "availability_topic": "waterlevel/status",
+      "qos": 0.0
+    },
+    "3211636db8c04f559d5700efaa648da8": {
+      "platform": "sensor",
+      "name": "Volume",
+      "device_class": "volume",
+      "state_class": "measurement",
+      "unit_of_measurement": "L",
+      "state_topic": "waterlevel/volume",
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_3211636db8c04f559d5700efaa648da8",
+      "payload_available": "online",
+      "payload_not_available": "offline",
+      "availability_topic": "waterlevel/status",
+      "qos": 0.0
+    }
+  }
+}
