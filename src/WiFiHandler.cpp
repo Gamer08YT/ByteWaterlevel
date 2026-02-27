@@ -12,7 +12,12 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 
 // Statische Variablen
 unsigned long WiFiHandler::connectionStartTime = 0;
+
+// Store last Reconnect Attempt Timestamp.
+long lastReconnectAttempt;
+
 bool WiFiHandler::apStarted = false;
+
 
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
 IPAddress apIP(10, 10, 10, 1);
@@ -49,7 +54,7 @@ void WiFiHandler::setup()
 
         if (result != WL_CONNECTED)
         {
-            startAP(config);
+            startAP(config, false);
         }
 
 #if DEBUG == true
@@ -59,7 +64,7 @@ void WiFiHandler::setup()
     else
     {
         // Invalid Credentials, start AP.
-        startAP(config);
+        startAP(config, false);
     }
 
 #if DEBUG == true
@@ -113,41 +118,72 @@ float WiFiHandler::getRSSI()
 
 
 /**
- * Checks the current Wi-Fi connection status and handles reconnection or starting
- * an Access Point (AP) if necessary. If the device is in Station (STA) mode and
- * not connected to a Wi-Fi network within the defined timeout, it attempts to start
- * an AP using the configuration retrieved from the file handler.
+ * Monitors and maintains the Wi-Fi connection state. The method ensures that the
+ * system is always capable of network communication by handling transitions
+ * between Station (STA) and Access Point (AP) modes, depending on the connection
+ * status and elapsed time since a disconnection occurred.
  *
- * The method performs the following actions:
- * - Returns immediately if the AP is already active.
- * - Checks the connection status when STA mode is active.
- * - Logs a debug message if the connection is successful.
- * - Monitors for connection timeout and starts an AP on timeout, using configuration data.
+ * - If the system is connected in STA mode while the AP mode is active, the
+ *   method stops the AP to ensure only STA mode is used.
+ * - If the system is not connected to Wi-Fi in STA mode:
+ *     - Tries to reconnect to the Wi-Fi network if no reconnection is ongoing.
+ *     - If the reconnect attempt exceeds a predefined timeout, it switches the
+ *       system to AP mode, thereby allowing a client to connect directly to the
+ *       device for further configuration or operation.
+ *
+ * This method plays a critical role in dynamically adapting to network
+ * availability while ensuring robust and continuous Wi-Fi operation.
  */
 void WiFiHandler::checkConnection()
 {
-    // If AP is enabled, return.
-    if (apStarted)
+    // If STA is connected and AP is active → stop AP
+    if (isConnected() && apStarted)
     {
+        // Stop AP Mode.
+        stopAP();
+
+        // Return to clean STA mode
+        WiFi.mode(WIFI_MODE_STA);
+
+#if DEBUG == true
+        Serial.println("STA reconnected. AP stopped.");
+#endif
         return;
     }
 
-    // Try to connect when STA Mode is selected
-    if (WiFi.getMode() == WIFI_MODE_STA && !isConnected())
+    // If STA is connected → nothing to do
+    if (isConnected())
+        return;
+
+    // STA is NOT connected → handle reconnect logic
+    unsigned long now = millis();
+
+    // Try to reconnect every 5 seconds
+    if (now - lastReconnectAttempt >= 5000)
     {
-        // Check if timeout was exceeded
-        if (millis() - connectionStartTime > CONNECTION_TIMEOUT_MS)
-        {
+        lastReconnectAttempt = now;
+
 #if DEBUG == true
-            Serial.println("WiFi Timeout after 30 Seconds. Starting AP...");
+        Serial.println("WiFi lost. Trying reconnect...");
 #endif
 
-            // Timeout erreicht - starten Sie den AP
-            JsonDocument config = FileHandler::getConfig();
-            startAP(config);
-        }
+        WiFi.reconnect();
+    }
+
+    // If reconnect takes too long → start AP
+    if (!apStarted && now - connectionStartTime > CONNECTION_TIMEOUT_MS)
+    {
+#if DEBUG == true
+        Serial.println("Reconnect timeout. Starting AP...");
+#endif
+
+        JsonDocument config = FileHandler::getConfig();
+
+        // AP+STA mode
+        startAP(config, true);
     }
 }
+
 
 /**
  * Initializes and starts a Wi-Fi Access Point (AP) using the provided configuration.
@@ -156,11 +192,12 @@ void WiFiHandler::checkConnection()
  *
  * @param config The JsonDocument that contains the configuration data for the AP,
  *               including the SSID and password under "wifi.ap".
+ * @param combine
  */
-void WiFiHandler::startAP(JsonDocument& config)
+void WiFiHandler::startAP(JsonDocument& config, bool combine)
 {
     // Wechsel zum AP-Modus
-    WiFi.mode(WIFI_MODE_AP);
+    WiFi.mode((combine ? WIFI_MODE_APSTA : WIFI_MODE_AP));
 
     // Define Subnet before beginning Soft AP.
     WiFi.softAPConfig(apIP, gateway, subnet);
@@ -195,4 +232,25 @@ bool WiFiHandler::isWiFiClientUsable()
         !config["wifi"]["client"]["ssid"].isNull() &&
         !config["wifi"]["client"]["ssid"].as<String>().isEmpty() &&
         !config["wifi"]["client"]["password"].isNull());
+}
+
+/**
+ * Stops the Wi-Fi Access Point (AP) mode if it is currently active.
+ *
+ * This method checks if the AP has been started by verifying the `apStarted`
+ * flag. If the AP is active, it disconnects the Access Point using the
+ * WiFi.softAPdisconnect method and updates the `apStarted` flag to false.
+ * It ensures that the device exits AP mode cleanly.
+ */
+void WiFiHandler::stopAP()
+{
+    if (apStarted)
+    {
+        WiFi.softAPdisconnect(true);
+        apStarted = false;
+
+#if DEBUG == true
+        Serial.println("AP stopped.");
+#endif
+    }
 }

@@ -12,13 +12,14 @@ class WiFiHandler
 {
 private:
     static void checkConnection();
-    static void startAP(JsonDocument& config);
+    static void startAP(JsonDocument& config, bool combine);
     static unsigned long connectionStartTime;
     static bool apStarted;
     static const unsigned long CONNECTION_TIMEOUT_MS;
 
 public:
     static bool isWiFiClientUsable();
+    static void stopAP();
     static void setup();
     static void loop();
     static bool isConnected();

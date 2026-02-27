@@ -40,6 +40,22 @@ void MQTTHandler::setLastWill()
     client.setWill("waterlevel/status", 1, true, "offline");
 }
 
+/**
+ * @brief Configures and initializes the MQTT client based on the configuration file.
+ *
+ * This method sets up the MQTT client by reading the configuration details from an external source,
+ * such as a file. If the MQTT feature is enabled in the configuration, it performs the following:
+ * - Enables the MQTT client and stores the initial setup time.
+ * - Configures the MQTT server host, port, and credentials (user and password if provided).
+ * - Sets the client ID and keep-alive interval.
+ * - Configures the MQTT Last Will and Testament (LWT) to notify the online/offline state.
+ * - Adds event listeners for connection and disconnection events to handle state changes.
+ * - Initiates the connection to the MQTT server.
+ *
+ * If the MQTT configuration is missing or incomplete, it logs appropriate debug/diagnostic messages.
+ *
+ * Debugging output may be printed to `Serial` depending on the build configuration (e.g., with `DEBUG` enabled).
+ */
 void MQTTHandler::setup()
 {
     JsonDocument config = FileHandler::getConfig();
@@ -55,6 +71,7 @@ void MQTTHandler::setup()
         String mqttHost = config["mqtt"]["host"].as<String>();
         String mqttUser = config["mqtt"]["user"].as<String>();
         String mqttPassword = config["mqtt"]["password"].as<String>();
+
         int mqttPort = config["mqtt"]["port"].as<int>();
 
         // Check if Hostname is Set.
