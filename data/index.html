@@ -488,16 +488,20 @@
             <div class="group-title">Caliration</div>
             <div class="control-group">
                 <div class="control-row">
+                    <label>EMA Filter</label>
+                    <input id="ema" min="0,05" max="0,50" type="number">
+                </div>
+                <div class="control-row">
                     <label>Min. Voltage</label>
-                    <input id="minv" type="number">
+                    <input id="minv" min="0" max="2,5" type="number">
                 </div>
                 <div class="control-row">
                     <label>Max. Voltage</label>
-                    <input id="maxv" type="number">
+                    <input id="maxv" min="0" max="2,5" type="number">
                 </div>
                 <div class="control-row">
                     <label>Tank Volume</label>
-                    <input id="tv" type="number">
+                    <input id="tv" min="1" type="number">
                 </div>
             </div>
 
@@ -513,15 +517,15 @@
                 </div>
                 <div class="control-row">
                     <label>Max Level</label>
-                    <input max="100" id="maxl" type="number">
+                    <input max="100" min="1" id="maxl" type="number">
                 </div>
                 <div class="control-row">
                     <label>Fill Level</label>
-                    <input max="100" id="minfl" type="number">
+                    <input max="100" min="0" id="minfl" type="number">
                 </div>
                 <div class="control-row">
                     <label>Min Level</label>
-                    <input max="90" id="minl" type="number">
+                    <input max="90" min="0" id="minl" type="number">
                 </div>
             </div>
 
@@ -835,6 +839,7 @@
             setValue("maxv", response.calibration.max);
             setValue("minv", response.calibration.min);
             setValue("tv", response.calibration.volume);
+            setValue("ema", response.calibration.ema);
 
             setValue("mpair", data.matter);
 
@@ -900,6 +905,7 @@
             window.configESP.calibration.max = val("maxv");
             window.configESP.calibration.min = val("minv");
             window.configESP.calibration.volume = val("tv");
+            window.configESP.calibration.ema = val("ema");
 
             window.configESP.mqtt.host = val("mhost");
             window.configESP.mqtt.port = val("mport");

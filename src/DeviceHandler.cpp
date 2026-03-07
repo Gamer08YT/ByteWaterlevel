@@ -49,6 +49,9 @@ float minV = 0.0;
 // Store Tank Volume.
 float tankVolume = 1000.0;
 
+// Store EMA Filter Value.
+float emaAlpha;
+
 // Store scanned Values (Caching to save CPU)
 float scanCurrent = 0.00;
 float scanTemperature = 0.00;
@@ -364,6 +367,7 @@ void DeviceHandler::setRelais(int8_t relais, bool state)
 #endif
 }
 
+
 /**
  * Configures the pin modes for the device's LED and relay channels.
  *
@@ -416,6 +420,7 @@ void DeviceHandler::setup()
     maxV = FileHandler::getConfig()["calibration"]["max"].as<float>();
     minV = FileHandler::getConfig()["calibration"]["min"].as<float>();
     tankVolume = FileHandler::getConfig()["calibration"]["volume"].as<float>();
+    emaAlpha = FileHandler::getConfig()["calibration"]["ema"].as<float>();
 
     // Check if OLED is enabled.
     if (FileHandler::getConfig()["hardware"]["oled"].as<bool>())
@@ -570,7 +575,7 @@ float DeviceHandler::readVoltage(int pin, int samples = 10)
     float average = (sum / (float)samples) / 1000.0f;
 
     // Do some EMA Filtering.
-    float voltage = (latestVoltage * (1.0f - EMA_ALPHA)) + (average * EMA_ALPHA);
+    float voltage = (latestVoltage * (1.0f - emaAlpha)) + (average * emaAlpha);
 
     // Cache latest voltage.
     latestVoltage = voltage;

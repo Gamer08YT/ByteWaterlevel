@@ -21,6 +21,8 @@ unsigned long previousMillisMQTT = 0;
 // Stores last Reconnect Timestamp.
 unsigned long reconnectMQTT = 0;
 
+bool publishOnline = false;
+
 /**
  * @brief Sets the MQTT Last Will and Testament (LWT) message.
  *
@@ -210,6 +212,16 @@ void MQTTHandler::loop()
 
                 // Operation Mode (Integer)
                 publish("waterlevel/operation/mode", String(AutomationHandler::getMode()).c_str());
+
+                // Publish Online State every 2 Seconds.
+                if (!publishOnline)
+                {
+                    publishOnline = true;
+                } else
+                {
+                    publish("waterlevel/status", "online");
+                    publishOnline = false;
+                }
             }
         }
         else

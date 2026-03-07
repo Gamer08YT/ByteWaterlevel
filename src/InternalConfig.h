@@ -30,7 +30,7 @@
  * 0.30 ok, ok => 30% from new Value
  * 0.50 very bad, very fast => 50% from new Value
  */
-#define EMA_ALPHA 0.3
+#define EMA_ALPHA 0.10
 
 /**
  * Define Pinouts.
