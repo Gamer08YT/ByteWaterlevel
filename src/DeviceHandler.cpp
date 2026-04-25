@@ -519,9 +519,7 @@ bool DeviceHandler::getState(int i)
  */
 float DeviceHandler::getADCValue()
 {
-    readVoltage(SENSE, 64);
-
-    return latestVoltage;
+    return readVoltage(SENSE, 64);
 }
 
 /**
@@ -567,7 +565,7 @@ float DeviceHandler::getCurrent(bool newReading = false)
  * @param samples The number of readings to average. Default value is 10.
  * @return The calculated voltage based on the averaged ADC readings.
  */
-void DeviceHandler::readVoltage(int pin, int samples = 64)
+float DeviceHandler::readVoltage(int pin, int samples = 64)
 {
     unsigned long now = millis();
 
@@ -603,6 +601,8 @@ void DeviceHandler::readVoltage(int pin, int samples = 64)
 
     // Reset sampler for next cycle
     adc_sampler.count = 0;
+
+    return voltage;
 }
 
 

@@ -29,7 +29,7 @@ public:
     static bool getState(int i);
     static float getADCValue();
     static float getCurrent(bool newReading);
-    static void readVoltage(int pin, int samples);
+    static float readVoltage(int pin, int samples);
     static float getCPUTemperature();
     static int getDuration(int i);
     static float getLevel();
