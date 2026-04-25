@@ -569,14 +569,14 @@ float DeviceHandler::readVoltage(int pin, int samples = 64)
 {
     unsigned long now = millis();
 
-    // Start new sampling if not already running
+    // Initialize sampler if not running
     if (adc_sampler.count == 0)
     {
         adc_sampler.sum = 0;
         adc_sampler.lastTime = now;
     }
 
-    // Collect one sample every 10ms (instead of delay(10))
+    // Collect one sample every 10ms (non-blocking!)
     if (now - adc_sampler.lastTime >= 10)
     {
         adc_sampler.sum += analogReadMilliVolts(pin);
@@ -584,13 +584,14 @@ float DeviceHandler::readVoltage(int pin, int samples = 64)
         adc_sampler.lastTime = now;
     }
 
-    // If not all samples collected yet → return 0 (still sampling)
+    // If not all samples collected yet → return latestVoltage (cached value)
     if (adc_sampler.count < samples)
     {
-        return 0;
+        // Still sampling, return last known voltage
+        return latestVoltage;
     }
 
-    // All samples collected → calculate average voltage
+    // All samples collected → calculate and filter
     float average = (adc_sampler.sum / (float)samples) / 1000.0f;
 
     // Apply EMA filtering
@@ -599,9 +600,10 @@ float DeviceHandler::readVoltage(int pin, int samples = 64)
     // Cache latest voltage
     latestVoltage = voltage;
 
-    // Reset sampler for next cycle
+    // Reset for next cycle
     adc_sampler.count = 0;
 
+    // Return updated voltage
     return voltage;
 }
 
