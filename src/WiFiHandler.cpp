@@ -14,7 +14,7 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 unsigned long WiFiHandler::connectionStartTime = 0;
 
 // Store last Reconnect Attempt Timestamp.
-long lastReconnectAttempt;
+static long lastReconnectAttempt = 0;
 
 bool WiFiHandler::apStarted = false;
 
@@ -136,9 +136,15 @@ float WiFiHandler::getRSSI()
  */
 void WiFiHandler::checkConnection()
 {
+    // STA is NOT connected → handle reconnect logic
+    unsigned long now = millis();
+
     // If STA is connected and AP is active → stop AP
     if (isConnected() && apStarted)
     {
+        // Reset Timer.
+        connectionStartTime = now;
+
         // Stop AP Mode.
         stopAP();
 
@@ -155,11 +161,8 @@ void WiFiHandler::checkConnection()
     if (isConnected())
         return;
 
-    // STA is NOT connected → handle reconnect logic
-    unsigned long now = millis();
-
     // Try to reconnect every 5 seconds
-    if (now - lastReconnectAttempt >= 5000)
+    if ((now - lastReconnectAttempt >= 5000) || (now < lastReconnectAttempt))
     {
         lastReconnectAttempt = now;
 
@@ -203,10 +206,13 @@ void WiFiHandler::startAP(JsonDocument& config, bool combine)
     WiFi.softAPConfig(apIP, gateway, subnet);
 
     // Begin Soft AP.
-    WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(),
-                config["wifi"]["ap"]["password"].as<String>());
+    bool started = WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(),
+                               config["wifi"]["ap"]["password"].as<String>());
 
-    apStarted = true;
+    // Set Flag only if really started.
+    if (started) apStarted = true;
+    else
+        Serial.println("AP could not be started.");
 
 #if DEBUG == true
     Serial.print("AP startet: ");
