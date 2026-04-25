@@ -213,6 +213,9 @@ void MQTTHandler::loop()
                 // Operation Mode (Integer)
                 publish("waterlevel/operation/mode", String(AutomationHandler::getMode()).c_str());
 
+                // Publish Heap (Debug).
+                publish("waterlevel/heap", String(ESP.getFreeHeap()).c_str());
+
                 // Publish Online State every 2 Seconds.
                 if (!publishOnline)
                 {

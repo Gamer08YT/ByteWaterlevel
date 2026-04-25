@@ -163,7 +163,7 @@ void adcTaskFunction(void* parameter)
     DeviceHandler::getADCValue();
 
     // Task beendet sich automatisch
-    vTaskDelete(NULL);
+    vTaskDelete(nullptr);
 }
 
 
@@ -201,7 +201,7 @@ void DeviceHandler::scanSensors()
     xTaskCreate(
         adcTaskFunction,
         "ADC Task",
-        2048,
+        8192,
         NULL,
         1,
         NULL

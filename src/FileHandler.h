@@ -13,7 +13,7 @@ class FileHandler
 public:
     static void begin();
     static String readFile(const char* path);
-    static JsonDocument loadConfig();
+    static void loadConfig();
     static void saveFile(const char* str, const String& string);
     static JsonDocument getConfig();
     static void saveConfig(JsonObject object);

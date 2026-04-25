@@ -10,6 +10,7 @@
 class WebHandler
 {
 public:
+    static AsyncCallbackJsonWebHandler apiHandler;
     static void setup();
     static void loop();
     static bool needAuth(AsyncWebServerRequest* request);

@@ -57,8 +57,13 @@ String FileHandler::readFile(const char* path)
         return "";
     }
 
+    // Read Buffer into String.
     String content = file.readString();
+
+    // Close File Buffer.
     file.close();
+
+
     return content;
 }
 
@@ -67,21 +72,22 @@ String FileHandler::readFile(const char* path)
  *
  * This method is responsible for handling the process of reading and
  * parsing the configuration file stored in the file system. It ensures
- * that the application retrieves and utilizes the necessary settings
+ * that the application retrieves and uses the necessary settings
  * for its operation based on the configuration data.
  */
-JsonDocument FileHandler::loadConfig()
+void FileHandler::loadConfig()
 {
-    // Copy file if not exists.
+    // Copy a file if not exists.
     if (!LittleFS.exists("/config.json"))
     {
         copyFile("/config.json.bak", "/config.json");
     }
 
-    // Deserialize Json Config.
-    deserializeJson(config, readFile("/config.json"));
+    // Read Config Content.
+    String content = readFile("/config.json");
 
-    return config;
+    // Deserialize Json Config.
+    deserializeJson(config, content);
 }
 
 /**

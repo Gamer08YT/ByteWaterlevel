@@ -21,6 +21,35 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
+/**
+ * Creates an asynchronous JSON web request handler for API endpoints and processes incoming API requests.
+ *
+ * This handler is bound to the "/api" URI and accepts asynchronous web server requests containing JSON data.
+ * It first checks if authentication is required and proceeds accordingly:
+ * - If authentication is successful or not required, it validates the structure of the incoming JSON request
+ *   by invoking the `checkRequest` method.
+ * - Upon successful validation, it triggers the API-specific logic using the `handleAPICall` method.
+ *
+ * @param request Pointer to the incoming asynchronous web server request object.
+ * @param json Reference to the JSON variant parsed from the request payload.
+ *             This contains the user-provided API request data.
+ */
+AsyncCallbackJsonWebHandler WebHandler::apiHandler("/api",
+                                                   [](AsyncWebServerRequest* request, JsonVariant& json)
+                                                   {
+                                                       if (WebHandler::needAuth(request))
+                                                       {
+                                                           if (WebHandler::checkRequest(request, json))
+                                                           {
+                                                               // Parse API Type and Execute Listener.
+                                                               WebHandler::handleAPICall(request, json);
+                                                           }
+                                                       }
+                                                       // else
+                                                       //     request->send(401, "application/json", R"({"type":"error","message":"Unauthorized"})");
+                                                   });
+
+
 void WebHandler::setup()
 {
     // Route for root / web page
@@ -50,19 +79,7 @@ void WebHandler::setup()
     });
 
     // Add API Handler.
-    server.addHandler(new AsyncCallbackJsonWebHandler("/api", [](AsyncWebServerRequest* request, JsonVariant json)
-    {
-        if (needAuth(request))
-        {
-            if (checkRequest(request, json))
-            {
-                // Parse API Type and Execute Listener.
-                handleAPICall(request, json);
-            }
-        }
-        // else
-        //     request->send(401, "application/json", R"({"type":"error","message":"Unauthorized"})");
-    }));
+    server.addHandler(&apiHandler);
 
     // Start Webserver.
     server.begin();
