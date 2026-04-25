@@ -149,6 +149,10 @@ void MQTTHandler::setup()
  */
 void MQTTHandler::publish(const char* topic, const char* payload)
 {
+    // Check if fields are filled.
+    if (!topic || !payload) return;
+
+    // Publish to Broker.
     client.publish(topic, 1, false, payload);
 
 #if DEBUG == true
@@ -220,7 +224,8 @@ void MQTTHandler::loop()
                 if (!publishOnline)
                 {
                     publishOnline = true;
-                } else
+                }
+                else
                 {
                     publish("waterlevel/status", "online");
                     publishOnline = false;
