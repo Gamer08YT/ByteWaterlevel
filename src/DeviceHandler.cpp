@@ -205,17 +205,6 @@ void adcTaskFunction(void* parameter)
  */
 void DeviceHandler::scanSensors()
 {
-    // Read ADC First = latestVoltage as ref.
-    xTaskCreate(
-        adcTaskFunction,
-        "ADC Task",
-        8192,
-        NULL,
-        1,
-        NULL
-    );
-
-
     // Read Sensor Values.
     scanCurrent = roundToTwoDecimals(getCurrent(false));
     scanTemperature = roundToTwoDecimals(getCPUTemperature());
@@ -224,33 +213,35 @@ void DeviceHandler::scanSensors()
 }
 
 /**
- * Manages periodic sensor scanning based on a predefined time interval.
+ * Handles the periodic scanning of data and caches sensor readings.
  *
- * This method verifies if the specified time interval (`SCAN_INTERVAL`) has elapsed.
- * If the interval has passed, it updates the `scanMillis` timestamp to the current time
- * and invokes the `scanSensors()` method to read sensor data.
- *
- * Preconditions:
- * - The `SCAN_INTERVAL` constant must be defined to specify the time interval between scans.
- * - Sensor-related functionalities, handled in the `scanSensors()` method, must be implemented and operational.
- *
- * Postconditions:
- * - If the interval has elapsed, sensor data is refreshed via `scanSensors()`.
- * - The `scanMillis` variable is updated to the current time to track the last scan moment.
+ * This method ensures non-blocking data sampling from a sensor, updates cached
+ * sensor values at regular intervals, and processes sensor readings using the `scanSensors()`
+ * method.
  *
  * Behavior:
- * - Performs no operation if the elapsed time since the last scan is less than the defined interval.
- * - Triggers the sensor scanning process as soon as the interval has been satisfied.
+ * - Continuously samples voltage from a specific pin (`SENSE`) using the `readVoltage()` method in a non-blocking manner.
+ * - At intervals defined by `SCAN_INTERVAL` (in milliseconds), updates a timestamp (`scanMillis`) and invokes `scanSensors()` to read and cache current sensor data.
+ *
+ * Preconditions:
+ * - The sensor and its reading mechanism must be configured and initialized.
+ * - `SCAN_INTERVAL` must be defined and specify the interval in milliseconds for triggering the scanning process.
+ *
+ * Postconditions:
+ * - The latest sensor data is cached at the defined interval.
+ * - The system ensures timely updates to sensor readings without blocking other operations.
  */
 void DeviceHandler::handleScan()
 {
     unsigned long currentMillis = millis();
 
-    // Check if the interval has passed
+    // Continuously collect samples (non-blocking)
+    readVoltage(SENSE, 64);
+
+    // Cache values every 1 second
     if (currentMillis - scanMillis >= SCAN_INTERVAL)
     {
         scanMillis = currentMillis;
-
         scanSensors();
     }
 }
@@ -604,7 +595,7 @@ float DeviceHandler::readVoltage(int pin, int samples = 64)
     float average = (adc_sampler.sum / (float)samples) / 1000.0f;
     latestVoltage = (latestVoltage * (1.0f - emaAlpha)) + (average * emaAlpha);
 
-    // Mark sampling complete for next cycle
+    // Mark sampling complete for the next cycle
     adc_sampler.sampling = false;
 
 
