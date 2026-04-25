@@ -61,6 +61,13 @@ float scanWaterVolume = 0.00;
 // Store Display State.
 bool displayEnabled = false;
 
+struct
+{
+    uint32_t sum = 0;
+    int count = 0;
+    unsigned long lastTime = 0;
+} adc_sampler;
+
 
 /**
  * Monitors and manages the state of relays based on their configured timers.
@@ -512,7 +519,9 @@ bool DeviceHandler::getState(int i)
  */
 float DeviceHandler::getADCValue()
 {
-    return readVoltage(SENSE, 64);
+    readVoltage(SENSE, 64);
+
+    return latestVoltage;
 }
 
 /**
@@ -558,29 +567,42 @@ float DeviceHandler::getCurrent(bool newReading = false)
  * @param samples The number of readings to average. Default value is 10.
  * @return The calculated voltage based on the averaged ADC readings.
  */
-float DeviceHandler::readVoltage(int pin, int samples = 10)
+void DeviceHandler::readVoltage(int pin, int samples = 64)
 {
-    uint32_t sum = 0;
+    unsigned long now = millis();
 
-    for (int i = 0; i < samples; i++)
+    // Start new sampling if not already running
+    if (adc_sampler.count == 0)
     {
-        // Read Voltage via ADC.
-        sum += analogReadMilliVolts(pin);
-
-        // Short delay between reads.
-        delay(10);
+        adc_sampler.sum = 0;
+        adc_sampler.lastTime = now;
     }
 
-    // Calculate average voltage.
-    float average = (sum / (float)samples) / 1000.0f;
+    // Collect one sample every 10ms (instead of delay(10))
+    if (now - adc_sampler.lastTime >= 10)
+    {
+        adc_sampler.sum += analogReadMilliVolts(pin);
+        adc_sampler.count++;
+        adc_sampler.lastTime = now;
+    }
 
-    // Do some EMA Filtering.
+    // If not all samples collected yet → return 0 (still sampling)
+    if (adc_sampler.count < samples)
+    {
+        return 0;
+    }
+
+    // All samples collected → calculate average voltage
+    float average = (adc_sampler.sum / (float)samples) / 1000.0f;
+
+    // Apply EMA filtering
     float voltage = (latestVoltage * (1.0f - emaAlpha)) + (average * emaAlpha);
 
-    // Cache latest voltage.
+    // Cache latest voltage
     latestVoltage = voltage;
 
-    return voltage;
+    // Reset sampler for next cycle
+    adc_sampler.count = 0;
 }
 
 
