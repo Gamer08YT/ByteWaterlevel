@@ -66,6 +66,7 @@ struct
     uint32_t sum = 0;
     int count = 0;
     unsigned long lastTime = 0;
+    bool sampling = false;
 } adc_sampler;
 
 
@@ -569,42 +570,45 @@ float DeviceHandler::readVoltage(int pin, int samples = 64)
 {
     unsigned long now = millis();
 
-    // Initialize sampler if not running
-    if (adc_sampler.count == 0)
+    // Start new sampling cycle if not currently sampling
+    if (!adc_sampler.sampling)
     {
+        adc_sampler.sampling = true;
         adc_sampler.sum = 0;
+        adc_sampler.count = 0;
         adc_sampler.lastTime = now;
+
+        // Take first sample immediately
+        adc_sampler.sum += analogReadMilliVolts(pin);
+        adc_sampler.count++;
+        adc_sampler.lastTime = now;
+
+        return latestVoltage; // Return cached value while sampling
     }
 
-    // Collect one sample every 10ms (non-blocking!)
-    if (now - adc_sampler.lastTime >= 10)
+    // Collect samples every 10ms
+    if (now - adc_sampler.lastTime >= 10 && adc_sampler.count < samples)
     {
         adc_sampler.sum += analogReadMilliVolts(pin);
         adc_sampler.count++;
         adc_sampler.lastTime = now;
     }
 
-    // If not all samples collected yet → return latestVoltage (cached value)
+    // If still collecting samples → return cached voltage
     if (adc_sampler.count < samples)
     {
-        // Still sampling, return last known voltage
         return latestVoltage;
     }
 
-    // All samples collected → calculate and filter
+    // All samples collected → calculate and apply EMA filter
     float average = (adc_sampler.sum / (float)samples) / 1000.0f;
+    latestVoltage = (latestVoltage * (1.0f - emaAlpha)) + (average * emaAlpha);
 
-    // Apply EMA filtering
-    float voltage = (latestVoltage * (1.0f - emaAlpha)) + (average * emaAlpha);
+    // Mark sampling complete for next cycle
+    adc_sampler.sampling = false;
 
-    // Cache latest voltage
-    latestVoltage = voltage;
 
-    // Reset for next cycle
-    adc_sampler.count = 0;
-
-    // Return updated voltage
-    return voltage;
+    return latestVoltage;
 }
 
 
