@@ -3,7 +3,10 @@
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <variables></variables>
+    <variables>
+        <custom-favicons>logo-micro.png</custom-favicons>
+        <header-logo>logo-micro.png</header-logo>
+    </variables>
     <build-profile instance="bwl">
         <variables>
             <noindex-content>false</noindex-content>
