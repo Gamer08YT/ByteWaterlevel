@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="bwl"
+                 name="ByteWaterlevel" start-page="API.md">
+
+    <toc-element topic="SETUP.md"/>
+    <toc-element topic="RESET.md"/>
+    <toc-element topic="OTA.md"/>
+    <toc-element topic="MQTT.md"/>
+    <toc-element topic="MATTER.md"/>
+    <toc-element topic="FLASH.md"/>
+    <toc-element topic="AUTOMATION.md"/>
+    <toc-element topic="API.md"/>
+</instance-profile>
