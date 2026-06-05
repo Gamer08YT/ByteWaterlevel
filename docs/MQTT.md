@@ -4,7 +4,7 @@ The current MQTT Implementation is compatible with the latest 3.1.1 Protocol.
 
 ### Setup
 
-![img.png](assets/img/mqtt.png)
+![img.png](../assets/img/mqtt.png)
 
 When enabling MQTT make sure, the Device can reach the MQTT Server.
 

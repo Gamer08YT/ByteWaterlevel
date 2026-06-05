@@ -5,7 +5,7 @@ The Device Firmware comes with integrated Automations.
 - Pump and Fill
 - Fill
 
-![img.png](assets/img/automation.png)
+![img.png](../assets/img/automation.png)
 
 ### Pump and Fill
 

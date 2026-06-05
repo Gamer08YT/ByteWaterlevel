@@ -72,20 +72,20 @@ You can add an SSD1306 (I²C 128x64) Display to the Device.
 
 ## Setup && Installation
 
-For Setup please have a Look into <a href="./SETUP.md">SETUP.md</a>.
+For Setup please have a Look into <a href="./docs/SETUP.md">SETUP.md</a>.
 
 ## Automation
 
-The Device comes with integrated Automation Functions for more Information look at <a href="./AUTOMATION.md">
+The Device comes with integrated Automation Functions for more Information look at <a href="./docs/AUTOMATION.md">
 AUTOMATION.md</a>.
 
 ## Factory reset:
 
-For Factory reset have a Look into <a href="./RESET.md">RESET.md</a>.
+For Factory reset have a Look into <a href="./docs/RESET.md">RESET.md</a>.
 
 ## API Docs
 
-For API Docs please have a Look into <a href="./API.md">API.md</a>.
+For API Docs please have a Look into <a href="./docs/API.md">API.md</a>.
 
 ## Used Software
 
