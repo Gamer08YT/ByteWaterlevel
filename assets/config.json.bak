@@ -1,0 +1,43 @@
+{
+  "version": "1.5.1",
+  "wifi": {
+    "client": {
+      "ssid": "",
+      "password": ""
+    },
+    "ap": {
+      "ssid": "BYTELEVEL",
+      "password": "BYTESTORE2026"
+    }
+  },
+  "mqtt": {
+    "state": false,
+    "host": "",
+    "port": 1883,
+    "user": "",
+    "password": ""
+  },
+  "calibration": {
+    "ema": "0.10",
+    "min": "0.00",
+    "max": "2.40",
+    "volume": 1000
+  },
+  "auto": {
+    "mode": "0",
+    "max": "80.00",
+    "fill": "20.00",
+    "min": "10.00"
+  },
+  "admin": {
+    "state": false,
+    "user": "",
+    "password": ""
+  },
+  "hardware": {
+    "led": true,
+    "oled": true,
+    "level": 128
+  },
+  "ota": true
+}
