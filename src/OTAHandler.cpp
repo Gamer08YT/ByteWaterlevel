@@ -33,48 +33,58 @@ esp32FOTA pull("stable", VERSION, false, true);
  */
 void OTAHandler::setup()
 {
-    // Local OTA Server.
-    if (FileHandler::getConfig()["ota"].as<bool>())
-    {
-        otaEnabled = true;
+     // Local OTA Server.
+     if (FileHandler::getConfig()["ota"].as<bool>())
+     {
+         otaEnabled = true;
 
-        // Set OTA Hostname.
-        ArduinoOTA.setHostname(FileHandler::getConfig()["wifi"]["ap"]["ssid"].as<String>().c_str());
+         // Set OTA Hostname.
+         ArduinoOTA.setHostname(FileHandler::getConfig()["wifi"]["ap"]["ssid"].as<String>().c_str());
 
-        // Enable MDNS.
-        ArduinoOTA.setMdnsEnabled(true);
+         // Enable MDNS.
+         ArduinoOTA.setMdnsEnabled(true);
 
-        // Reboot on Success.
-        ArduinoOTA.setRebootOnSuccess(true);
+         // Reboot on Success.
+         ArduinoOTA.setRebootOnSuccess(true);
 
-        JsonDocument doc = FileHandler::getConfig();
+         JsonDocument doc = FileHandler::getConfig();
 
-        if (doc["admin"]["state"].as<bool>())
-        {
-            // Set the Password for OTA.
-            ArduinoOTA.setPassword(doc["admin"]["password"].as<String>().c_str());
-        }
+         if (doc["admin"]["state"].as<bool>())
+         {
+             // Set the Password for OTA.
+             ArduinoOTA.setPassword(doc["admin"]["password"].as<String>().c_str());
+         }
 
-#if DEBUG == true
-        ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
-        {
-            Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-        });
-        ArduinoOTA.onStart([]() { Serial.println("\nStart"); });
-        ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
-#endif
-
-        // Begin OTA Server.
-        ArduinoOTA.begin();
+         // Error callback
+         ArduinoOTA.onError([](ota_error_t error) {
+             Serial.printf("OTA Error[%u]: ", error);
+             if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
+             else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
+             else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
+             else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
+             else if (error == OTA_END_ERROR) Serial.println("End Failed");
+         });
 
 #if DEBUG == true
-        Serial.println("OTA started");
+         ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
+         {
+             Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+         });
+         ArduinoOTA.onStart([]() { Serial.println("\nStart"); });
+         ArduinoOTA.onEnd([]() { Serial.println("\nEnd"); });
 #endif
-    }
 
-    // Remote OTA Server.
-    // Set Manifest URL.
-    pull.setManifestURL(UPDATE_SERVER);
+         // Begin OTA Server.
+         ArduinoOTA.begin();
+
+#if DEBUG == true
+         Serial.println("OTA started");
+#endif
+     }
+
+     // Remote OTA Server.
+     // Set Manifest URL.
+     pull.setManifestURL(UPDATE_SERVER);
 }
 
 /**

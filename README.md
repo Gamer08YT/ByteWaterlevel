@@ -134,3 +134,4 @@ You can set the Behavior of the System LED and much more.
 **Any warranty is excluded.**
 
 **The device should be installed by a qualified electrician in accordance with VDE regulations.**
+

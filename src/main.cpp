@@ -31,7 +31,7 @@ void setup()
 
     // Begin Serial.
     Serial.begin(115200);
-    Serial.setDebugOutput(true);
+    Serial.setDebugOutput(false);
 
     // Setup File System.
     FileHandler::begin();

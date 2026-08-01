@@ -9,7 +9,7 @@
  * Define Default Values.
  */
 #define VERSION "1.5.1"
-#define DEBUG true
+#define DEBUG false
 #define BLINK_INTERVAL 250
 #define SCAN_INTERVAL 1000
 #define DISPLAY_INTERVAL 1000
