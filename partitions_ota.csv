@@ -1,0 +1,8 @@
+# Name,   Type, SubType, Offset,   Size,    Flags
+# OTA-optimiert für ESP32-C3 4MB Flash mit korrekter Ausrichtung
+nvs,      data, nvs,     0x9000,   0x7000,
+otadata,  data, ota,     0x10000,  0x2000,
+app0,     app,  ota_0,   0x20000,  0x160000,
+app1,     app,  ota_1,   0x180000, 0x160000,
+littlefs, data, spiffs,  0x2E0000, 0x80000,
+
