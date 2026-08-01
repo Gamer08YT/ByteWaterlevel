@@ -15,6 +15,7 @@ private:
     static void startAP(JsonDocument& config, bool combine);
     static unsigned long connectionStartTime;
     static bool apStarted;
+    static bool wasConnected;
     static const unsigned long CONNECTION_TIMEOUT_MS;
 
 public:

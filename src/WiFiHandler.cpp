@@ -12,6 +12,7 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 
 // Statische Variablen
 unsigned long WiFiHandler::connectionStartTime = 0;
+bool WiFiHandler::wasConnected = false;
 
 // Store last Reconnect Attempt Timestamp.
 static long lastReconnectAttempt = 0;
@@ -26,53 +27,58 @@ IPAddress subnet(255, 255, 255, 0);
 
 void WiFiHandler::setup()
 {
-    // Enable Auto Reconnect.
-    WiFi.setAutoReconnect(true);
+     // Enable Auto Reconnect.
+     WiFi.setAutoReconnect(true);
 
-    JsonDocument config = FileHandler::getConfig();
+     JsonDocument config = FileHandler::getConfig();
 
-    // Check if Wi-Fi Credentials are set.
-    if (isWiFiClientUsable())
-    {
-        // Set Device Hostname (steal from AP Settings).
-        WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
+     // Check if Wi-Fi Credentials are set.
+     if (isWiFiClientUsable())
+     {
+         // Set Device Hostname (steal from AP Settings).
+         WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
 
-        // Set AP mode explicitly
-        WiFi.mode(WIFI_MODE_STA);
+         // Set AP mode explicitly
+         WiFi.mode(WIFI_MODE_STA);
 
-        // Begin Wi-Fi Connection.
-        WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(),
-                   config["wifi"]["client"]["password"].as<String>());
+         // Begin Wi-Fi Connection.
+         WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(),
+                    config["wifi"]["client"]["password"].as<String>());
 
-        // Start Timer for Connection Timeout.
-        connectionStartTime = millis();
-        apStarted = false;
+         // Start Timer for Connection Timeout.
+         connectionStartTime = millis();
+         wasConnected = false;
+         apStarted = false;
 
 
-        // Wait for Connection.
-        int result = WiFi.waitForConnectResult(15000);
+         // Wait for Connection.
+         int result = WiFi.waitForConnectResult(15000);
 
-        if (result != WL_CONNECTED)
-        {
-            startAP(config, false);
-        }
-
-#if DEBUG == true
-        Serial.println("WiFi Client started. Try to connect...");
-#endif
-    }
-    else
-    {
-        // Invalid Credentials, start AP.
-        startAP(config, false);
-    }
+         if (result != WL_CONNECTED)
+         {
+             startAP(config, false);
+         }
+         else
+         {
+             wasConnected = true;
+         }
 
 #if DEBUG == true
-    Serial.println("WiFi started");
+         Serial.println("WiFi Client started. Try to connect...");
+#endif
+     }
+     else
+     {
+         // Invalid Credentials, start AP.
+         startAP(config, false);
+     }
+
+#if DEBUG == true
+     Serial.println("WiFi started");
 #endif
 
-    Serial.print("Ready on ");
-    Serial.println(WiFi.softAPIP());
+     Serial.print("Ready on ");
+     Serial.println(WiFi.softAPIP());
 }
 
 /**
@@ -136,55 +142,70 @@ float WiFiHandler::getRSSI()
  */
 void WiFiHandler::checkConnection()
 {
-    // STA is NOT connected → handle reconnect logic
-    unsigned long now = millis();
+     unsigned long now = millis();
 
-    // If STA is connected and AP is active → stop AP
-    if (isConnected() && apStarted)
-    {
-        // Reset Timer.
-        connectionStartTime = now;
+     // If STA is connected and AP is active → stop AP
+     if (isConnected() && apStarted)
+     {
+         // Reset Timer.
+         connectionStartTime = 0;
+         wasConnected = true;
 
-        // Stop AP Mode.
-        stopAP();
+         // Stop AP Mode.
+         stopAP();
 
-        // Return to clean STA mode
-        WiFi.mode(WIFI_MODE_STA);
-
-#if DEBUG == true
-        Serial.println("STA reconnected. AP stopped.");
-#endif
-        return;
-    }
-
-    // If STA is connected → nothing to do
-    if (isConnected())
-        return;
-
-    // Try to reconnect every 5 seconds
-    if ((now - lastReconnectAttempt >= 5000) || (now < lastReconnectAttempt))
-    {
-        lastReconnectAttempt = now;
+         // Return to clean STA mode
+         WiFi.mode(WIFI_MODE_STA);
 
 #if DEBUG == true
-        Serial.println("WiFi lost. Trying reconnect...");
+         Serial.println("STA reconnected. AP stopped.");
 #endif
+         return;
+     }
 
-        WiFi.reconnect();
-    }
+     // If STA is connected → nothing to do
+     if (isConnected())
+     {
+         wasConnected = true;
+         return;
+     }
 
-    // If reconnect takes too long → start AP
-    if (!apStarted && now - connectionStartTime > CONNECTION_TIMEOUT_MS)
-    {
+     // Detect disconnection and reset timer for reconnect attempts
+     if (wasConnected)
+     {
+         wasConnected = false;
+         connectionStartTime = now;
+         lastReconnectAttempt = now;
+
 #if DEBUG == true
-        Serial.println("Reconnect timeout. Starting AP...");
+         Serial.println("WiFi disconnected. Starting reconnect timer...");
+#endif
+     }
+
+     // Try to reconnect every 5 seconds
+     if ((now - lastReconnectAttempt >= 5000) || (now < lastReconnectAttempt))
+     {
+         lastReconnectAttempt = now;
+
+#if DEBUG == true
+         Serial.println("Attempting WiFi reconnect...");
 #endif
 
-        JsonDocument config = FileHandler::getConfig();
+         WiFi.reconnect();
+     }
 
-        // AP+STA mode
-        startAP(config, true);
-    }
+     // If reconnect takes too long → start AP
+     if (!apStarted && connectionStartTime > 0 && now - connectionStartTime > CONNECTION_TIMEOUT_MS)
+     {
+#if DEBUG == true
+         Serial.println("Reconnect timeout. Starting AP...");
+#endif
+
+         JsonDocument config = FileHandler::getConfig();
+
+         // AP+STA mode
+         startAP(config, true);
+     }
 }
 
 
