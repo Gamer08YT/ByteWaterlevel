@@ -27,58 +27,43 @@ IPAddress subnet(255, 255, 255, 0);
 
 void WiFiHandler::setup()
 {
-     // Enable Auto Reconnect.
-     WiFi.setAutoReconnect(true);
+    // Enable Auto Reconnect.
+    WiFi.setAutoReconnect(true);
 
-     JsonDocument config = FileHandler::getConfig();
+    JsonDocument config = FileHandler::getConfig();
 
-     // Check if Wi-Fi Credentials are set.
-     if (isWiFiClientUsable())
-     {
-         // Set Device Hostname (steal from AP Settings).
-         WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
+    // Check if Wi-Fi Credentials are set.
+    if (isWiFiClientUsable())
+    {
+        // Set Device Hostname (steal from AP Settings).
+        WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
 
-         // Set AP mode explicitly
-         WiFi.mode(WIFI_MODE_STA);
+        // Set AP mode explicitly
+        WiFi.mode(WIFI_MODE_STA);
 
-         // Begin Wi-Fi Connection.
-         WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(),
-                    config["wifi"]["client"]["password"].as<String>());
+        // Begin Wi-Fi Connection.
+        WiFi.begin(config["wifi"]["client"]["ssid"].as<String>(),
+                   config["wifi"]["client"]["password"].as<String>());
 
-         // Start Timer for Connection Timeout.
-         connectionStartTime = millis();
-         wasConnected = false;
-         apStarted = false;
+        // Start Timer for Connection Timeout.
+        connectionStartTime = millis();
+        wasConnected = false;
+        apStarted = false;
 
-
-         // Wait for Connection.
-         int result = WiFi.waitForConnectResult(15000);
-
-         if (result != WL_CONNECTED)
-         {
-             startAP(config, false);
-         }
-         else
-         {
-             wasConnected = true;
-         }
 
 #if DEBUG == true
-         Serial.println("WiFi Client started. Try to connect...");
+        Serial.println("WiFi Client started. Try to connect...");
 #endif
-     }
-     else
-     {
-         // Invalid Credentials, start AP.
-         startAP(config, false);
-     }
+    }
+    else
+    {
+        // Invalid Credentials, start AP.
+        startAP(config, false);
+    }
 
 #if DEBUG == true
-     Serial.println("WiFi started");
+    Serial.println("WiFi setup finished. Connection will be handled asynchronously.");
 #endif
-
-     Serial.print("Ready on ");
-     Serial.println(WiFi.softAPIP());
 }
 
 /**

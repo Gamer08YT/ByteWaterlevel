@@ -10,6 +10,8 @@
 #include "WiFiHandler.h"
 //#include <MatterHandler.h>
 
+bool mqttInitialized = false;
+
 /**
  * @brief Initializes the system components necessary for operation.
  *
@@ -25,13 +27,15 @@
  */
 void setup()
 {
-    // Add Panic Watchdoc (2-Second Timeout).
-    esp_task_wdt_init(2, true);
+    // Add Panic Watchdoc (10-Second Timeout).
+    esp_task_wdt_init(10, true);
     esp_task_wdt_add(NULL);
 
     // Begin Serial.
     Serial.begin(115200);
-    Serial.setDebugOutput(false);
+
+    // Wait for Serial Monitor to connect (Debug via MacOS )
+    // delay(3000);
 
     // Setup File System.
     FileHandler::begin();
@@ -57,13 +61,6 @@ void setup()
     // Setup Matter.
     //MatterHandler::setup();
 
-    // Check for Connection.
-    if (WiFiHandler::isConnected())
-    {
-        // Setup MQTT.
-        MQTTHandler::setup();
-    }
-
     Serial.println("Ready");
 }
 
@@ -78,8 +75,15 @@ void loop()
     // Handle Web.
     WebHandler::loop();
 
-    // Loop Client.
-    MQTTHandler::loop();
+    // Check if WiFi is connected and initialize MQTT if it's not already.
+    if (WiFiHandler::isConnected()) {
+        if (!mqttInitialized) {
+            MQTTHandler::setup();
+            mqttInitialized = true;
+        }
+        MQTTHandler::loop();
+    }
+
 
     // Loop OTA.
     OTAHandler::loop();
