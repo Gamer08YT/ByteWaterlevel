@@ -61,6 +61,9 @@ float scanWaterVolume = 0.00;
 // Store Display State.
 bool displayEnabled = false;
 
+// LED State
+LedState DeviceHandler::currentLedState = OFF;
+
 struct
 {
     uint32_t sum = 0;
@@ -108,6 +111,10 @@ void DeviceHandler::handleRelais()
     }
 }
 
+void DeviceHandler::setLedState(LedState state) {
+    currentLedState = state;
+}
+
 /**
  * Toggles the state of an LED at a fixed interval defined by BLINK_INTERVAL.
  *
@@ -130,15 +137,53 @@ void DeviceHandler::handleRelais()
 void DeviceHandler::handleBlink()
 {
     unsigned long currentMillis = millis();
+    static int blink_counter = 0;
 
-    // Check if the interval has passed
-    if (currentMillis - previousMillis >= BLINK_INTERVAL)
-    {
-        previousMillis = currentMillis; // Save the last toggle time
+    switch (currentLedState) {
+        case WIFI_CONNECTING: // Fast blink
+            if (currentMillis - previousMillis >= 100) {
+                previousMillis = currentMillis;
+                ledState = !ledState;
+                digitalWrite(LED_PIN, ledState);
+            }
+            break;
 
-        // Toggle LED state
-        ledState = !ledState;
-        digitalWrite(LED_PIN, ledState);
+        case AP_MODE: // Slow blink
+            if (currentMillis - previousMillis >= 1000) {
+                previousMillis = currentMillis;
+                ledState = !ledState;
+                digitalWrite(LED_PIN, ledState);
+            }
+            break;
+
+        case NORMAL: // LED off
+            if (ledState) {
+                ledState = LOW;
+                digitalWrite(LED_PIN, LOW);
+            }
+            break;
+
+        case ERROR: // Double blink
+            if (currentMillis - previousMillis >= 200) {
+                previousMillis = currentMillis;
+                blink_counter++;
+                if (blink_counter > 3) blink_counter = 0;
+
+                if (blink_counter == 0 || blink_counter == 2) {
+                    digitalWrite(LED_PIN, HIGH);
+                } else {
+                    digitalWrite(LED_PIN, LOW);
+                }
+            }
+            break;
+
+        case OFF:
+        default: // LED off
+            if (ledState) {
+                ledState = LOW;
+                digitalWrite(LED_PIN, LOW);
+            }
+            break;
     }
 }
 

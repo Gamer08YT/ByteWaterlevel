@@ -8,10 +8,18 @@
 #ifndef DEVICEHANDLER_H
 #define DEVICEHANDLER_H
 
+enum LedState {
+    OFF,
+    WIFI_CONNECTING,
+    AP_MODE,
+    NORMAL,
+    ERROR
+};
 
 class DeviceHandler
 {
 private:
+    static LedState currentLedState;
     static void handleRelais();
     static void handleBlink();
     static void scanSensors();
@@ -25,6 +33,7 @@ public:
     static void loop();
     static void setRelais(int8_t relais, bool state);
     static void setup();
+    static void setLedState(LedState state);
     static void setRelaisDuration(int as, int as1);
     static bool getState(int i);
     static float getADCValue();

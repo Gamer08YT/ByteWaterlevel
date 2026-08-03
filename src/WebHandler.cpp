@@ -57,13 +57,16 @@ void WebHandler::setup()
     {
         if (needAuth(request))
         {
-            if (!LittleFS.exists("/index.html"))
+            if (!LittleFS.exists("/index.html.gz"))
             {
                 request->send(500, "text/plain", "Invalid LittleFS");
                 return;
             }
 
-            request->send(LittleFS, "/index.html", "text/html; charset=utf-8", false);
+            AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html.gz", "text/html; charset=utf-8");
+            response->addHeader("Content-Encoding", "gzip");
+            response->addHeader("Cache-Control", "public, max-age=86400");
+            request->send(response);
         }
         // else
         // {

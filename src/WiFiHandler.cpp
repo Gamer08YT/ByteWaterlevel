@@ -6,6 +6,7 @@
 #include <WiFi.h>
 #include "FileHandler.h"
 #include "InternalConfig.h"
+#include "DeviceHandler.h"
 
 // Konstanten
 const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
@@ -35,6 +36,7 @@ void WiFiHandler::setup()
     // Check if Wi-Fi Credentials are set.
     if (isWiFiClientUsable())
     {
+        DeviceHandler::setLedState(WIFI_CONNECTING);
         // Set Device Hostname (steal from AP Settings).
         WiFi.hostname(config["wifi"]["ap"]["ssid"].as<String>());
 
@@ -132,6 +134,7 @@ void WiFiHandler::checkConnection()
      // If STA is connected and AP is active → stop AP
      if (isConnected() && apStarted)
      {
+         DeviceHandler::setLedState(NORMAL);
          // Reset Timer.
          connectionStartTime = 0;
          wasConnected = true;
@@ -151,6 +154,9 @@ void WiFiHandler::checkConnection()
      // If STA is connected → nothing to do
      if (isConnected())
      {
+        if (!wasConnected) {
+            DeviceHandler::setLedState(NORMAL);
+        }
          wasConnected = true;
          return;
      }
@@ -158,6 +164,7 @@ void WiFiHandler::checkConnection()
      // Detect disconnection and reset timer for reconnect attempts
      if (wasConnected)
      {
+         DeviceHandler::setLedState(WIFI_CONNECTING);
          wasConnected = false;
          connectionStartTime = now;
          lastReconnectAttempt = now;
@@ -205,6 +212,7 @@ void WiFiHandler::checkConnection()
  */
 void WiFiHandler::startAP(JsonDocument& config, bool combine)
 {
+    DeviceHandler::setLedState(AP_MODE);
     // Wechsel zum AP-Modus
     WiFi.mode((combine ? WIFI_MODE_APSTA : WIFI_MODE_AP));
 
