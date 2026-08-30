@@ -15,9 +15,6 @@ const unsigned long WiFiHandler::CONNECTION_TIMEOUT_MS = 30000; // 30 Sekunden
 unsigned long WiFiHandler::connectionStartTime = 0;
 bool WiFiHandler::wasConnected = false;
 
-// Store last Reconnect Attempt Timestamp.
-static long lastReconnectAttempt = 0;
-
 bool WiFiHandler::apStarted = false;
 
 
@@ -118,86 +115,70 @@ float WiFiHandler::getRSSI()
  *
  * - If the system is connected in STA mode while the AP mode is active, the
  *   method stops the AP to ensure only STA mode is used.
- * - If the system is not connected to Wi-Fi in STA mode:
- *     - Tries to reconnect to the Wi-Fi network if no reconnection is ongoing.
- *     - If the reconnect attempt exceeds a predefined timeout, it switches the
- *       system to AP mode, thereby allowing a client to connect directly to the
- *       device for further configuration or operation.
+ * - If the system is not connected to Wi-Fi in STA mode, the Arduino WiFi
+ *   driver performs reconnect attempts because auto-reconnect is enabled.
+ * - If the connection timeout is exceeded, it starts an AP+STA fallback so a
+ *   client can connect directly while the driver keeps trying the STA network.
  *
  * This method plays a critical role in dynamically adapting to network
  * availability while ensuring robust and continuous Wi-Fi operation.
  */
 void WiFiHandler::checkConnection()
 {
-     unsigned long now = millis();
+    const unsigned long now = millis();
 
-     // If STA is connected and AP is active → stop AP
-     if (isConnected() && apStarted)
-     {
-         DeviceHandler::setLedState(NORMAL);
-         // Reset Timer.
-         connectionStartTime = 0;
-         wasConnected = true;
-
-         // Stop AP Mode.
-         stopAP();
-
-         // Return to clean STA mode
-         WiFi.mode(WIFI_MODE_STA);
-
-#if DEBUG == true
-         Serial.println("STA reconnected. AP stopped.");
-#endif
-         return;
-     }
-
-     // If STA is connected → nothing to do
-     if (isConnected())
-     {
-        if (!wasConnected) {
+    // WiFi.setAutoReconnect() owns reconnect attempts. Do not call
+    // WiFi.reconnect() periodically here: doing so can restart the driver's
+    // association state while it is already attempting to reconnect.
+    if (isConnected())
+    {
+        const bool connectedNow = !wasConnected;
+        wasConnected = true;
+        connectionStartTime = 0;
+        if (connectedNow || apStarted)
             DeviceHandler::setLedState(NORMAL);
+
+        // Once STA is back, the fallback AP is no longer needed. Stopping the
+        // AP first also prevents changing the mode from APSTA to STA from
+        // unnecessarily interrupting the newly restored STA connection.
+        if (apStarted)
+        {
+            stopAP();
+            WiFi.mode(WIFI_MODE_STA);
         }
-         wasConnected = true;
-         return;
-     }
-
-     // Detect disconnection and reset timer for reconnect attempts
-     if (wasConnected)
-     {
-         DeviceHandler::setLedState(WIFI_CONNECTING);
-         wasConnected = false;
-         connectionStartTime = now;
-         lastReconnectAttempt = now;
 
 #if DEBUG == true
-         Serial.println("WiFi disconnected. Starting reconnect timer...");
+        if (connectedNow)
+            Serial.println("WiFi connected. Auto-reconnect is active.");
 #endif
-     }
+        return;
+    }
 
-     // Try to reconnect every 5 seconds
-     if ((now - lastReconnectAttempt >= 5000) || (now < lastReconnectAttempt))
-     {
-         lastReconnectAttempt = now;
+    // Start one timeout window for the initial connection or for a later
+    // disconnect. Unsigned subtraction remains correct across millis() wrap.
+    if (connectionStartTime == 0)
+    {
+        connectionStartTime = now;
+        wasConnected = false;
+        DeviceHandler::setLedState(WIFI_CONNECTING);
 
 #if DEBUG == true
-         Serial.println("Attempting WiFi reconnect...");
+        Serial.println("WiFi disconnected. Auto-reconnect is active...");
 #endif
+    }
 
-         WiFi.reconnect();
-     }
-
-     // If reconnect takes too long → start AP
-     if (!apStarted && connectionStartTime > 0 && now - connectionStartTime > CONNECTION_TIMEOUT_MS)
-     {
+    // Keep the AP available as a configuration fallback while the ESP32
+    // continues trying the configured STA network in APSTA mode.
+    if (!apStarted && now - connectionStartTime >= CONNECTION_TIMEOUT_MS)
+    {
 #if DEBUG == true
-         Serial.println("Reconnect timeout. Starting AP...");
+        Serial.println("WiFi timeout. Starting fallback AP...");
 #endif
 
-         JsonDocument config = FileHandler::getConfig();
+        JsonDocument config = FileHandler::getConfig();
 
-         // AP+STA mode
-         startAP(config, true);
-     }
+        startAP(config, true);
+    }
 }
 
 
@@ -223,8 +204,10 @@ void WiFiHandler::startAP(JsonDocument& config, bool combine)
     bool started = WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(),
                                config["wifi"]["ap"]["password"].as<String>());
 
-    // Set Flag only if really started.
-    if (started) apStarted = true;
+    // Set the flag only if the AP really started. This allows a later loop
+    // iteration to retry after a transient driver failure.
+    if (started)
+        apStarted = true;
     else
         Serial.println("AP could not be started.");
 
