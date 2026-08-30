@@ -16,6 +16,7 @@ unsigned long WiFiHandler::connectionStartTime = 0;
 bool WiFiHandler::wasConnected = false;
 
 bool WiFiHandler::apStarted = false;
+static unsigned long lastAPStartAttempt = 0;
 
 
 // I use an UniFi Network on 192.XXX.XXX.XXX so i will use an 10.XX.XX.XX for Debugging.
@@ -169,7 +170,8 @@ void WiFiHandler::checkConnection()
 
     // Keep the AP available as a configuration fallback while the ESP32
     // continues trying the configured STA network in APSTA mode.
-    if (!apStarted && now - connectionStartTime >= CONNECTION_TIMEOUT_MS)
+    if (!apStarted && now - connectionStartTime >= CONNECTION_TIMEOUT_MS &&
+        now - lastAPStartAttempt >= 5000)
     {
 #if DEBUG == true
         Serial.println("WiFi timeout. Starting fallback AP...");
@@ -177,6 +179,7 @@ void WiFiHandler::checkConnection()
 
         JsonDocument config = FileHandler::getConfig();
 
+        lastAPStartAttempt = now;
         startAP(config, true);
     }
 }
@@ -193,6 +196,17 @@ void WiFiHandler::checkConnection()
  */
 void WiFiHandler::startAP(JsonDocument& config, bool combine)
 {
+    const String ssid = config["wifi"]["ap"]["ssid"].as<String>();
+    const String password = config["wifi"]["ap"]["password"].as<String>();
+
+    // softAP() fails for an empty SSID or an invalid WPA password. Avoid
+    // repeatedly invoking the driver with a corrupt configuration.
+    if (ssid.isEmpty() || (!password.isEmpty() && password.length() < 8))
+    {
+        Serial.println("AP configuration invalid: SSID/password missing or password too short.");
+        return;
+    }
+
     DeviceHandler::setLedState(AP_MODE);
     // Wechsel zum AP-Modus
     WiFi.mode((combine ? WIFI_MODE_APSTA : WIFI_MODE_AP));
@@ -201,8 +215,7 @@ void WiFiHandler::startAP(JsonDocument& config, bool combine)
     WiFi.softAPConfig(apIP, gateway, subnet);
 
     // Begin Soft AP.
-    bool started = WiFi.softAP(config["wifi"]["ap"]["ssid"].as<String>(),
-                               config["wifi"]["ap"]["password"].as<String>());
+    bool started = WiFi.softAP(ssid, password);
 
     // Set the flag only if the AP really started. This allows a later loop
     // iteration to retry after a transient driver failure.
@@ -213,7 +226,7 @@ void WiFiHandler::startAP(JsonDocument& config, bool combine)
 
 #if DEBUG == true
     Serial.print("AP startet: ");
-    Serial.println(config["wifi"]["ap"]["ssid"].as<String>());
+    Serial.println(ssid);
     Serial.print("AP IP: ");
     Serial.println(WiFi.softAPIP());
 #endif

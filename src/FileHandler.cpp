@@ -86,8 +86,28 @@ void FileHandler::loadConfig()
     // Read Config Content.
     String content = readFile("/config.json");
 
-    // Deserialize Json Config.
-    deserializeJson(config, content);
+    // Deserialize Json Config and recover from a missing or damaged file.
+    DeserializationError error = deserializeJson(config, content);
+    if (!error)
+        return;
+
+    Serial.print("Config parse failed: ");
+    Serial.println(error.c_str());
+
+    // The backup is part of the filesystem image and is the last known-good
+    // configuration. Restore it when config.json is empty or corrupted.
+    String backup = readFile("/config.json.bak");
+    config.clear();
+    error = deserializeJson(config, backup);
+    if (error)
+    {
+        Serial.print("Config backup parse failed: ");
+        Serial.println(error.c_str());
+        config.clear();
+        return;
+    }
+
+    saveFile("/config.json", backup);
 }
 
 /**
