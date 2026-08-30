@@ -2,12 +2,12 @@
 // Created by JanHe on 25.01.2026.
 //
 
-#include "OTAHandler.h"
+#include "../src/OTAHandler.h"
 #include <ArduinoOTA.h>
 
 #include "esp32FOTA.hpp"
-#include "FileHandler.h"
-#include "InternalConfig.h"
+#include "../src/FileHandler.h"
+#include "../src/InternalConfig.h"
 
 // Store OTA Server State.
 bool otaEnabled = false;
@@ -15,11 +15,6 @@ bool otaEnabled = false;
 // Store Pull Instance.
 esp32FOTA pull("stable", VERSION, false, true);
 
-// esp32FOTA::handle() performs a synchronous HTTP request. Calling it from
-// every loop iteration can block loopTask long enough to trigger the task
-// watchdog, especially when the update server is slow or unreachable.
-constexpr unsigned long OTA_CHECK_INTERVAL_MS = 60UL * 60UL * 1000UL;
-unsigned long lastOtaCheck = 0;
 
 /**
  * @brief Sets up the OTA (Over-The-Air) update functionality if enabled in
@@ -91,8 +86,6 @@ void OTAHandler::setup()
      // Remote OTA Server.
      // Set Manifest URL.
      pull.setManifestURL(UPDATE_SERVER);
-     // Do not perform a blocking remote check during startup.
-     lastOtaCheck = millis();
 }
 
 /**
@@ -116,13 +109,10 @@ void OTAHandler::loop()
     }
 
 
-    const unsigned long now = millis();
-    if (checkWAN() && now - lastOtaCheck >= OTA_CHECK_INTERVAL_MS)
-    {
-        lastOtaCheck = now;
-        // Handle Pull.
-        pull.handle();
-    }
+    // Do not call pull.handle() here. esp32FOTA::handle() performs a
+    // synchronous HTTP request and can block loopTask until the watchdog
+    // fires when the update server is slow or unreachable. Remote OTA checks
+    // remain available explicitly through hasUpdate()/update().
 }
 
 /**

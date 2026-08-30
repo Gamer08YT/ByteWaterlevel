@@ -1,12 +1,12 @@
 {
+  "availability_topic": "waterlevel/status",
   "payload_available": "online",
   "payload_not_available": "offline",
-  "availability_topic": "waterlevel/status",
   "dev": {
-    "name": "Zisterne",
-    "model": "ByteWaterlevel",
-    "manufacturer": "BYTESTORE",
     "hw_version": "1.1.0",
+    "manufacturer": "BYTESTORE",
+    "model": "ByteWaterlevel",
+    "name": "Zisterne",
     "sw_version": "1.5.0",
     "identifiers": [
       "01KJFGYFNRNZ0NNAAHS51RNFEB"
@@ -16,59 +16,59 @@
     "name": "MQTT subentry export"
   },
   "cmps": {
-    "b3c5badd018542979389c6b581df6514": {
+    "3211636db8c04f559d5700efaa648da8": {
+      "device_class": "volume",
+      "name": "Volume",
       "platform": "sensor",
-      "name": "CPU Temperature",
-      "device_class": "temperature",
       "state_class": "measurement",
-      "unit_of_measurement": "\u00b0C",
-      "state_topic": "waterlevel/cpu",
-      "entity_category": "diagnostic",
-      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_b3c5badd018542979389c6b581df6514",
+      "state_topic": "waterlevel/volume",
+      "unit_of_measurement": "L",
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_3211636db8c04f559d5700efaa648da8",
+      "availability_topic": "waterlevel/status",
       "payload_available": "online",
       "payload_not_available": "offline",
-      "availability_topic": "waterlevel/status",
       "qos": 0.0
     },
     "4bcbe612eb8041888e879e3ec26f4404": {
-      "platform": "sensor",
-      "name": "Voltage",
       "device_class": "voltage",
-      "state_class": "measurement",
-      "unit_of_measurement": "V",
-      "state_topic": "waterlevel/voltage",
       "entity_category": "diagnostic",
+      "name": "Voltage",
+      "platform": "sensor",
+      "state_class": "measurement",
+      "state_topic": "waterlevel/voltage",
       "suggested_display_precision": 2,
+      "unit_of_measurement": "V",
       "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_4bcbe612eb8041888e879e3ec26f4404",
+      "availability_topic": "waterlevel/status",
       "payload_available": "online",
       "payload_not_available": "offline",
-      "availability_topic": "waterlevel/status",
       "qos": 0.0
     },
     "a98d497a1e64477d8c080a453f845188": {
-      "platform": "sensor",
-      "name": "Level",
       "entity_category": "diagnostic",
+      "name": "Level",
+      "platform": "sensor",
       "state_class": "measurement",
-      "unit_of_measurement": "%",
       "state_topic": "waterlevel/level",
+      "unit_of_measurement": "%",
       "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_a98d497a1e64477d8c080a453f845188",
+      "availability_topic": "waterlevel/status",
       "payload_available": "online",
       "payload_not_available": "offline",
-      "availability_topic": "waterlevel/status",
       "qos": 0.0
     },
-    "3211636db8c04f559d5700efaa648da8": {
+    "b3c5badd018542979389c6b581df6514": {
+      "device_class": "temperature",
+      "entity_category": "diagnostic",
+      "name": "CPU Temperature",
       "platform": "sensor",
-      "name": "Volume",
-      "device_class": "volume",
       "state_class": "measurement",
-      "unit_of_measurement": "L",
-      "state_topic": "waterlevel/volume",
-      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_3211636db8c04f559d5700efaa648da8",
+      "state_topic": "waterlevel/cpu",
+      "unit_of_measurement": "\u00b0C",
+      "unique_id": "01KJFGYFNRNZ0NNAAHS51RNFEB_b3c5badd018542979389c6b581df6514",
+      "availability_topic": "waterlevel/status",
       "payload_available": "online",
       "payload_not_available": "offline",
-      "availability_topic": "waterlevel/status",
       "qos": 0.0
     }
   }

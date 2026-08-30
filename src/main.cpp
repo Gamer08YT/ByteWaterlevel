@@ -5,7 +5,7 @@
 #include "DeviceHandler.h"
 #include "FileHandler.h"
 #include "MQTTHandler.h"
-#include "OTAHandler.h"
+//#include "OTAHandler.h"
 #include "WebHandler.h"
 #include "WiFiHandler.h"
 //#include <MatterHandler.h>
@@ -53,7 +53,7 @@ void setup()
     WebHandler::setup();
 
     // Setup OTA.
-    OTAHandler::setup();
+    //OTAHandler::setup();
 
     // Setup Automation Handler.
     AutomationHandler::setup();
@@ -86,7 +86,7 @@ void loop()
 
 
     // Loop OTA.
-    OTAHandler::loop();
+    //OTAHandler::loop();
 
     // Loop Automation Handler.
     AutomationHandler::loop();

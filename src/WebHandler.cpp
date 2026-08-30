@@ -15,7 +15,7 @@
 #include "ESPAsyncWebServer.h"
 #include "FileHandler.h"
 #include "MQTTHandler.h"
-#include "OTAHandler.h"
+#include "../disabled/OTAHandler.h"
 #include "WiFiHandler.h"
 
 // Create AsyncWebServer object on port 80
@@ -57,16 +57,23 @@ void WebHandler::setup()
     {
         if (needAuth(request))
         {
-            if (!LittleFS.exists("/index.html.gz"))
+            if (LittleFS.exists("/index.html.gz"))
             {
-                request->send(500, "text/plain", "Invalid LittleFS");
-                return;
+                AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html.gz", "text/html; charset=utf-8");
+                response->addHeader("Content-Encoding", "gzip");
+                response->addHeader("Cache-Control", "public, max-age=86400");
+                request->send(response);
             }
-
-            AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html.gz", "text/html; charset=utf-8");
-            response->addHeader("Content-Encoding", "gzip");
-            response->addHeader("Cache-Control", "public, max-age=86400");
-            request->send(response);
+            else if (LittleFS.exists("/index.html"))
+            {
+                // Useful when the filesystem was uploaded without the
+                // minification/compression step.
+                request->send(LittleFS, "/index.html", "text/html; charset=utf-8");
+            }
+            else
+            {
+                request->send(500, "text/plain", "Invalid LittleFS: index.html.gz is missing");
+            }
         }
         // else
         // {
